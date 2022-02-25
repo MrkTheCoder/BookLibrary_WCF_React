@@ -11,8 +11,6 @@ namespace BookLibrary.DataAccess.SQLite
         where TDbContext : DbContext, new()
     {
 
-        protected abstract DbSet<TEntity> DbSet(TDbContext entityContext);
-
         protected abstract TEntity AddEntity(TDbContext entityContext, TEntity entity);
 
         protected abstract TEntity UpdateEntity(TDbContext entityContext, TEntity entity);
