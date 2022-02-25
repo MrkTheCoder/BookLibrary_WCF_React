@@ -160,6 +160,7 @@
     </Compile>
     <Compile Include="Migrations\BookLibraryDbContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="Seeds\BookSeeds.cs" />
   </ItemGroup>
@@ -177,9 +178,7 @@
       <Name>Core.Common.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
