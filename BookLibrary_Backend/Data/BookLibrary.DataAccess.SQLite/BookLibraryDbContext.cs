@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.SQLite.Seeds;
 using Core.Common.Interfaces.Entities;
@@ -6,12 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite
 {
-    public partial  class BookLibraryDbContext : DbContext
+    public partial class BookLibraryDbContext : DbContext
     {
         private const string DatabaseFilename = "LocalDb.sqlite";
 
         public BookLibraryDbContext()
         {
+            CheckDatabase();
         }
 
         public BookLibraryDbContext(DbContextOptions<BookLibraryDbContext> options)
@@ -70,5 +72,17 @@ namespace BookLibrary.DataAccess.SQLite
             return filePath;
         }
 
+        private void CheckDatabase()
+        {
+            try
+            {
+                SQLitePCL.Batteries_V2.Init();
+                Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 }
