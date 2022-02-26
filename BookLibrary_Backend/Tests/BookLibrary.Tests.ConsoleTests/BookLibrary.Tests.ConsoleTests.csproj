@@ -49,5 +49,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.Entities\BookLibrary.Business.Entities.csproj">
+      <Project>{d1960f3f-eac3-4397-9af8-b27e2b858288}</Project>
+      <Name>BookLibrary.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.SQLite\BookLibrary.DataAccess.SQLite.csproj">
+      <Project>{51bd3175-3a08-4710-9cb8-1127fefc7c39}</Project>
+      <Name>BookLibrary.DataAccess.SQLite</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
