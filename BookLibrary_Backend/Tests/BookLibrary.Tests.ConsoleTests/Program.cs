@@ -26,6 +26,8 @@ namespace BookLibrary.Tests.ConsoleTests
                     throw new Exception("In each Entity, EntityId property should be equal to its Id property.");
                 Console.WriteLine();
             }
+
+            Console.ReadLine();
         }
     }
 }
