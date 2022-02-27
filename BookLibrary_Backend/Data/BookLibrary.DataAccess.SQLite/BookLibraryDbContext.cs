@@ -10,10 +10,12 @@ namespace BookLibrary.DataAccess.SQLite
     public partial class BookLibraryDbContext : DbContext
     {
         private const string DatabaseFilename = "LocalDb.sqlite";
+        private static bool HasCheckedDatabase { get; set; }
 
         public BookLibraryDbContext()
         {
-            CheckDatabase();
+            if (!HasCheckedDatabase)
+                CheckDatabase();
         }
 
         public BookLibraryDbContext(DbContextOptions<BookLibraryDbContext> options)
@@ -78,10 +80,11 @@ namespace BookLibrary.DataAccess.SQLite
             {
                 SQLitePCL.Batteries_V2.Init();
                 Database.EnsureCreated();
+                HasCheckedDatabase = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
             }
         }
     }
