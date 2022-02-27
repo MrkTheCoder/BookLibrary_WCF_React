@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BookLibrary.Business.Entities;
-using Microsoft.EntityFrameworkCore;
+using BookLibrary.DataAccess.Interfaces;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
-    public class BookRepository : RepositoryBase<Book>
+    public class BookRepository : RepositoryBase<Book>, IBookRepository
     {
         protected override Book AddEntity(BookLibraryDbContext entityContext, Book entity)
         {
