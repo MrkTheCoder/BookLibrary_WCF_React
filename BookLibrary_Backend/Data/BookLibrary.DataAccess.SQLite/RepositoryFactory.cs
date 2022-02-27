@@ -1,12 +1,14 @@
-﻿using Core.Common.Interfaces.Data;
+﻿using BookLibrary.Business.AppConfigs;
+using Core.Common.Interfaces.Data;
+using DryIoc;
 
 namespace BookLibrary.DataAccess.SQLite
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        public T GetEntityRepository<T>() where T : IRepository
+        T IRepositoryFactory.GetEntityRepository<T>()
         {
-            throw new System.NotImplementedException();
+            return BootContainer.Builder.Resolve<T>();
         }
     }
 }
