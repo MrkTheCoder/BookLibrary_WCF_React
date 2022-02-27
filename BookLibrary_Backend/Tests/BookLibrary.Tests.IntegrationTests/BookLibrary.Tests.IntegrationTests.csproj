@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DryIoc, Version=4.8.7.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DryIoc.dll.4.8.7\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -135,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryFactoryIntegrationTests.cs" />
     <Compile Include="RepositoryIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -145,9 +149,25 @@
     <Analyzer Include="..\..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.AppConfigs\BookLibrary.Business.AppConfigs.csproj">
+      <Project>{BA8705B9-0957-45FE-BC4C-51F5610B7665}</Project>
+      <Name>BookLibrary.Business.AppConfigs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.Bootstrapper\BookLibrary.Business.Bootstrapper.csproj">
+      <Project>{BC84A01A-3F00-4A92-B768-A86D48717400}</Project>
+      <Name>BookLibrary.Business.Bootstrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Business\BookLibrary.Business.Entities\BookLibrary.Business.Entities.csproj">
       <Project>{D1960F3F-EAC3-4397-9AF8-B27E2B858288}</Project>
       <Name>BookLibrary.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
+      <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>
+      <Name>Core.Common.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
+      <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>
+      <Name>BookLibrary.DataAccess.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.SQLite\BookLibrary.DataAccess.SQLite.csproj">
       <Project>{51bd3175-3a08-4710-9cb8-1127fefc7c39}</Project>
