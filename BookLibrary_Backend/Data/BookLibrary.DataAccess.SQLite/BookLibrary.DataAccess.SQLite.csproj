@@ -163,6 +163,7 @@
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="RepositoryBase.cs" />
+    <Compile Include="RepositoryFactory.cs" />
     <Compile Include="Seeds\BookSeeds.cs" />
   </ItemGroup>
   <ItemGroup>

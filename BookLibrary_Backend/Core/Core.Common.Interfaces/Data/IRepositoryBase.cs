@@ -4,7 +4,7 @@ using Core.Common.Interfaces.Entities;
 namespace Core.Common.Interfaces.Data
 {
     public interface IRepositoryBase<TEntity> : IRepository
-        where TEntity : class, IIdentifiableEntity, new()
+        where TEntity : class, IIdentifiableEntity
     {
         TEntity GetById(int id);
         IEnumerable<TEntity> GetAll();

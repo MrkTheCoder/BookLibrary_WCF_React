@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IRepositoryBase.cs" />
+    <Compile Include="Data\IRepositoryFactory.cs" />
     <Compile Include="Entities\IIdentifiableEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
