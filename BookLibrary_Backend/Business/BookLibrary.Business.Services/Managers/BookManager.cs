@@ -35,6 +35,7 @@ namespace BookLibrary.Business.Services.Managers
                 {
                     Id = book.Id,
                     Isbn = book.Isbn,
+                    Title = book.Isbn,
                     IsAvailable = rand.Next(2) >= 1
                 });
             }

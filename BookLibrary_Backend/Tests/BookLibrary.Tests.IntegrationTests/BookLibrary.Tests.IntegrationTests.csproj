@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookManagerIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryFactoryIntegrationTests.cs" />
     <Compile Include="RepositoryIntegrationTests.cs" />
@@ -157,9 +158,17 @@
       <Project>{BC84A01A-3F00-4A92-B768-A86D48717400}</Project>
       <Name>BookLibrary.Business.Bootstrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.Contracts\BookLibrary.Business.Contracts.csproj">
+      <Project>{882CEC2C-35EE-453A-9830-A6E858EE1955}</Project>
+      <Name>BookLibrary.Business.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Business\BookLibrary.Business.Entities\BookLibrary.Business.Entities.csproj">
       <Project>{D1960F3F-EAC3-4397-9AF8-B27E2B858288}</Project>
       <Name>BookLibrary.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.Services\BookLibrary.Business.Services.csproj">
+      <Project>{21ACBDA7-DF05-4C3D-977C-7B7B0FC23657}</Project>
+      <Name>BookLibrary.Business.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
       <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>
