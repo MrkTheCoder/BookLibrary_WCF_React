@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLibrary.Business.Bootst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLibrary.Business.AppConfigs", "Business\BookLibrary.Business.AppConfigs\BookLibrary.Business.AppConfigs.csproj", "{BA8705B9-0957-45FE-BC4C-51F5610B7665}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLibrary.Business.Contracts", "Business\BookLibrary.Business.Contracts\BookLibrary.Business.Contracts.csproj", "{882CEC2C-35EE-453A-9830-A6E858EE1955}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{BA8705B9-0957-45FE-BC4C-51F5610B7665}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA8705B9-0957-45FE-BC4C-51F5610B7665}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA8705B9-0957-45FE-BC4C-51F5610B7665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{882CEC2C-35EE-453A-9830-A6E858EE1955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{882CEC2C-35EE-453A-9830-A6E858EE1955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{882CEC2C-35EE-453A-9830-A6E858EE1955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{882CEC2C-35EE-453A-9830-A6E858EE1955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D} = {582E81CD-5560-4B51-9EA3-D84512AFD654}
 		{BC84A01A-3F00-4A92-B768-A86D48717400} = {5EE02516-BF44-452B-BB5A-21CFB80555F3}
 		{BA8705B9-0957-45FE-BC4C-51F5610B7665} = {5EE02516-BF44-452B-BB5A-21CFB80555F3}
+		{882CEC2C-35EE-453A-9830-A6E858EE1955} = {5EE02516-BF44-452B-BB5A-21CFB80555F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C9045E5-64AB-48C9-AC8E-C0EFCA95C0EC}
