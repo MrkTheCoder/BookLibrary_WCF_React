@@ -10,7 +10,6 @@ namespace BookLibrary.Business.Services.Managers
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple,
-                    ReleaseServiceInstanceOnTransactionComplete = false,
                     IncludeExceptionDetailInFaults = true)]
     public class BookManager : ManagerBase, IBookService
     {
