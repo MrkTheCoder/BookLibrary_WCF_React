@@ -6,7 +6,7 @@ import books from "../data";
 function HomeScreen() {
   return (
     <div className="cardRows">
-      <Row className="mainScreen">
+      <Row data-testid="cardRow" className="mainScreen">
         {books.map((book) => (
           <Col key={book.id} sm={12} md={6} lg={4} xl={3}>
             <Bookcard book={book} />

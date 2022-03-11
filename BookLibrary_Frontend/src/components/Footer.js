@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer>
+    <footer data-testid="Footer">
       <div className="footer">Copyright &copy; Library</div>
     </footer>
   );
