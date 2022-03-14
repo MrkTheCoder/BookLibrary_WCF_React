@@ -18,7 +18,7 @@ test("book data returns an error without props", () => {
 
 test("card shows correct date", () => {
   const { getByTestId } = render(
-    <Bookcard book={{ name: "book", id: "1" }} />,
+    <Bookcard book={{ Isbn: "123456", Id: "1" }} />,
     {
       wrapper: MemoryRouter,
     }
@@ -28,6 +28,6 @@ test("card shows correct date", () => {
 
   const subtitleEl = getByTestId("subTitle");
 
-  expect(titleEl.textContent).toBe("book");
-  expect(subtitleEl.textContent).toBe("1");
+  expect(titleEl.textContent).toBe("1");
+  expect(subtitleEl.textContent).toBe("123456");
 });
