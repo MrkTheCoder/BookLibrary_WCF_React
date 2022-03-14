@@ -1,14 +1,26 @@
-import React from "react";
-import { Card, Row, Col } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Row, Col } from "react-bootstrap";
 import Bookcard from "../components/Bookcard";
-import books from "../data";
+
+import axios from "axios";
 
 function HomeScreen() {
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    async function fetchBooks() {
+      const response = await axios.get("http://localhost:51202/LibraryBooks");
+
+      setBooks(response.data);
+    }
+
+    fetchBooks();
+  }, []);
   return (
     <div className="cardRows">
-      <Row className="mainScreen">
+      <Row data-testid="cardRow" className="mainScreen">
         {books.map((book) => (
-          <Col key={book.id} sm={12} md={6} lg={4} xl={3}>
+          <Col key={book.Id} sm={12} md={6} lg={4} xl={3}>
             <Bookcard book={book} />
           </Col>
         ))}
