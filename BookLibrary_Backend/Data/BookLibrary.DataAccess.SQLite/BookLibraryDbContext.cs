@@ -76,8 +76,6 @@ namespace BookLibrary.DataAccess.SQLite
 
         private void CheckDatabase()
         {
-            Exception ex = null;
-
             try
             {
                 SQLitePCL.Batteries.Init();
