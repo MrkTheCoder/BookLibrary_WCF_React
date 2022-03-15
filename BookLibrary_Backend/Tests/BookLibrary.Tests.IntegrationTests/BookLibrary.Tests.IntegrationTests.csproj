@@ -137,10 +137,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BookManagerIntegrationTests.cs" />
+    <Compile Include="WcfServices\BookManagerIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryFactoryIntegrationTests.cs" />
-    <Compile Include="RepositoryIntegrationTests.cs" />
+    <Compile Include="Repositories\RepositoryFactoryIntegrationTests.cs" />
+    <Compile Include="Repositories\RepositoryIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -183,6 +183,7 @@
       <Name>BookLibrary.DataAccess.SQLite</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -3,7 +3,7 @@ using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Xunit;
 
-namespace BookLibrary.Tests.IntegrationTests
+namespace BookLibrary.Tests.IntegrationTests.Repositories
 {
     public class RepositoryIntegrationTests
     {

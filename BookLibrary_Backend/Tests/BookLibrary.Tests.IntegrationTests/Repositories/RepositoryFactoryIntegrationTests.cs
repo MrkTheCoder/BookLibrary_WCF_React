@@ -4,13 +4,12 @@ using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
-using BookLibrary.DataAccess.SQLite;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Core.Common.Interfaces.Data;
 using DryIoc;
 using Xunit;
 
-namespace BookLibrary.Tests.IntegrationTests
+namespace BookLibrary.Tests.IntegrationTests.Repositories
 {
     public class RepositoryFactoryIntegrationTests
     {

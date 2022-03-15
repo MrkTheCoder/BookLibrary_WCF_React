@@ -2,7 +2,7 @@
 using BookLibrary.Business.Services.Managers;
 using Xunit;
 
-namespace BookLibrary.Tests.IntegrationTests
+namespace BookLibrary.Tests.IntegrationTests.WcfServices
 {
     public class BookManagerIntegrationTests
     {
