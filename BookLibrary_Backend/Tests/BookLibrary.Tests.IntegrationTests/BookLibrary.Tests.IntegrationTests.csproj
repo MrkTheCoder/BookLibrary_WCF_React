@@ -114,6 +114,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -137,6 +138,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hosts\WcfConsoleHostTests.cs" />
     <Compile Include="WcfServices\BookManagerIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\RepositoryFactoryIntegrationTests.cs" />
@@ -169,6 +171,10 @@
     <ProjectReference Include="..\..\Business\BookLibrary.Business.Services\BookLibrary.Business.Services.csproj">
       <Project>{21ACBDA7-DF05-4C3D-977C-7B7B0FC23657}</Project>
       <Name>BookLibrary.Business.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Client\BookLibrary.Client.Entities\BookLibrary.Client.Entities.csproj">
+      <Project>{af7bebc1-4cec-4dd9-8b96-adb1b71a3c2c}</Project>
+      <Name>BookLibrary.Client.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
       <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>

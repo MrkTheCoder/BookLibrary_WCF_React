@@ -28,10 +28,10 @@ namespace BookLibrary.Business.Services.Managers
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
             var books = bookRepository.GetAll();
 
+            var rand = new Random();
+
             foreach (var book in books)
             {
-                var rand = new Random();
-
                 libraryBooks.Add(new LibraryBookData
                 {
                     Id = book.Id,
