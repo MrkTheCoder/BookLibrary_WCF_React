@@ -13,19 +13,19 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
 {
     public class RepositoryFactoryTests
     {
-        private readonly Book[] _moqBooks;
+        private readonly Book[] _books;
         private readonly Book _bookIdOne;
 
         public RepositoryFactoryTests()
         {
-            _moqBooks = new []
+            _books = new []
             {
                 new Book{Id = 1, Isbn = "111", Title = "A"},
                 new Book{Id = 2, Isbn = "222", Title = "B"},
                 new Book{Id = 3, Isbn = "333", Title = "C"},
                 new Book{Id = 4, Isbn = "444", Title = "D"}
             };
-            _bookIdOne = _moqBooks.FirstOrDefault(f => f.Id == 1);
+            _bookIdOne = _books.FirstOrDefault(f => f.Id == 1);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s => s.GetById(It.IsAny<int>()))
-                .Returns<int>(id => _moqBooks.FirstOrDefault(f => f.Id == id));
+                .Returns<int>(id => _books.FirstOrDefault(f => f.Id == id));
 
             var repositoryFactoryMoq = new Mock<IRepositoryFactory>();
             repositoryFactoryMoq.Setup(s => s.GetEntityRepository<IBookRepository>())

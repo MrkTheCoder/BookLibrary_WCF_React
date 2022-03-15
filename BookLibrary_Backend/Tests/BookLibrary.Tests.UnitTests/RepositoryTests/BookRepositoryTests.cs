@@ -8,19 +8,19 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
 {
     public class BookRepositoryTests
     {
-        private readonly Book[] _moqBooks;
+        private readonly Book[] _books;
         private readonly Book _bookIdOne;
 
         public BookRepositoryTests()
         {
-            _moqBooks = new []
+            _books = new []
             {
                 new Book{Id = 1, Isbn = "111", Title = "A"},
                 new Book{Id = 2, Isbn = "222", Title = "B"},
                 new Book{Id = 3, Isbn = "333", Title = "C"},
                 new Book{Id = 4, Isbn = "444", Title = "D"}
             };
-            _bookIdOne = _moqBooks.FirstOrDefault(f => f.Id == 1);
+            _bookIdOne = _books.FirstOrDefault(f => f.Id == 1);
         }
 
         [Fact]
@@ -29,8 +29,8 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s =>
                 s.GetById(It.IsAny<int>()))
-                .Returns<int>((id) => _moqBooks.FirstOrDefault(f => f.Id == id));
-            var aBook = _moqBooks.FirstOrDefault(f => f.Id == 1);
+                .Returns<int>((id) => _books.FirstOrDefault(f => f.Id == id));
+            var aBook = _books.FirstOrDefault(f => f.Id == 1);
 
             var bookRepository = bookRepositoryMoq.Object;
 
@@ -48,14 +48,14 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s =>
-                s.GetAll()).Returns(_moqBooks);
+                s.GetAll()).Returns(_books);
             
             var bookRepository = bookRepositoryMoq.Object;
 
             var books = bookRepository.GetAll();
             var getBook = books.FirstOrDefault(f => f.Id == 1);
 
-            Assert.Equal(_moqBooks.Count(), books.Count());
+            Assert.Equal(_books.Count(), books.Count());
             Assert.NotNull(getBook);
             Assert.Equal(_bookIdOne.Id, getBook.EntityId);
             Assert.Equal(_bookIdOne.Title, getBook.Title);
