@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Core.Common.Exceptions
 {
+    /// <summary>
+    /// Costume Exception for throwing when a requested data did not find.
+    /// </summary>
     [Serializable]
     public class NotFoundException : ApplicationException
     {

@@ -5,6 +5,9 @@ using DryIoc;
 
 namespace BookLibrary.Business.Services
 {
+    /// <summary>
+    /// Base class for all Services. It will initialize RepositoryFactory and load IoC Container if it is not initialized yet.
+    /// </summary>
     [OperationFaultHandling]
     public abstract class ManagerBase
     {
@@ -12,18 +15,28 @@ namespace BookLibrary.Business.Services
         
         protected IRepositoryFactory RepositoryFactory { get; set; }
 
-        public ManagerBase()
+        /// <summary>
+        /// Default constructor for use in services.
+        /// </summary>
+        protected ManagerBase()
         {
             RepositoryFactory = Container.Resolve<IRepositoryFactory>();
         }
 
-        public ManagerBase(IRepositoryFactory repositoryFactory)
+        /// <summary>
+        /// Constructor to use in UnitTests.
+        /// </summary>
+        /// <param name="repositoryFactory"></param>
+        protected ManagerBase(IRepositoryFactory repositoryFactory)
         {
             RepositoryFactory = repositoryFactory;
         }
 
-        public Container Container => _container ?? 
-                                      (_container = BootContainer.Builder = Bootstrapper.Bootstrapper.Bootstrap());
+        /// <summary>
+        /// Give access to IoC container. If it is not initialized yet, It will load it.
+        /// </summary>
+        protected Container Container => _container ?? 
+                                         (_container = BootContainer.Builder = Bootstrapper.Bootstrapper.Bootstrap());
 
 
     }

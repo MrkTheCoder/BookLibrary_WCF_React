@@ -2,6 +2,9 @@
 
 namespace BookLibrary.Business.Contracts.DataContracts
 {
+    /// <summary>
+    /// Return common book library description. 
+    /// </summary>
     [DataContract]
     public class LibraryBookData
     {

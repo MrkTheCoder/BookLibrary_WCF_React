@@ -5,6 +5,9 @@ using BookLibrary.DataAccess.Interfaces;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
+    /// <summary>
+    /// Managing all CROD actions on Book table in database.
+    /// </summary>
     public class BookRepository : RepositoryBase<Book>, IBookRepository
     {
         protected override Book AddEntity(BookLibraryDbContext entityContext, Book entity)

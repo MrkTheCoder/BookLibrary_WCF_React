@@ -74,10 +74,15 @@ namespace BookLibrary.DataAccess.SQLite
             return filePath;
         }
 
+        /// <summary>
+        /// Create database if it is not exists.
+        /// After finishing all actions 'HasCheckedDatabase' property will set to true to prevent call it again.
+        /// </summary>
         private void CheckDatabase()
         {
             try
             {
+                // TODO: add more info about "SQLitePCL.Batteries.Init();" & "SQLitePCL.Batteries_V2.Init();"
                 SQLitePCL.Batteries.Init();
                 // SQLitePCL.Batteries_V2.Init();
                 Database.EnsureCreated();

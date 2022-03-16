@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite
 {
+    /// <summary>
+    /// Abstract RepositoryBase class with some Concreted methods.
+    /// </summary>
+    /// <typeparam name="TEntity">Database entity.</typeparam>
+    /// <typeparam name="TDbContext">Database DbContext.</typeparam>
     public abstract class RepositoryBase<TEntity, TDbContext> : IRepositoryBase<TEntity>
         where TEntity : class, IIdentifiableEntity, new()
         where TDbContext : DbContext, new()

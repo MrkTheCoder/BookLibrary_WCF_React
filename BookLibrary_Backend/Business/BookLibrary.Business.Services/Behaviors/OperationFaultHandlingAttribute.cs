@@ -8,6 +8,10 @@ using Core.Common.Exceptions;
 
 namespace BookLibrary.Business.Services.Behaviors
 {
+    /// <summary>
+    /// A costume attribute for Services to handel:
+    /// * Exceptions.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class OperationFaultHandlingAttribute : Attribute, IErrorHandler, IServiceBehavior
     {

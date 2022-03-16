@@ -6,6 +6,9 @@ using DryIoc;
 
 namespace BookLibrary.Business.Bootstrapper
 {
+    /// <summary>
+    /// This is loader for IoC Container and registering all defined DI's.
+    /// </summary>
     public static class Bootstrapper
     {
         public static Container Bootstrap()

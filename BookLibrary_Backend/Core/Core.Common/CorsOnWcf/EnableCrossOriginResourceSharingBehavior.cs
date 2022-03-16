@@ -5,6 +5,9 @@ using System.ServiceModel.Description;
 
 namespace Core.Common.CorsOnWcf
 {
+    /// <summary>
+    /// More info: https://enable-cors.org/server_wcf.html
+    /// </summary>
     public class EnableCrossOriginResourceSharingBehavior : BehaviorExtensionElement, IEndpointBehavior
     {
         public void AddBindingParameters(ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection bindingParameters)
