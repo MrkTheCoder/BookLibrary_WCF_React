@@ -17,17 +17,22 @@ test("book data returns an error without props", () => {
 });
 
 test("card shows correct date", () => {
-  const { getByTestId } = render(
-    <Bookcard book={{ Isbn: "123456", Id: "1" }} />,
-    {
-      wrapper: MemoryRouter,
-    }
-  );
+  const data = {
+    Id: 2,
+    IsAvailable: true,
+    Isbn: "101-22258489522",
+    Title: "Learn Design Patterns in R",
+  };
+  const { getByTestId } = render(<Bookcard book={data} />, {
+    wrapper: MemoryRouter,
+  });
 
   const titleEl = getByTestId("title");
-
   const subtitleEl = getByTestId("subTitle");
+  const idEl = getByTestId("link");
 
-  expect(titleEl.textContent).toBe("1");
-  expect(subtitleEl.textContent).toBe("123456");
+  expect(titleEl.textContent).toBe("Learn Design Patterns in R");
+  expect(subtitleEl.textContent).toBe("101-22258489522");
+  expect(idEl.textContent).toBe("More Details");
+  expect(idEl.closest("a")).toHaveAttribute("href", "/book/2");
 });
