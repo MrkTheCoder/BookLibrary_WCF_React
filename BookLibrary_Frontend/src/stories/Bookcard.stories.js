@@ -2,6 +2,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import Bookcard from "../components/Bookcard";
 import "../bootstrap.min.css";
+import "../components/style.css";
 
 export default {
   title: "Bookcard",
@@ -20,7 +21,9 @@ export const Default = Template.bind({});
 
 Default.args = {
   book: {
-    name: "a",
-    id: "2",
+    Id: 2,
+    IsAvailable: true,
+    Isbn: "101-22258489522",
+    Title: "Learn Design Patterns in R",
   },
 };
