@@ -78,13 +78,14 @@ namespace BookLibrary.DataAccess.SQLite
         {
             try
             {
-                SQLitePCL.Batteries_V2.Init();
+                SQLitePCL.Batteries.Init();
+                // SQLitePCL.Batteries_V2.Init();
                 Database.EnsureCreated();
                 HasCheckedDatabase = true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(e.Message);
             }
         }
     }

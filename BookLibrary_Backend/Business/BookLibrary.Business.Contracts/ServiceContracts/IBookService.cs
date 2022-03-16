@@ -8,7 +8,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
     public interface IBookService
     {
         [OperationContract]
-        [WebGet(UriTemplate = "GetLibraryBooks", 
+        [WebGet(UriTemplate = "LibraryBooks", 
                 ResponseFormat = WebMessageFormat.Json, 
                 RequestFormat=WebMessageFormat.Json)]
         LibraryBookData[] GetLibraryBooks();

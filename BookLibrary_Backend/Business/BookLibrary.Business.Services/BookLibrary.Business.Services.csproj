@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\OperationFaultHandlingAttribute.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="Managers\BookManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,6 +55,10 @@
     <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
       <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>
       <Name>Core.Common.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj">
+      <Project>{DE8E6850-58E5-4759-A260-6EC290DA99CD}</Project>
+      <Name>Core.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
       <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>
@@ -80,5 +85,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

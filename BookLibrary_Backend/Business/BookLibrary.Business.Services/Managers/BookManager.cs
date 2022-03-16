@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.DataAccess.Interfaces;
@@ -11,6 +12,7 @@ namespace BookLibrary.Business.Services.Managers
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple,
                     IncludeExceptionDetailInFaults = true)]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class BookManager : ManagerBase, IBookService
     {
         public BookManager() : base() 
@@ -34,7 +36,7 @@ namespace BookLibrary.Business.Services.Managers
                 {
                     Id = book.Id,
                     Isbn = book.Isbn,
-                    Title = book.Isbn,
+                    Title = book.Title,
                     IsAvailable = rand.Next(2) >= 1
                 });
             }
