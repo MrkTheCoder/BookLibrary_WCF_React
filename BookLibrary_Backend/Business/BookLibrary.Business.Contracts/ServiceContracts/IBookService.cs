@@ -14,7 +14,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         /// </summary>
         /// <returns>a Json format of LibraryBookData array.</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "LibraryBooks", 
+        [WebGet(UriTemplate = "books", 
                 ResponseFormat = WebMessageFormat.Json, 
                 RequestFormat=WebMessageFormat.Json)]
         LibraryBookData[] GetLibraryBooks();
