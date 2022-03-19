@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BC84A01A-3F00-4A92-B768-A86D48717400}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BookLibrary.Business.Bootstrapper</RootNamespace>
+    <AssemblyName>BookLibrary.Business.Bootstrapper</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DryIoc, Version=4.8.7.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DryIoc.dll.4.8.7\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
+      <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>
+      <Name>Core.Common.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
+      <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>
+      <Name>BookLibrary.DataAccess.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.SQLite\BookLibrary.DataAccess.SQLite.csproj">
+      <Project>{51BD3175-3A08-4710-9CB8-1127FEFC7C39}</Project>
+      <Name>BookLibrary.DataAccess.SQLite</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
