@@ -22,7 +22,9 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
         {
             return entityContext
                 .Books
-                .FirstOrDefault(f => f.Id == entity.Id);
+                .Update(entity)
+                .Entity;
+
         }
 
         protected override IEnumerable<Book> GetEntities(BookLibraryDbContext entityContext)
