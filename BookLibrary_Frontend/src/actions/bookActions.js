@@ -15,12 +15,13 @@ export const listBooks =
       );
       dispatch({ type: BOOK_LIST_SUCCESS, payload: data });
     } catch (error) {
+      console.log(error.message);
       dispatch({
         type: BOOK_LIST_FAIL,
         payload:
-          error.response && error.response.data.datail
-            ? error.response.data.detail
-            : error.Message,
+          error.response && error.response.data.Message
+            ? error.response.data.Message
+            : error.message,
       });
     }
   };
