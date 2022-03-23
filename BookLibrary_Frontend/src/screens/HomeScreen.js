@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Bookcard from "../components/Bookcard";
-
-import axios from "axios";
+import { listBooks } from "../actions/bookActions";
 
 function HomeScreen() {
-  const [books, setBooks] = useState([]);
+  const dispatch = useDispatch();
+  const bookList = useSelector((state) => state.bookList);
+  const { error, loading, books } = bookList;
 
   useEffect(() => {
-    async function fetchBooks() {
-      const response = await axios.get("http://localhost:51202/LibraryBooks");
-
-      setBooks(response.data);
-    }
-
-    fetchBooks();
+    dispatch(listBooks());
   }, []);
+
   return (
     <div className="cardRows">
       <Row data-testid="cardRow" className="mainScreen">
