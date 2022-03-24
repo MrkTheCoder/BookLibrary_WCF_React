@@ -13,8 +13,8 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         /// Response Resource: Json of LibraryBookData Array.
         /// Description: Query database to get 'x' items Library books information of page 'n' with borrowing availability status.
         /// </summary>
-        /// <param name="page">page number between 1 to n.</param>
-        /// <param name="item">items per page. can only one of: 10, 20, 30, 40, 50. (default: 10)</param>
+        /// <param name="page">an integer value represent the page number between: 1 to n.</param>
+        /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <returns>a Json format of LibraryBookData array.</returns>
         [OperationContract]
         [WebGet(UriTemplate = "books?page={page}&item={item}", 

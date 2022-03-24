@@ -171,15 +171,16 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var actualFirstBook = books.FirstOrDefault(f => f.Id == 1);
             var actualLastBook = books.LastOrDefault();
 
-            Assert.Equal(DefaultItemsPerPage, books.Length);
+            Assert.Equal(dbBooks.Length, books.Length);
             Assert.NotNull(actualFirstBook);
             Assert.Equal(_bookIdOne.Id, actualFirstBook.Id);
             Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
             Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
             // TODO: Assert Available property
 
-            
-            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+
+            var expectedLastBookInPage = dbBooks.LastOrDefault();
+            Assert.NotNull(expectedLastBookInPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Id, actualLastBook.Id);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
