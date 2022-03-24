@@ -13,7 +13,6 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 {
     public class RepositoryFactoryIntegrationTests
     {
-        private readonly Book _newBook1;
         private readonly IRepositoryFactory _repositoryFactory;
 
         public RepositoryFactoryIntegrationTests()
@@ -21,8 +20,6 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             BootContainer.Builder = Bootstrapper.Bootstrap();
 
             _repositoryFactory = BootContainer.Builder.Resolve<IRepositoryFactory>();
-
-            _newBook1 = new Book { Isbn = "111-222", Title = "A B C" };
         }
 
         [Fact]
@@ -48,6 +45,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public void BookRepositoryAddBookFromFactory_ShouldAddBook()
         {
+            var _newBook1 = new Book { Isbn = "111-222", Title = "A B C" };
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
 
             var book = bookRepository.Add(_newBook1);
@@ -64,15 +62,16 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public void BookRepositoryUpdateBookFromFactory_ShouldUpdateBook()
         {
+            var _newBook1 = new Book { Isbn = "113-222", Title = "A B C" };
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+            
             var book = bookRepository.Add(_newBook1);
             var id = book.Id;
             
             book.Isbn = "000-000";
             var updatedBook = bookRepository.Update(book);
-            var findBook = bookRepository.GetAll().FirstOrDefault(f => f.Id == id);
-            var books = bookRepository.GetAll().ToList();
 
+            var findBook = bookRepository.GetAll().FirstOrDefault(f => f.Id == id);
             Assert.NotNull(findBook);
             Assert.Equal(book.Isbn, findBook.Isbn);
             Assert.Equal(book.Isbn, updatedBook.Isbn);

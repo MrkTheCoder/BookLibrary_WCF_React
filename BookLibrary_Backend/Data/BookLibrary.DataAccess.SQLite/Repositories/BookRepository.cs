@@ -24,7 +24,6 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                 .Books
                 .Update(entity)
                 .Entity;
-
         }
 
         protected override IEnumerable<Book> GetEntities(BookLibraryDbContext entityContext)

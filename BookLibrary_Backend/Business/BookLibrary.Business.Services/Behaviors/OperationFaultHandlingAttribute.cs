@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Runtime.Serialization.Json;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
+using System.ServiceModel.Web;
+using BookLibrary.Business.Contracts.DataContracts;
 using Core.Common.Exceptions;
 
 namespace BookLibrary.Business.Services.Behaviors
@@ -18,33 +22,51 @@ namespace BookLibrary.Business.Services.Behaviors
         // IErrorHandler members:
         public void ProvideFault(Exception error, MessageVersion version, ref Message fault)
         {
+            var errorCode = HttpStatusCode.BadRequest;
+            var errorResponseMessage = "Unknown Exception";
+
             switch (error)
             {
                 case NotFoundException _:
-                {
-                    var faultException = new
-                        FaultException<NotFoundException>(new NotFoundException(error.Message));
-
-                    fault = Message.CreateMessage(version,
-                        faultException.CreateMessageFault(),
-                        faultException.Action);
-                    break;
-                }
+                    {
+                        errorCode = HttpStatusCode.NotFound;
+                        errorResponseMessage = "Not Found!";
+                        break;
+                    }
+                case FormatException _:
+                    {
+                        errorCode = HttpStatusCode.BadRequest;
+                        errorResponseMessage = "Check Arguments Format!";
+                        break;
+                    }
                 // General
                 default:
-                {
-                    var faultException = new FaultException(error.Message);
+                    {
+                        break;
+                    }
 
-                    fault = Message.CreateMessage(version,
-                        faultException.CreateMessageFault(),
-                        faultException.Action);
-                    break;
-                }
             }
+
+            fault = Message
+                .CreateMessage(version, "",
+                    new HttpErrorMessage(error, errorCode),
+                    new DataContractJsonSerializer(typeof(HttpErrorMessage)));
+            var wbf = new WebBodyFormatMessageProperty(WebContentFormat.Json);
+            fault.Properties.Add(WebBodyFormatMessageProperty.Name, wbf);
+
+            if (WebOperationContext.Current != null)
+            {
+                var response = WebOperationContext.Current.OutgoingResponse;
+                response.ContentType = "application/json";
+                response.StatusCode = errorCode;
+                response.StatusDescription = errorResponseMessage;
+            }
+
         }
 
         public bool HandleError(Exception error)
         {
+            //TODO: log stacktrace
             return true; // Place for auditing
         }
 

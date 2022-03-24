@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using BookLibrary.Business.Contracts.DataContracts;
@@ -23,20 +24,31 @@ namespace BookLibrary.Business.Services.Managers
         public BookManager(IRepositoryFactory resRepositoryFactory) : base(resRepositoryFactory) 
         { }
 
-        
+        private const int DefaultItemsPerPage = 10;
+        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
         /// <summary>
         /// Gather simple information about books and if they are available for borrowing.
         /// </summary>
-        /// <returns>Array of LibraryBookData type.</returns>
-        public LibraryBookData[] GetLibraryBooks()
+        /// <param name="page">page number from 1 to n.</param>
+        /// <param name="item">items per page. It can only be of these numbers: 10, 20, 30, 40, 50. (10 is default)</param>
+        /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
+        public LibraryBookData[] GetBooks(int page, int item)
         {
+            if (page < 1)
+                page = 1;
+
             var libraryBooks = new List<LibraryBookData>();
+            var itemsPerPage = _acceptedItemsPerPage.Contains(item)
+                ? item
+                : DefaultItemsPerPage;
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var books = bookRepository.GetAll();
-
+            var books = bookRepository.GetAll()
+                .Skip(itemsPerPage * (page-1))
+                .Take(itemsPerPage);
+            
             var rand = new Random();
-
+            
             foreach (var book in books)
             {
                 libraryBooks.Add(new LibraryBookData
@@ -47,7 +59,7 @@ namespace BookLibrary.Business.Services.Managers
                     IsAvailable = rand.Next(2) >= 1
                 });
             }
-
+            
             return libraryBooks.ToArray();
         }
     }

@@ -7,11 +7,11 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
     public class BookManagerIntegrationTests
     {
         [Fact]
-        public void GetLibraryBooks_ShouldReturnBooks()
+        public void GetBooks_ShouldReturnBooks()
         {
             var bookManager = new BookManager();
 
-            var libraryBooks = bookManager.GetLibraryBooks();
+            var libraryBooks = bookManager.GetBooks(0,0);
             var libraryBook = libraryBooks.FirstOrDefault();
 
             Assert.NotEmpty(libraryBooks);
