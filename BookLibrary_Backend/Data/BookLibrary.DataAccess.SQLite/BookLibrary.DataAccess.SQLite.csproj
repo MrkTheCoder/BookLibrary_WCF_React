@@ -161,6 +161,8 @@
   <ItemGroup>
     <Compile Include="BookLibraryDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BookCategoryRepository.cs" />
+    <Compile Include="Repositories\BookCopyRepositoryRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="RepositoryBase.cs" />

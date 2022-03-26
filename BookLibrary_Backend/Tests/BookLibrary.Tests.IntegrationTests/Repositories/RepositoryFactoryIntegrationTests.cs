@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
@@ -23,12 +24,18 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void RepositoryFactory_IBookRepository_ShouldReturnBookRepository()
+        public void RepositoryFactory_IEntityRepositories_ShouldReturnRelatedEntityRepository()
         {
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+            var bookCopyRepository = _repositoryFactory.GetEntityRepository<IBookCopyRepository>();
+            var bookCategoryRepository = _repositoryFactory.GetEntityRepository<IBookCategoryRepository>();
 
             Assert.Equal(typeof(BookRepository), bookRepository.GetType());
             Assert.True(bookRepository is BookRepository);
+            Assert.Equal(typeof(BookCopyRepository), bookCopyRepository.GetType());
+            Assert.True(bookCopyRepository is BookCopyRepository);
+            Assert.Equal(typeof(BookCategoryRepository), bookCategoryRepository.GetType());
+            Assert.True(bookCategoryRepository is BookCategoryRepository);
         }
 
 
@@ -60,17 +67,23 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public void RepositoryFactory_BookRepositoryAdd_ShouldAddBook()
         {
-            var _newBook1 = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1};
+            var newBookCopy = new BookCopy { TotalCopy = 66 };
+            var newBook = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1, BookCopy = newBookCopy};
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+            var bookCategoryRepository = _repositoryFactory.GetEntityRepository<IBookCategoryRepository>();
 
-
-            var book = bookRepository.Add(_newBook1);
+            var book = bookRepository.Add(newBook);
 
             var findBook = bookRepository.GetAll().FirstOrDefault(f => f.Id == book.Id);
+            var bookCat = bookCategoryRepository.GetById(1);
 
             Assert.NotNull(findBook);
-            Assert.Equal(_newBook1.Isbn, findBook.Isbn);
+            Assert.NotNull(bookCat);
             Assert.True(book.Id != 0);
+            Assert.Equal(newBook.Isbn, findBook.Isbn);
+            Assert.Equal(bookCat.EntityId, findBook.BookCategoryId);
+            Assert.Equal(bookCat.Name, findBook.BookCategory.Name);
+            Assert.Equal(newBookCopy.TotalCopy, findBook.BookCopy.TotalCopy);
 
             bookRepository.Remove(book);
         }
@@ -95,5 +108,6 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 
             bookRepository.Remove(id);
         }
+
     }
 }
