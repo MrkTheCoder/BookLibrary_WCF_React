@@ -34,16 +34,18 @@ namespace BookLibrary.DataAccess.SQLite
         public IEnumerable<TEntity> GetAll()
         {
             using (var context = new TDbContext())
+            {
                 return GetEntities(context).ToArray().ToList();
+            }
         }
 
         public TEntity Add(TEntity entity)
         {
             using (var context = new TDbContext())
             {
-                var updatedEntity = AddEntity(context, entity);
+                var addEntity = AddEntity(context, entity);
                 context.SaveChanges();
-                return updatedEntity;
+                return addEntity;
             }
         }
 

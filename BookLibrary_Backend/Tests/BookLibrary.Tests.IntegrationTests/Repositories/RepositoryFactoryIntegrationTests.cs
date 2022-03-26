@@ -23,7 +23,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void RepositoryFactory_GetIBookRepository_ShouldReturnBookRepository()
+        public void RepositoryFactory_IBookRepository_ShouldReturnBookRepository()
         {
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
 
@@ -31,8 +31,23 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             Assert.True(bookRepository is BookRepository);
         }
 
+
         [Fact]
-        public void BookRepositoryGetAllFromFactory_ShouldReturnBooks()
+        public void RepositoryFactory_BookRepositoryGetById_ShouldReturnBookWithId()
+        {
+            var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+            var firstBook = bookRepository.GetAll().Single(i => i.Id == 1);
+            
+            var book = bookRepository.GetById(1);
+
+            Assert.Equal(firstBook.Id, book.Id);
+            Assert.Equal(firstBook.Isbn, book.Isbn);
+            Assert.Equal(firstBook.BookCategoryId, book.BookCategoryId);
+            Assert.Equal(firstBook.BookCategory.EntityId, book.BookCategory.EntityId);
+        }
+
+        [Fact]
+        public void RepositoryFactory_BookRepositoryGetAll_ShouldReturnBooks()
         {
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
 
@@ -43,10 +58,11 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void BookRepositoryAddBookFromFactory_ShouldAddBook()
+        public void RepositoryFactory_BookRepositoryAdd_ShouldAddBook()
         {
-            var _newBook1 = new Book { Isbn = "111-222", Title = "A B C" };
+            var _newBook1 = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1};
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+
 
             var book = bookRepository.Add(_newBook1);
 
@@ -60,12 +76,12 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void BookRepositoryUpdateBookFromFactory_ShouldUpdateBook()
+        public void RepositoryFactory_BookRepositoryUpdate_ShouldUpdateBook()
         {
-            var _newBook1 = new Book { Isbn = "113-222", Title = "A B C" };
+            var newBook1 = new Book { Isbn = "113-222", Title = "A B C"  , BookCategoryId = 1};
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
             
-            var book = bookRepository.Add(_newBook1);
+            var book = bookRepository.Add(newBook1);
             var id = book.Id;
             
             book.Isbn = "000-000";
