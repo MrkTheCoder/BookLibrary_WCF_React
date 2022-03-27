@@ -2,8 +2,7 @@
 
   ### [actions](https://github.com/MrkTheCoder/BookLibrary_WCF_React/tree/master/BookLibrary_Frontend/src/actions)  Folder :
 Contains all the Redux actions, each API call has an action of it's own.
-See the section about [Actions](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow) for more information.
-`![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)`
+See the section about [Actions](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow) for more information. ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)
 
 
 
