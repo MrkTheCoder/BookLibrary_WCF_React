@@ -18,6 +18,8 @@ namespace BookLibrary.Business.Bootstrapper
             builder.Register<IRepositoryFactory, RepositoryFactory>();
 
             builder.Register<IBookRepository, BookRepository>();
+            builder.Register<IBookCopyRepository, BookCopyRepository>();
+            builder.Register<IBookCategoryRepository, BookCategoryRepository>();
             
 
             return builder;

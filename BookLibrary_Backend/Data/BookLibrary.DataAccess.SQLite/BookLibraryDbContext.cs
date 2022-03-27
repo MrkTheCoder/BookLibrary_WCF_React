@@ -11,9 +11,12 @@ namespace BookLibrary.DataAccess.SQLite
     {
         private const string DatabaseFilename = "LocalDb.sqlite";
         private static bool HasCheckedDatabase { get; set; }
+        private static string _databasePath = null;
 
         public BookLibraryDbContext()
         {
+            if (_databasePath == null)
+                _databasePath = GetDatabaseFile();
             if (!HasCheckedDatabase)
                 CheckDatabase();
         }
@@ -24,12 +27,14 @@ namespace BookLibrary.DataAccess.SQLite
         }
 
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookCategory> BookCategories { get; set; }
+        public virtual DbSet<BookCopy> BookCopies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite($"Data Source={GetDatabaseFile()}");
+                optionsBuilder.UseSqlite($"Data Source={_databasePath}");
             }
         }
 
@@ -38,11 +43,15 @@ namespace BookLibrary.DataAccess.SQLite
             // Ignoring Interfaces and Entities Properties
             modelBuilder.Ignore<IIdentifiableEntity>();
             modelBuilder.Entity<Book>().Ignore(p => p.EntityId);
+            modelBuilder.Entity<BookCategory>().Ignore(p => p.EntityId);
+            modelBuilder.Entity<BookCopy>().Ignore(p => p.EntityId);
 
 
             modelBuilder.Entity<Book>(entity =>
             {
                 entity.ToTable("Book", "BookSchema");
+
+                entity.Property(e => e.CoverLink).HasMaxLength(255);
 
                 entity.Property(e => e.Isbn)
                     .HasColumnName("ISBN")
@@ -52,6 +61,36 @@ namespace BookLibrary.DataAccess.SQLite
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.BookCategory)
+                    .WithMany(p => p.Books)
+                    .HasForeignKey(d => d.BookCategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Book_BookCategory_Id");
+            });
+
+            modelBuilder.Entity<BookCategory>(entity =>
+            {
+                entity.ToTable("BookCategory", "BookSchema");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<BookCopy>(entity =>
+            {
+                entity.HasKey(e => e.BookId);
+
+                entity.ToTable("BookCopy", "BookSchema");
+
+                entity.Property(e => e.BookId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Book)
+                    .WithOne(p => p.BookCopy)
+                    .HasForeignKey<BookCopy>(d => d.BookId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BookCopy_Book_Id");
             });
 
             OnModelCreatingPartial(modelBuilder);
@@ -63,7 +102,9 @@ namespace BookLibrary.DataAccess.SQLite
 
         private void SeedingDatabase(ModelBuilder modelBuilder)
         {
+            BookCategorySeeds.Data(modelBuilder);
             BookSeeds.Data(modelBuilder);
+            BookCopySeeds.Data(modelBuilder);
         }
 
         private string GetDatabaseFile()

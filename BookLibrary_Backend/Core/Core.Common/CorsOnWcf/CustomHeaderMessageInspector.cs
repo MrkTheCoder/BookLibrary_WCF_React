@@ -24,8 +24,8 @@ namespace Core.Common.CorsOnWcf
 
         public void BeforeSendReply(ref System.ServiceModel.Channels.Message reply, object correlationState)
         {
-            var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
-            if (httpHeader == null)
+            if (!reply.Properties.ContainsKey("httpResponse") || 
+                !(reply.Properties["httpResponse"] is HttpResponseMessageProperty httpHeader))
                 return;
 
             foreach (var item in _requiredHeaders)

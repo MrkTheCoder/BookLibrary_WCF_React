@@ -1,4 +1,5 @@
 # BookLaibrary (WCF & React)
+![visitors](https://visitor-badge.glitch.me/badge?page_id=MrkTheCoder.BookLibrary_WCF_Reac&left_color=gray&right_color=blue)
 This small practic project started @ 22/02/2022 by these members:
 1. [Thermite10k](https://github.com/Thermite10k) : Frontend Developer.
    - Skills & Tools: JavaScript, JSX, HTML, React, VSCode, Git

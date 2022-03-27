@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
@@ -11,29 +12,27 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 {
     public class BookManagerTests
     {
-        private readonly Book[] _books;
+        private readonly Book[] _dbBooks;
         private readonly Book _bookIdOne;
         private readonly Mock<IRepositoryFactory> _moqRepositoryFactory;
+        private Mock<IBookRepository> _moqBookRepository;
+        private const int DefaultItemsPerPage = 10;
+        private const int TwentyItemsPerPage = 20;
 
         public BookManagerTests()
         {
-            _books = new []
-            {
-                new Book{Id = 1, Isbn = "111", Title = "A"},
-                new Book{Id = 2, Isbn = "222", Title = "B"},
-                new Book{Id = 3, Isbn = "333", Title = "C"},
-                new Book{Id = 4, Isbn = "444", Title = "D"}
-            };
-            _bookIdOne = _books.FirstOrDefault(f => f.Id == 1);
+            _dbBooks = FeedBooks(21).ToArray();
+
+            _bookIdOne = _dbBooks.FirstOrDefault(f => f.Id == 1);
 
 
-            var moqBookRepository = new Mock<IBookRepository>();
-            moqBookRepository.Setup(s => s.GetAll())
-                .Returns(_books);
+            _moqBookRepository = new Mock<IBookRepository>();
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(_dbBooks);
 
             _moqRepositoryFactory = new Mock<IRepositoryFactory>();
             _moqRepositoryFactory.Setup(s => s.GetEntityRepository<IBookRepository>())
-                .Returns(moqBookRepository.Object);
+                .Returns(_moqBookRepository.Object);
 
         }
 
@@ -45,21 +44,254 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.NotNull(BootContainer.Builder);
         }
 
+
         [Fact]
-        public void GetLibraryBook_ShouldReturnBooksArray()
+        public void GetBook_EmptyBooks_ShouldReturnEmptyArray()
+        {
+            var dbBooks = FeedBooks(0);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(0, 0);
+
+            Assert.Empty(books);
+        }
+
+        [Fact]
+        public void GetBook_EmptyBooksWithPage1_ShouldReturnEmptyArray()
+        {
+            var dbBooks = FeedBooks(0);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(1, 0);
+
+            Assert.Empty(books);
+        }
+
+
+        [Fact]
+        public void GetBook_LessThan10Books_ShouldReturnAllBooks()
+        {
+            var dbBooks = FeedBooks(8);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(0, 0);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+            Assert.Equal(8, books.Length);
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLink, actualFirstBook.CoverLink);
+
+            var expectedLastBookInPage = dbBooks.Single(s => s.Id == 8);
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLink, actualLastBook.CoverLink);
+        }
+
+        [Fact]
+        public void GetBook_10Books_ShouldReturn10Books()
+        {
+            var dbBooks = FeedBooks(10);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(0, 0);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+            Assert.Equal(DefaultItemsPerPage, books.Length);
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLink, actualFirstBook.CoverLink);
+
+
+            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLink, actualLastBook.CoverLink);
+        }
+
+
+        [Fact]
+        public void GetBook_10BooksPage1ItemsMoreThanExists_ShouldReturn10Books()
+        {
+            var dbBooks = FeedBooks(10);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(1, 20);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+            Assert.Equal(DefaultItemsPerPage, books.Length);
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLink, actualFirstBook.CoverLink);
+
+
+
+            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLink, actualLastBook.CoverLink);
+        }
+
+        [Fact]
+        public void GetBook_11Books_ShouldReturnFirst10Books()
+        {
+            var dbBooks = FeedBooks(11);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(0, 0);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+            Assert.Equal(dbBooks.Length, books.Length);
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLink, actualFirstBook.CoverLink);
+
+
+            var expectedLastBookInPage = dbBooks.LastOrDefault();
+            Assert.NotNull(expectedLastBookInPage);
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLink, actualLastBook.CoverLink);
+        }
+
+
+        [Fact]
+        public void GetBook_11BooksPage2_ShouldReturn1Book()
+        {
+            var dbBooks = FeedBooks(11);
+            _moqBookRepository.Setup(s => s.GetAll())
+                .Returns(dbBooks);
+            var firstBookOfPageTwo = dbBooks.Single(s => s.Id == 11);
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var books = bookManager.GetBooks(2, 0);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+            Assert.Single(books);
+            Assert.NotNull(actualFirstBook);
+
+            Assert.Equal(firstBookOfPageTwo.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(firstBookOfPageTwo.Title, actualFirstBook.Title);
+            Assert.Equal(firstBookOfPageTwo.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(firstBookOfPageTwo.CoverLink, actualFirstBook.CoverLink);
+
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(actualFirstBook, actualLastBook);
+        }
+
+        [Theory]
+        [MemberData(nameof(DifferentPages))]
+        public void GetBook_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, int expectedItems)
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetLibraryBooks();
-            var book = books.FirstOrDefault(f => f.Id == 1);
+            var books = bookManager.GetBooks(pageNumber, itemsPerPage);
 
-
-            Assert.True(books.Length == 4);
-            Assert.NotNull(book);
-            Assert.Equal(_bookIdOne.Id, book.Id);
-            Assert.Equal(_bookIdOne.Isbn, book.Isbn);
-            Assert.Equal(_bookIdOne.Title, book.Title);
+            Assert.Equal(expectedItems, books.Length);
             // TODO: Assert Available property
+        }
+
+        [Fact]
+        public void GetBook_Page1And20Items_ShouldReturn20ItemsOfPage1BooksArray()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            var expectedLastBookInPage = _dbBooks.Single(s => s.Id == TwentyItemsPerPage);
+
+            var books = bookManager.GetBooks(1, TwentyItemsPerPage);
+            var actualFirstBook = books.FirstOrDefault();
+            var actualLastBook = books.LastOrDefault();
+
+
+            Assert.Equal(TwentyItemsPerPage, books.Length);
+
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLink, actualFirstBook.CoverLink);
+
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLink, actualLastBook.CoverLink);
+
+            // TODO: Assert Available property
+        }
+
+        public static IEnumerable<object[]> DifferentPages()
+        {
+            yield return new object[] { 0, -1, 10 };
+            yield return new object[] { -1, 0, 10 };
+            yield return new object[] { 3, 0, 1 };
+            yield return new object[] { 4, 0, 0 };
+            yield return new object[] { 2, 20, 1 };
+            yield return new object[] { 3, 20, 0 };
+            yield return new object[] { 0, 30, 21 };
+        }
+
+        private static Book[] FeedBooks(int items)
+        {
+            var books = new List<Book>();
+
+            for (int i = 1; i <= items; i++)
+                books
+                    .Add(
+                    new Book
+                    {
+                        Id = i,
+                        Isbn = $"{i:d3}",
+                        Title = $"{(char)('A' + (i - 1))}",
+                        BookCategory = new BookCategory
+                        {
+                            Id = i,
+                            Name = $"Category-{(char)('A' + (i - 1))}"
+                        },
+                        BookCategoryId = i,
+                        CoverLink = $"http://{(char)('A' + (i - 1))}"
+                    }
+                    );
+
+            return books.ToArray();
         }
     }
 }
