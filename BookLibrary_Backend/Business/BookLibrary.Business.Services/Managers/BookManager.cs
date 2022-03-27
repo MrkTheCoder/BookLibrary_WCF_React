@@ -56,9 +56,10 @@ namespace BookLibrary.Business.Services.Managers
             {
                 libraryBooks.Add(new LibraryBookData
                 {
-                    Id = book.Id,
                     Isbn = book.Isbn,
                     Title = book.Title,
+                    Category = book.BookCategory.Name,
+                    CoverLink = book.CoverLink,
                     IsAvailable = rand.Next(2) >= 1
                 });
             }
@@ -86,10 +87,10 @@ namespace BookLibrary.Business.Services.Managers
             var remainItems = itemCount - (itemPerPage * page);
             if (remainItems > 0)
                 ctx.OutgoingResponse.Headers.Add("X-NextPage",
-                    $"/api/books?page={page + 1}&item={itemPerPage}");
+                    $"?page={page + 1}&item={itemPerPage}");
             if (page > 1)
                 ctx.OutgoingResponse.Headers.Add("X-PrevPage",
-                    $"/api/books?page={page - 1}&item={itemPerPage}");
+                    $"?page={page - 1}&item={itemPerPage}");
         }
     }
 }

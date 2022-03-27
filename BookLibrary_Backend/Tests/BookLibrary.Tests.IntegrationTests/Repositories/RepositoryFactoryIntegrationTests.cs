@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
@@ -85,7 +84,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             Assert.Equal(bookCat.Name, findBook.BookCategory.Name);
             Assert.Equal(newBookCopy.TotalCopy, findBook.BookCopy.TotalCopy);
 
-            bookRepository.Remove(book);
+            bookRepository.Remove(book.Id);
         }
 
         [Fact]

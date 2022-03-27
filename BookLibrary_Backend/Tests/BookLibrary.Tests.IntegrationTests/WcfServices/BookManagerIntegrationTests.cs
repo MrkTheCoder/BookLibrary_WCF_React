@@ -18,7 +18,8 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
             Assert.NotNull(libraryBook);
             Assert.NotNull(libraryBook.Isbn);
             Assert.NotNull(libraryBook.Title);
-            Assert.True(libraryBook.Id > 0);
+            Assert.NotNull(libraryBook.Category);
+            Assert.NotNull(libraryBook.CoverLink);
         }
 
     }
