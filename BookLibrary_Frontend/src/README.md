@@ -7,7 +7,7 @@ See the section about [Actions](https://redux.js.org/tutorials/fundamentals/part
 
 
 
-### [components]https://github.com/MrkTheCoder/BookLibrary_WCF_React/tree/master/BookLibrary_Frontend/src/components) folder:
+### [components](https://github.com/MrkTheCoder/BookLibrary_WCF_React/tree/master/BookLibrary_Frontend/src/components) folder:
 
 	
 This folder contains all the components used in the project. i spitted components and screens into 2 different folders. components are the building blocks of a screen .
@@ -29,6 +29,5 @@ I'm still learning this tool, it's one way of writing documentations for the pro
 
 
 	
-
 
 
