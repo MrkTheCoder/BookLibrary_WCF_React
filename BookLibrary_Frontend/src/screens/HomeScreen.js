@@ -11,17 +11,28 @@ import Paginate from "../components/Paginate";
 function HomeScreen() {
   const dispatch = useDispatch();
   const bookList = useSelector((state) => state.bookList);
-  const { error, loading, books } = bookList;
+  const { error, loading, books, headers } = bookList;
+
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentItem, setCurrentItem] = useState(10);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("page")) {
+    if (searchParams.get("page") && searchParams.get("item")) {
       setCurrentPage(Number(searchParams.get("page")));
+      setCurrentItem(Number(searchParams.get("item")));
 
-      dispatch(listBooks(searchParams.get("page")));
+      dispatch(
+        listBooks(
+          Number(searchParams.get("page")),
+          Number(searchParams.get("item"))
+        )
+      );
     } else {
       dispatch(listBooks());
+      setCurrentPage(1);
+      setCurrentItem(10);
     }
   }, [dispatch, searchParams]);
 
@@ -31,7 +42,7 @@ function HomeScreen() {
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
-      ) : (
+      ) : headers ? (
         <div className="cardRows">
           <Row data-testid="cardRow" className="mainScreen">
             {books.map((book) => (
@@ -40,8 +51,19 @@ function HomeScreen() {
               </Col>
             ))}
           </Row>
-          <Paginate page={currentPage} pages={3} />
+
+          {headers && (
+            <Paginate
+              page={currentPage}
+              pages={3}
+              nextPage={headers["x-nextpage"]}
+              prevPage={headers["x-prevpage"]}
+              item={currentItem}
+            />
+          )}
         </div>
+      ) : (
+        <Loader />
       )}
     </div>
   );
