@@ -3,7 +3,9 @@
  - Books
  - Borrowers
 
-The final app will let borrowers see the list of available books in the library and borrow some of them. This project is for learning purposes so none of these books, borrowers, or even the Library itself are real! You are very welcome to join our learning journey on this project and join our team. We are looking forward to making new friends!
+The final app will let borrowers see the list of available books in the library and borrow some of them. This project is for learning purposes so none of these books, borrowers, or even the Library itself are real! 
+
+👩‍💻You are very welcome to join our learning journey on this project and join our team. We are looking forward to making new friends!👨‍💻
 <br />
 
 ## Project Goals
@@ -13,7 +15,11 @@ Goals of this project:
 <br />
 
 ## Project Description:
-We are using server-client architecture for this project. For now! In the frontend, We are using React and Redux.  We are mainly using ReactBootstrap to style our project but some custom CSS is also being used. In the backend, we are using the WCF framework to create RESTful API by creating a self-hosted service (On Windows or Azure ServiceBus)
+We are using server-client architecture for this project:
+
+![LibraryBook Architecture](https://user-images.githubusercontent.com/25789969/160423261-caa3cb1c-3aaa-4bc4-b945-b9b6aab21bc1.png)
+
+For now! In the frontend, We are using React and Redux.  We are mainly using ReactBootstrap to style our project but some custom CSS is also being used. In the backend, we are using the WCF framework to create RESTful API by creating a self-hosted service (On Windows or Azure ServiceBus)
 <br />
 <br />
 
