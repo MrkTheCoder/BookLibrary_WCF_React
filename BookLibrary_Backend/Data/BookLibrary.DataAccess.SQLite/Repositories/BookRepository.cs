@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BookLibrary.Business.Entities;
+﻿using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
@@ -11,37 +11,27 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
     /// </summary>
     public class BookRepository : RepositoryBase<Book>, IBookRepository
     {
-        protected override Book AddEntity(BookLibraryDbContext entityContext, Book entity)
+        protected override DbSet<Book> Entities(BookLibraryDbContext entityContext)
         {
-            return entityContext
-                .Books
-                .Add(entity)
-                .Entity;
+            return entityContext.Books;
         }
 
-        protected override Book UpdateEntity(BookLibraryDbContext entityContext, Book entity)
+        protected override async Task<IEnumerable<Book>> GetEntitiesAsync(BookLibraryDbContext entityContext)
         {
-            return entityContext
-                .Books
-                .Update(entity)
-                .Entity;
-        }
-
-        protected override IEnumerable<Book> GetEntities(BookLibraryDbContext entityContext)
-        {
-            return entityContext
-                .Books
-                .Include(i => i.BookCategory)
-                .Include(i => i.BookCopy);
-        }
-
-        protected override Book GetEntity(BookLibraryDbContext entityContext, int id)
-        {
-            return entityContext
+            return await entityContext
                 .Books
                 .Include(i => i.BookCategory)
                 .Include(i => i.BookCopy)
-                .FirstOrDefault(f => f.Id == id);
+                .ToListAsync();
+        }
+
+        protected override async Task<Book> GetEntityAsync(BookLibraryDbContext entityContext, int id)
+        {
+            return await entityContext
+                .Books
+                .Include(i => i.BookCategory)
+                .Include(i => i.BookCopy)
+                .SingleOrDefaultAsync(f => f.Id == id);
         }
     }
 }

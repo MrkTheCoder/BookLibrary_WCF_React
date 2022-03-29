@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using System.Threading.Tasks;
 using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
@@ -35,12 +36,12 @@ namespace BookLibrary.Business.Services.Managers
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
-        public LibraryBookData[] GetBooks(int page, int item)
+        public async Task<LibraryBookData[]> GetBooks(int page, int item)
         {
             var libraryBooks = new List<LibraryBookData>();
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var books = bookRepository.GetAll();
+            var books = await bookRepository.GetAllAsync();
 
             var bookCounts = books.Count();
             var currentPages = ValidatePage(page);

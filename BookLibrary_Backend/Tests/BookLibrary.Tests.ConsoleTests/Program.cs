@@ -22,11 +22,11 @@ namespace BookLibrary.Tests.ConsoleTests
             Console.ReadLine();
         }
 
-        private static void BookRepositoryIntegrationTests()
+        private static async void BookRepositoryIntegrationTests()
         {
             var bookRepository = new BookRepository();
 
-            var books = bookRepository.GetAll();
+            var books = await bookRepository.GetAllAsync();
 
             foreach (var book in books)
             {
@@ -40,11 +40,11 @@ namespace BookLibrary.Tests.ConsoleTests
             }
         }
 
-        private static void RepositoryFactoryIntegrationTests(IRepositoryFactory repositoryFactory)
+        private static async void RepositoryFactoryIntegrationTests(IRepositoryFactory repositoryFactory)
         {
             var bookRepository = repositoryFactory.GetEntityRepository<IBookRepository>();
 
-            var books = bookRepository.GetAll();
+            var books = await bookRepository.GetAllAsync();
 
             foreach (var book in books)
             {

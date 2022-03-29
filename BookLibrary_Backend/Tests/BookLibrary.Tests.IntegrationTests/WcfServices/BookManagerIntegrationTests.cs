@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using BookLibrary.Business.Services.Managers;
 using Xunit;
 
@@ -7,11 +8,11 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
     public class BookManagerIntegrationTests
     {
         [Fact]
-        public void GetBooks_ShouldReturnBooks()
+        public async Task GetBooks_ShouldReturnBooks()
         {
             var bookManager = new BookManager();
 
-            var libraryBooks = bookManager.GetBooks(0,0);
+            var libraryBooks = await bookManager.GetBooks(0,0);
             var libraryBook = libraryBooks.FirstOrDefault();
 
             Assert.NotEmpty(libraryBooks);

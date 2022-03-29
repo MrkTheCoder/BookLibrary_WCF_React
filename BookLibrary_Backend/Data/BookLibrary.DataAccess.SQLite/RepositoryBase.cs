@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Core.Common.Interfaces.Data;
 using Core.Common.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,28 +18,111 @@ namespace BookLibrary.DataAccess.SQLite
         where TEntity : class, IIdentifiableEntity, new()
         where TDbContext : DbContext, new()
     {
+        protected abstract DbSet<TEntity> Entities(TDbContext entityContext);
 
-        protected abstract TEntity AddEntity(TDbContext entityContext, TEntity entity);
-
-        protected abstract TEntity UpdateEntity(TDbContext entityContext, TEntity entity);
-
-        protected abstract IEnumerable<TEntity> GetEntities(TDbContext entityContext);
-
-        protected abstract TEntity GetEntity(TDbContext entityContext, int id);
-
-
-        public TEntity GetById(int id)
+        protected virtual TEntity AddEntity(TDbContext entityContext, TEntity entity)
         {
-            using (var context = new TDbContext())
-                return GetEntity(context, id);
+            return Entities(entityContext)
+                .Add(entity)
+                .Entity;
         }
 
-        public IEnumerable<TEntity> GetAll()
+        protected virtual TEntity UpdateEntity(TDbContext entityContext, TEntity entity)
+        {
+            return Entities(entityContext)
+                .Update(entity)
+                .Entity;
+        }
+
+        protected virtual async Task<IEnumerable<TEntity>> GetEntitiesAsync(TDbContext entityContext)
+        {
+            return await Entities(entityContext)
+                            .ToListAsync();
+        }
+
+        protected virtual async Task<IEnumerable<TEntity>> GetEntitiesAsync(TDbContext entityContext,
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities(entityContext)
+                .Where(predicate)
+                .ToListAsync();
+        }
+
+        protected virtual async Task<TEntity> GetEntityAsync(TDbContext entityContext, int id)
+        {
+            return await Entities(entityContext)
+                .FindAsync(id);
+        }
+
+        protected virtual async Task<TEntity> GetEntityAsync(TDbContext entityContext,
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities(entityContext)
+                .FirstOrDefaultAsync(predicate);
+        }
+
+        protected virtual async Task<TEntity> GetSingleEntityAsync(TDbContext entityContext,
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities(entityContext)
+                .SingleOrDefaultAsync(predicate);
+        }
+
+        protected virtual async Task<bool> AnyExistsAsync(TDbContext entityContext)
+        {
+            return await Entities(entityContext)
+                .AnyAsync();
+        }
+
+        protected virtual async Task<bool> AnyExistsAsync(TDbContext entityContext,
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities(entityContext)
+                .AnyAsync(predicate);
+        }
+
+
+
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             using (var context = new TDbContext())
-            {
-                return GetEntities(context).ToArray().ToList();
-            }
+                return await GetEntityAsync(context, id);
+        }
+
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            using (var context = new TDbContext())
+                return await GetEntityAsync(context, predicate);
+        }
+
+        public async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            using (var context = new TDbContext())
+                return await GetSingleEntityAsync(context, predicate);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            using (var context = new TDbContext())
+                return (await GetEntitiesAsync(context)).ToArray().ToList();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            using (var context = new TDbContext())
+                return (await GetEntitiesAsync(context, predicate)).ToArray().ToList();
+        }
+
+        public async Task<bool> AnyExistsAsync()
+        {
+            using (var context = new TDbContext())
+                return await AnyExistsAsync(context);
+        }
+
+        public async Task<bool> AnyExistsAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            using (var context = new TDbContext())
+                return await AnyExistsAsync(context, predicate);
         }
 
         public TEntity Add(TEntity entity)
@@ -68,11 +154,11 @@ namespace BookLibrary.DataAccess.SQLite
             }
         }
 
-        public void Remove(int id)
+        public async void Remove(int id)
         {
             using (var context = new TDbContext())
             {
-                var entity = GetEntity(context, id);
+                var entity = await GetEntityAsync(context, id);
                 Remove(entity);
             }
         }

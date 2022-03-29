@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
@@ -27,8 +28,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
             _moqBookRepository = new Mock<IBookRepository>();
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(_dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(_dbBooks);
 
             _moqRepositoryFactory = new Mock<IRepositoryFactory>();
             _moqRepositoryFactory.Setup(s => s.GetEntityRepository<IBookRepository>())
@@ -46,44 +47,44 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
         [Fact]
-        public void GetBook_EmptyBooks_ShouldReturnEmptyArray()
+        public async Task GetBook_EmptyBooks_ShouldReturnEmptyArray()
         {
             var dbBooks = FeedBooks(0);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(0, 0);
+            var books =await  bookManager.GetBooks(0, 0);
 
             Assert.Empty(books);
         }
 
         [Fact]
-        public void GetBook_EmptyBooksWithPage1_ShouldReturnEmptyArray()
+        public async Task GetBook_EmptyBooksWithPage1_ShouldReturnEmptyArray()
         {
             var dbBooks = FeedBooks(0);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(1, 0);
+            var books =await  bookManager.GetBooks(1, 0);
 
             Assert.Empty(books);
         }
 
 
         [Fact]
-        public void GetBook_LessThan10Books_ShouldReturnAllBooks()
+        public async Task GetBook_LessThan10Books_ShouldReturnAllBooks()
         {
             var dbBooks = FeedBooks(8);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(0, 0);
+            var books = await bookManager.GetBooks(0, 0);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 
@@ -103,15 +104,15 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         }
 
         [Fact]
-        public void GetBook_10Books_ShouldReturn10Books()
+        public async Task GetBook_10Books_ShouldReturn10Books()
         {
             var dbBooks = FeedBooks(10);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(0, 0);
+            var books = await bookManager.GetBooks(0, 0);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 
@@ -133,15 +134,15 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
         [Fact]
-        public void GetBook_10BooksPage1ItemsMoreThanExists_ShouldReturn10Books()
+        public async Task GetBook_10BooksPage1ItemsMoreThanExists_ShouldReturn10Books()
         {
             var dbBooks = FeedBooks(10);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(1, 20);
+            var books =await bookManager.GetBooks(1, 20);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 
@@ -163,15 +164,15 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         }
 
         [Fact]
-        public void GetBook_11Books_ShouldReturnFirst10Books()
+        public async Task GetBook_11Books_ShouldReturnFirst10Books()
         {
             var dbBooks = FeedBooks(11);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(0, 0);
+            var books = await bookManager.GetBooks(0, 0);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 
@@ -194,15 +195,15 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
         [Fact]
-        public void GetBook_11BooksPage2_ShouldReturn1Book()
+        public async Task GetBook_11BooksPage2_ShouldReturn1Book()
         {
             var dbBooks = FeedBooks(11);
-            _moqBookRepository.Setup(s => s.GetAll())
-                .Returns(dbBooks);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
             var firstBookOfPageTwo = dbBooks.Single(s => s.Id == 11);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(2, 0);
+            var books =await bookManager.GetBooks(2, 0);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 
@@ -220,23 +221,23 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         [Theory]
         [MemberData(nameof(DifferentPages))]
-        public void GetBook_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, int expectedItems)
+        public async Task GetBook_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, int expectedItems)
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var books = bookManager.GetBooks(pageNumber, itemsPerPage);
+            var books =await bookManager.GetBooks(pageNumber, itemsPerPage);
 
             Assert.Equal(expectedItems, books.Length);
             // TODO: Assert Available property
         }
 
         [Fact]
-        public void GetBook_Page1And20Items_ShouldReturn20ItemsOfPage1BooksArray()
+        public async Task GetBook_Page1And20Items_ShouldReturn20ItemsOfPage1BooksArray()
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
             var expectedLastBookInPage = _dbBooks.Single(s => s.Id == TwentyItemsPerPage);
 
-            var books = bookManager.GetBooks(1, TwentyItemsPerPage);
+            var books =await  bookManager.GetBooks(1, TwentyItemsPerPage);
             var actualFirstBook = books.FirstOrDefault();
             var actualLastBook = books.LastOrDefault();
 

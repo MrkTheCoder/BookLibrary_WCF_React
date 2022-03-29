@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Moq;
@@ -24,17 +25,17 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         }
 
         [Fact]
-        public void GetById_ShouldReturnABook()
+        public async Task GetById_ShouldReturnABook()
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s =>
-                s.GetById(It.IsAny<int>()))
-                .Returns<int>((id) => _books.FirstOrDefault(f => f.Id == id));
+                s.GetByIdAsync(It.IsAny<int>()))
+                .Returns<int>((id) =>Task.FromResult( _books.FirstOrDefault(f => f.Id == id)));
             var aBook = _books.FirstOrDefault(f => f.Id == 1);
 
             var bookRepository = bookRepositoryMoq.Object;
 
-            var book = bookRepository.GetById(1);
+            var book = await bookRepository.GetByIdAsync(1);
 
             Assert.NotNull(book);
             Assert.Equal(aBook.Id, book.EntityId);
@@ -44,15 +45,15 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllBooks()
+        public async Task GetAll_ShouldReturnAllBooks()
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s =>
-                s.GetAll()).Returns(_books);
+                s.GetAllAsync()).ReturnsAsync(_books);
             
             var bookRepository = bookRepositoryMoq.Object;
 
-            var books = bookRepository.GetAll();
+            var books = await bookRepository.GetAllAsync();
             var getBook = books.FirstOrDefault(f => f.Id == 1);
 
             Assert.Equal(_books.Count(), books.Count());

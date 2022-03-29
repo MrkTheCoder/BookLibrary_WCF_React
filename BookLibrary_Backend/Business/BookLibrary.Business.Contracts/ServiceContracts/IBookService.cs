@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Threading.Tasks;
 using BookLibrary.Business.Contracts.DataContracts;
 
 namespace BookLibrary.Business.Contracts.ServiceContracts
@@ -20,6 +21,6 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books?page={page}&item={item}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        LibraryBookData[] GetBooks(int page, int item);
+        Task<LibraryBookData[]> GetBooks(int page, int item);
     }
 }

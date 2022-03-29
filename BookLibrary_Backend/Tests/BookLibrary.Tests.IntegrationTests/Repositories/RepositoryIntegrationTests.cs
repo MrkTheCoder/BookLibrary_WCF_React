@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Xunit;
@@ -20,15 +21,15 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public void CallEntityRepository_ShouldInitialDatabase()
         {
-            var books = _bookRepository.GetAll();
+            var books = _bookRepository.GetAllAsync();
         }
 
         [Fact]
-        public void GetBook_ShouldReturnABook()
+        public async Task GetBook_ShouldReturnABook()
         {
-            var firstBook = _bookRepository.GetAll().FirstOrDefault();
+            var firstBook = (await _bookRepository.GetAllAsync()).FirstOrDefault();
 
-            var bookEntity = _bookRepository.GetById(1);
+            var bookEntity = await _bookRepository.GetByIdAsync(1);
 
             Assert.NotNull(firstBook);
             Assert.NotNull(bookEntity.BookCopy);
@@ -38,14 +39,14 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void AddEntity_ShouldAddedToDatabase()
+        public async Task AddEntity_ShouldAddedToDatabase()
         {
             ResetDatabase();
 
             var bookEntity = _bookRepository.Add(_newBook1);
 
-            var findBook = _bookRepository.GetAll().FirstOrDefault(f => f.Isbn == _newBook1.Isbn);
-            var books = _bookRepository.GetAll();
+            var findBook =(await  _bookRepository.GetAllAsync()).FirstOrDefault(f => f.Isbn == _newBook1.Isbn);
+            var books = _bookRepository.GetAllAsync();
 
             Assert.NotNull(findBook);
             Assert.Equal(_newBook1.Isbn, findBook.Isbn);
@@ -55,12 +56,12 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         }
 
         [Fact]
-        public void RemoveEntity_ShouldDeleteFromDatabase()
+        public async Task RemoveEntity_ShouldDeleteFromDatabase()
         {
             var removingBooks = new List<Book>();
             _bookRepository.Add(_newBook1);
             
-            var books = _bookRepository.GetAll();
+            var books =await _bookRepository.GetAllAsync();
             
             foreach (var book in books)
                 if (book.Isbn == _newBook1.Isbn)
@@ -69,17 +70,17 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             foreach (var book in removingBooks)
             {
                     _bookRepository.Remove(book);
-                    var findBook = _bookRepository.GetAll().FirstOrDefault(f => f.Id == book.Id);
+                    var findBook = (await  _bookRepository.GetAllAsync()).FirstOrDefault(f => f.Id == book.Id);
                     Assert.Null(findBook);
             }
         }
 
 
-        private void ResetDatabase()
+        private async Task ResetDatabase()
         {
             var removingBooks = new List<Book>();
 
-            var books = _bookRepository.GetAll();
+            var books = await _bookRepository.GetAllAsync();
             foreach (var book in books)
                 if (book.Isbn == _newBook1.Isbn)
                     removingBooks.Add(book);
