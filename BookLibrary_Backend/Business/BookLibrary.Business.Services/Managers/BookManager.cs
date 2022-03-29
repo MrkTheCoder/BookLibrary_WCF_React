@@ -6,6 +6,7 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
+using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Interfaces.Data;
 
@@ -27,6 +28,7 @@ namespace BookLibrary.Business.Services.Managers
 
         private const int DefaultItemsPerPage = 10;
         private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
+
         /// <summary>
         /// Gather simple information about books and if they are available for borrowing.
         /// </summary>
@@ -41,16 +43,22 @@ namespace BookLibrary.Business.Services.Managers
             var books = bookRepository.GetAll();
 
             var bookCounts = books.Count();
-            var currentPages = page > 0
-                ? page
-                : 1;
-            var currentItems = _acceptedItemsPerPage.Contains(item)
-                ? item
-                : page == 0 && item == 0 ? bookCounts : DefaultItemsPerPage;
+            var currentPages = ValidatePage(page);
+            var currentItems = ValidateItemPerPage(page, item, bookCounts);
+            
+            SetHeaders(bookCounts, currentPages, currentItems);
+
             books = books
                 .Skip(currentItems * (currentPages - 1))
                 .Take(currentItems);
 
+            MapData(books, libraryBooks);
+
+            return libraryBooks.ToArray();
+        }
+
+        private void MapData(IEnumerable<Book> books, List<LibraryBookData> libraryBooks)
+        {
             var rand = new Random();
             foreach (var book in books)
             {
@@ -63,17 +71,23 @@ namespace BookLibrary.Business.Services.Managers
                     IsAvailable = rand.Next(2) >= 1
                 });
             }
-
-            SetHeaders(bookCounts, currentPages, currentItems);
-
-            return libraryBooks.ToArray();
         }
-
-        public LibraryBookData[] GetBooks(bool useWrapper, int page, int item)
+        private int ValidateItemPerPage(int page, int item, int bookCounts)
         {
-            throw new NotImplementedException();
+            var currentItems = _acceptedItemsPerPage.Contains(item)
+                ? item
+                : page == 0 && item == 0
+                    ? bookCounts
+                    : DefaultItemsPerPage;
+            return currentItems;
         }
-
+        private int ValidatePage(int page)
+        {
+            var currentPages = page > 0
+                ? page
+                : 1;
+            return currentPages;
+        }
         private void SetHeaders(int itemCount, int page, int itemPerPage)
         {
             if (!(WebOperationContext.Current is WebOperationContext ctx))
