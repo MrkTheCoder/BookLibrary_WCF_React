@@ -17,9 +17,10 @@ export default function Bookcard(props) {
             <Card.Subtitle className="subTitle" data-testid="subTitle">
               {book.Isbn}
             </Card.Subtitle>
-            <Card.Subtitle className="subTitle" data-testid="status">
+            <Card.Subtitle className="subTitle">
               Status:{" "}
               <span
+                data-testid="status"
                 className={
                   book.IsAvailable == true
                     ? "green"
@@ -44,7 +45,7 @@ export default function Bookcard(props) {
           </Card.Body>
         </div>
         <span className="cardImage">
-          <img variant="top" src={book.CoverLink} />
+          <img data-testid="image" src={book.CoverLink} alt={book.Isbn} />
         </span>
       </Card>
     </div>
