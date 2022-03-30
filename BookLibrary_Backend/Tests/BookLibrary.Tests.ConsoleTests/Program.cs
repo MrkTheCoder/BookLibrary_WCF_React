@@ -15,7 +15,7 @@ namespace BookLibrary.Tests.ConsoleTests
         {
             BookRepositoryIntegrationTests();
 
-            BootContainer.Builder = Bootstrapper.Bootstrap();
+            BootContainer.Builder = Bootstrapper.LoadContainer;
 
             RepositoryFactoryIntegrationTests(BootContainer.Builder.Resolve<IRepositoryFactory>());
 

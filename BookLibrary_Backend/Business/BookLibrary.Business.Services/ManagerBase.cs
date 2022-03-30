@@ -36,7 +36,7 @@ namespace BookLibrary.Business.Services
         /// Give access to IoC container. If it is not initialized yet, It will load it.
         /// </summary>
         protected Container Container => _container ?? 
-                                         (_container = BootContainer.Builder = Bootstrapper.Bootstrapper.Bootstrap());
+                                         (_container = BootContainer.Builder = Bootstrapper.Bootstrapper.LoadContainer);
 
 
     }

@@ -41,7 +41,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public async Task AddEntity_ShouldAddedToDatabase()
         {
-            ResetDatabase();
+            await ResetDatabase();
 
             var bookEntity = _bookRepository.Add(_newBook1);
 
@@ -52,7 +52,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             Assert.Equal(_newBook1.Isbn, findBook.Isbn);
             Assert.True(bookEntity.Id != 0);
 
-            ResetDatabase();
+            await ResetDatabase();
         }
 
         [Fact]

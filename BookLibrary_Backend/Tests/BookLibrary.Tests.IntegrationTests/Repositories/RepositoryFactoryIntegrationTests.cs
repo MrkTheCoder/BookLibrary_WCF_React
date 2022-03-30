@@ -18,7 +18,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 
         public RepositoryFactoryIntegrationTests()
         {
-            BootContainer.Builder = Bootstrapper.Bootstrap();
+            BootContainer.Builder = Bootstrapper.LoadContainer;
 
             _repositoryFactory = BootContainer.Builder.Resolve<IRepositoryFactory>();
         }

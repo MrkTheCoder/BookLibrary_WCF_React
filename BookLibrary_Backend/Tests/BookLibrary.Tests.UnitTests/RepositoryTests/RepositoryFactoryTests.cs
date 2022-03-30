@@ -32,7 +32,7 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         [Fact]
         public void RepositoryFactoryWithIBookRepository_ShouldReturnBookRepository()
         {
-            BootContainer.Builder = Bootstrapper.Bootstrap();
+            BootContainer.Builder = Bootstrapper.LoadContainer;
             IRepositoryFactory repositoryFactory = new RepositoryFactory();
             
             var bookRepository = repositoryFactory.GetEntityRepository<IBookRepository>();

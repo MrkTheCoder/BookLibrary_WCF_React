@@ -11,7 +11,22 @@ namespace BookLibrary.Business.Bootstrapper
     /// </summary>
     public static class Bootstrapper
     {
-        public static Container Bootstrap()
+        private static Container _loadContainer;
+        private static readonly object PadLock = new object();
+
+        public static Container LoadContainer
+        {
+            get
+            {
+                if (_loadContainer == null)
+                    lock (PadLock)
+                        if (_loadContainer == null)
+                            _loadContainer = Bootstrap();
+                return _loadContainer;
+            }
+        }
+
+        private static Container Bootstrap()
         {
             var builder = new Container();
 
@@ -20,7 +35,6 @@ namespace BookLibrary.Business.Bootstrapper
             builder.Register<IBookRepository, BookRepository>();
             builder.Register<IBookCopyRepository, BookCopyRepository>();
             builder.Register<IBookCategoryRepository, BookCategoryRepository>();
-            
 
             return builder;
         }
