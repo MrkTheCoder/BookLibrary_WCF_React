@@ -51,7 +51,7 @@ namespace BookLibrary.DataAccess.SQLite
             {
                 entity.ToTable("Book", "BookSchema");
 
-                entity.Property(e => e.CoverLink).HasMaxLength(255);
+                entity.Property(e => e.CoverLinkThumbnail).HasMaxLength(255);
 
                 entity.Property(e => e.Isbn)
                     .HasColumnName("ISBN")

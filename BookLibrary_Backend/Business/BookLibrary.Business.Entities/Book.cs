@@ -8,7 +8,8 @@ namespace BookLibrary.Business.Entities
         public int BookCategoryId { get; set; }
         public string Isbn { get; set; }
         public string Title { get; set; }
-        public string CoverLink { get; set; }
+        public string CoverLinkOriginal { get; set; }
+        public string CoverLinkThumbnail { get; set; }
         
         public virtual BookCategory BookCategory { get; set; }
         public virtual BookCopy BookCopy { get; set; }

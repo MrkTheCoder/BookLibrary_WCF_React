@@ -109,7 +109,7 @@ namespace BookLibrary.Business.Services.Managers
                 Isbn = book.Isbn,
                 Title = book.Title,
                 Category = book.BookCategory.Name,
-                CoverLink = book.CoverLink,
+                CoverLink = book.CoverLinkThumbnail,
                 IsAvailable = rand.Next(2) >= 1
             };
         }
