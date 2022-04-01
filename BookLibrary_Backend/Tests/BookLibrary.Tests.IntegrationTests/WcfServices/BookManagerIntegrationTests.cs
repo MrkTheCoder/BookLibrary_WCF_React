@@ -12,7 +12,7 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
         {
             var bookManager = new BookManager();
 
-            var libraryBooks = await bookManager.GetBooks(0,0);
+            var libraryBooks = await bookManager.GetBooks(0,0, null);
             var libraryBook = libraryBooks.FirstOrDefault();
 
             Assert.NotEmpty(libraryBooks);

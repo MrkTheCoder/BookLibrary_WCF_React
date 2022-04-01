@@ -35,13 +35,16 @@ namespace BookLibrary.Business.Services.Managers
         /// </summary>
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
+        /// <param name="category">a string value represent book categories.</param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
-        public async Task<LibraryBookData[]> GetBooks(int page, int item)
+        public async Task<LibraryBookData[]> GetBooks(int page, int item, string category)
         {
             var libraryBooks = new List<LibraryBookData>();
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var books = await bookRepository.GetAllAsync();
+            var books = string.IsNullOrEmpty(category?.Trim())
+                ? await bookRepository.GetAllAsync()
+                : await bookRepository.GetAllAsync(w => w.BookCategory.Name.ToLower() == category.ToLower());
 
             var bookCounts = books.Count();
             var currentPages = ValidatePage(page);
