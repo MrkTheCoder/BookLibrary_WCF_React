@@ -38,6 +38,7 @@ namespace BookLibrary.Business.Services.Managers
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
+        /// <param name="isThumbnail"></param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
         public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category)
         {
@@ -83,7 +84,7 @@ namespace BookLibrary.Business.Services.Managers
             if (book == null)
                 throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
 
-            return MapBookToLibraryBook(book, new Random(1));
+            return MapBookToLibraryBook(book, new Random(1), isThumbnail:false);
         }
 
         private bool VerifyIsbn(string isbn)
@@ -93,23 +94,26 @@ namespace BookLibrary.Business.Services.Managers
                    Regex.IsMatch(isbn, isbnPattern);
         }
 
-        private void MapBooksToLibraryBooks(IEnumerable<Book> books, List<LibraryBookData> libraryBooks)
+        private void MapBooksToLibraryBooks(IEnumerable<Book> books, List<LibraryBookData> libraryBooks,
+            bool isThumbnail = true)
         {
             var rand = new Random();
             foreach (var book in books)
             {
-                libraryBooks.Add(MapBookToLibraryBook(book, rand));
+                libraryBooks.Add(MapBookToLibraryBook(book, rand, isThumbnail));
             }
         }
 
-        private static LibraryBookData MapBookToLibraryBook(Book book, Random rand)
+        private static LibraryBookData MapBookToLibraryBook(Book book, Random rand, bool isThumbnail = true)
         {
             return new LibraryBookData
             {
                 Isbn = book.Isbn,
                 Title = book.Title,
                 Category = book.BookCategory.Name,
-                CoverLink = book.CoverLinkThumbnail,
+                CoverLink = isThumbnail 
+                    ? book.CoverLinkThumbnail 
+                    : book.CoverLinkOriginal,
                 IsAvailable = rand.Next(2) >= 1
             };
         }

@@ -110,7 +110,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var catNum = (_bookIdOne.Id % 2) != 0 ? (_bookIdOne.Id % 2) : 2;
             Assert.Equal($"cat{catNum}", actualFirstBook.Category);
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
-            Assert.Equal($"http://{_bookIdOne.Title}.jpg", actualFirstBook.CoverLink);
+            Assert.Equal($"http://{_bookIdOne.Title}-tn.jpg", actualFirstBook.CoverLink);
 
             var expectedLastBookInPage = dbBooks.Single(s => s.Id == 8);
             Assert.NotNull(actualLastBook);
@@ -301,7 +301,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.NotNull(libraryBook);
             Assert.Equal(book.Isbn, libraryBook.Isbn);
             Assert.Equal(book.Title, libraryBook.Title);
-            Assert.Equal(book.CoverLinkThumbnail, libraryBook.CoverLink);
+            Assert.Equal(book.CoverLinkOriginal, libraryBook.CoverLink);
         }
 
         [Fact]
@@ -333,7 +333,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(libraryBook1.Isbn, libraryBook2.Isbn);
             Assert.Equal(book.Isbn, libraryBook1.Isbn);
             Assert.Equal(book.Title, libraryBook1.Title);
-            Assert.Equal(book.CoverLinkThumbnail, libraryBook1.CoverLink);
+            Assert.Equal(book.CoverLinkOriginal, libraryBook1.CoverLink);
         }
 
         [Theory]
@@ -405,7 +405,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
                             Title = $"{(char)('A' + (i - 1))}",
                             BookCategory = categories[bookCategoryId - 1],
                             BookCategoryId = bookCategoryId,
-                            CoverLinkThumbnail = $"http://{(char)('A' + (i - 1))}.jpg"
+                            CoverLinkThumbnail = $"http://{(char)('A' + (i - 1))}-tn.jpg",
+                            CoverLinkOriginal = $"http://{(char)('A' + (i - 1))}-o.jpg"
                         }
                     );
             }
