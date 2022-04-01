@@ -17,7 +17,7 @@ namespace BookLibrary.DataAccess.SQLite.Seeds
                     new Book { Id = 4, Isbn = "141-44444886529", Title = "How to Fix Broken Chair" , BookCategoryId = 1, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
                     new Book { Id = 5, Isbn = "131-55554825527", Title = "Do We Need Another One?" , BookCategoryId = 6, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
                     new Book { Id = 6, Isbn = "131-66684885431", Title = "Hello World!" , BookCategoryId = 3, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
-                    new Book { Id = 7, Isbn = "121-77784885431", Title = "Java va JavaScript" , BookCategoryId = 3, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
+                    new Book { Id = 7, Isbn = "121-77784885431", Title = "Java vs JavaScript" , BookCategoryId = 3, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
                     new Book { Id = 8, Isbn = "101-88645218900", Title = "WPF in C# v10" , BookCategoryId = 3, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
                     new Book { Id = 9, Isbn = "101-88645448900", Title = "React in 7 Days" , BookCategoryId = 4, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
                     new Book { Id = 10, Isbn = "122-88655218900", Title = "Learn HTML with Samples" , BookCategoryId = 4, CoverLink = "https://drive.google.com/uc?export=view&id=1_MdrrFLXKPJ6e02kLANMEC8JegfFzuE1"},
