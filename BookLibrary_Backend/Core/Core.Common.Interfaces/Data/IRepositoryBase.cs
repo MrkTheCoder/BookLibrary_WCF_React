@@ -14,7 +14,7 @@ namespace Core.Common.Interfaces.Data
         where TEntity : class, IIdentifiableEntity
     {
         Task<TEntity> GetByIdAsync(int id);
-        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> GetByExpressionAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);

@@ -22,6 +22,19 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        Task<LibraryBookData[]> GetBooks(int page, int item, string category);
+        Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category);
+
+        /// <summary>
+        /// RESTful command: GET.
+        /// Response Resource: Json of LibraryBookData object.
+        /// Description: Query database to get book detail with specified 'isbn'.
+        /// </summary>
+        /// <param name="isbn"></param>
+        /// <returns>a Json format of LibraryBookData array.</returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "books/{isbn}", 
+            ResponseFormat = WebMessageFormat.Json, 
+            RequestFormat=WebMessageFormat.Json)]
+        Task<LibraryBookData> GetBookAsync(string isbn);
     }
 }

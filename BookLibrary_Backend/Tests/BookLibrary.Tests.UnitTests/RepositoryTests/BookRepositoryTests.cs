@@ -30,7 +30,7 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s =>
                 s.GetByIdAsync(It.IsAny<int>()))
-                .Returns<int>((id) =>Task.FromResult( _books.FirstOrDefault(f => f.Id == id)));
+                .Returns<int, string[]>((id, includes) =>Task.FromResult( _books.FirstOrDefault(f => f.Id == id)));
             var aBook = _books.FirstOrDefault(f => f.Id == 1);
 
             var bookRepository = bookRepositoryMoq.Object;

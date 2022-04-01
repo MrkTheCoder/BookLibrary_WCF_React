@@ -46,7 +46,8 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
             bookRepositoryMoq.Setup(s => s.GetByIdAsync(It.IsAny<int>()))
-                .Returns<int>(id => Task.FromResult(_books.FirstOrDefault(f => f.Id == id)));
+                .Returns<int>(id => 
+                    Task.FromResult(_books.FirstOrDefault(f => f.Id == id)));
 
             var repositoryFactoryMoq = new Mock<IRepositoryFactory>();
             repositoryFactoryMoq.Setup(s => s.GetEntityRepository<IBookRepository>())

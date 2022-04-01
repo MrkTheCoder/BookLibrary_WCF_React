@@ -48,5 +48,14 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                 .Include(i => i.BookCopy)
                 .SingleOrDefaultAsync(f => f.Id == id);
         }
+
+        protected override async Task<Book> GetEntityAsync(BookLibraryDbContext entityContext, Expression<Func<Book, bool>> predicate)
+        {
+            return await entityContext
+                .Books
+                .Include(i => i.BookCategory)
+                .Include(i => i.BookCopy)
+                .FirstOrDefaultAsync(predicate);
+        }
     }
 }

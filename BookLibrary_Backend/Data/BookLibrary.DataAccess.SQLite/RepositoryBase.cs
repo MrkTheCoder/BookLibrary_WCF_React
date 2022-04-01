@@ -89,7 +89,7 @@ namespace BookLibrary.DataAccess.SQLite
                 return await GetEntityAsync(context, id);
         }
 
-        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> GetByExpressionAsync(Expression<Func<TEntity, bool>> predicate)
         {
             using (var context = new TDbContext())
                 return await GetEntityAsync(context, predicate);

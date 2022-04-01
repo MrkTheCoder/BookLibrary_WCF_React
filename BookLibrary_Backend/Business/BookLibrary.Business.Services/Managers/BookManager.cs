@@ -4,11 +4,13 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
+using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
 
 namespace BookLibrary.Business.Services.Managers
@@ -37,7 +39,7 @@ namespace BookLibrary.Business.Services.Managers
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
-        public async Task<LibraryBookData[]> GetBooks(int page, int item, string category)
+        public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category)
         {
             var libraryBooks = new List<LibraryBookData>();
 
@@ -56,26 +58,62 @@ namespace BookLibrary.Business.Services.Managers
                 .Skip(currentItems * (currentPages - 1))
                 .Take(currentItems);
 
-            MapData(books, libraryBooks);
+            MapBooksToLibraryBooks(books, libraryBooks);
 
             return libraryBooks.ToArray();
         }
 
-        private void MapData(IEnumerable<Book> books, List<LibraryBookData> libraryBooks)
+        /// <summary>
+        /// Detail about specific book.
+        /// </summary>
+        /// <param name="isbn">a string value represent ISBN-13. It should be in this format: ###-########## [3digits-10digits]</param>
+        /// // <returns>Object of LibraryBookData.</returns>
+        public async  Task<LibraryBookData> GetBookAsync(string isbn)
+        {
+            if (!VerifyIsbn(isbn))
+                throw new ArgumentException("ISBN is in a wrong format.");
+
+            var findIsbn = isbn.Length ==14 
+                ? isbn
+                : isbn.Insert(3, "-");
+
+            var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
+            var book = await bookRepository.GetByExpressionAsync(b => b.Isbn == findIsbn);
+
+            if (book == null)
+                throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
+
+            return MapBookToLibraryBook(book, new Random(1));
+        }
+
+        private bool VerifyIsbn(string isbn)
+        {
+            var isbnPattern = @"^\d{3}-{0,1}\d{10}$";
+            return !string.IsNullOrEmpty(isbn) && 
+                   Regex.IsMatch(isbn, isbnPattern);
+        }
+
+        private void MapBooksToLibraryBooks(IEnumerable<Book> books, List<LibraryBookData> libraryBooks)
         {
             var rand = new Random();
             foreach (var book in books)
             {
-                libraryBooks.Add(new LibraryBookData
-                {
-                    Isbn = book.Isbn,
-                    Title = book.Title,
-                    Category = book.BookCategory.Name,
-                    CoverLink = book.CoverLink,
-                    IsAvailable = rand.Next(2) >= 1
-                });
+                libraryBooks.Add(MapBookToLibraryBook(book, rand));
             }
         }
+
+        private static LibraryBookData MapBookToLibraryBook(Book book, Random rand)
+        {
+            return new LibraryBookData
+            {
+                Isbn = book.Isbn,
+                Title = book.Title,
+                Category = book.BookCategory.Name,
+                CoverLink = book.CoverLink,
+                IsAvailable = rand.Next(2) >= 1
+            };
+        }
+
         private int ValidateItemPerPage(int page, int item, int bookCounts)
         {
             var currentItems = _acceptedItemsPerPage.Contains(item)
