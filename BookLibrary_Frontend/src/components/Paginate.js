@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Pagination } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
+import "./Paginate.css";
 
 function Paginate({ pages, page, nextPage = 1, prevPage = 1, item = 10 }) {
   return (
     pages > 1 && (
-      <Pagination>
+      <Pagination className="pagination">
         <LinkContainer to={`${prevPage}`}>
           <Pagination.Prev className={page == 1 ? "disabled" : ""} />
         </LinkContainer>
