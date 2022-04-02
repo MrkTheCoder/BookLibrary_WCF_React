@@ -43,24 +43,27 @@ function HomeScreen() {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : headers ? (
-        <div className="cardRows">
-          <Row data-testid="cardRow" className="mainScreen">
-            {books.map((book) => (
-              <Col key={book.Id} sm={12} md={6} lg={4} xl={3}>
-                <Bookcard book={book} />
-              </Col>
-            ))}
-          </Row>
-
-          {headers && (
-            <Paginate
-              page={currentPage}
-              pages={3}
-              nextPage={headers["x-nextpage"]}
-              prevPage={headers["x-prevpage"]}
-              item={currentItem}
-            />
-          )}
+        <div className="homeScreenBody">
+          <div className="cardRows">
+            <Row data-testid="cardRow" className="mainScreen">
+              {books.map((book) => (
+                <Col key={book.Id} sm={12} md={6} lg={4} xl={3}>
+                  <Bookcard book={book} />
+                </Col>
+              ))}
+            </Row>
+          </div>
+          <div className="paginateItem">
+            {headers && (
+              <Paginate
+                page={currentPage}
+                pages={3}
+                nextPage={headers["x-nextpage"]}
+                prevPage={headers["x-prevpage"]}
+                item={currentItem}
+              />
+            )}
+          </div>
         </div>
       ) : (
         <Loader />

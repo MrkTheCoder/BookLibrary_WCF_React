@@ -42,3 +42,8 @@ footer {
   text-transform: none;
   letter-spacing: normal;
 }
+.homeScreenBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
