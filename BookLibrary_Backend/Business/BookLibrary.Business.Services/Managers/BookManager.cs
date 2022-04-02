@@ -22,15 +22,12 @@ namespace BookLibrary.Business.Services.Managers
                     ConcurrencyMode = ConcurrencyMode.Multiple,
                     IncludeExceptionDetailInFaults = true)]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-    public class BookManager : ManagerBase, IBookService
+    public partial class BookManager : ManagerBase, IBookService
     {
         public BookManager() : base()
         { }
         public BookManager(IRepositoryFactory resRepositoryFactory) : base(resRepositoryFactory)
         { }
-
-        private const int DefaultItemsPerPage = 10;
-        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
 
         /// <summary>
         /// Gather simple information about books and if they are available for borrowing.
@@ -42,6 +39,9 @@ namespace BookLibrary.Business.Services.Managers
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
         public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category)
         {
+            if (page < 0 || item < 0)
+                throw new ArgumentException("Page & Item arguments must be zero or a positive number");
+
             var libraryBooks = new List<LibraryBookData>();
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
@@ -118,12 +118,12 @@ namespace BookLibrary.Business.Services.Managers
             };
         }
 
-        private int ValidateItemPerPage(int page, int item, int bookCounts)
+        private int ValidateItemPerPage(int page, int item, int itemCounts)
         {
-            var currentItems = _acceptedItemsPerPage.Contains(item)
+            var currentItems = AcceptedItemsPerPage.Contains(item)
                 ? item
                 : page == 0 && item == 0
-                    ? bookCounts
+                    ? itemCounts
                     : DefaultItemsPerPage;
             return currentItems;
         }
@@ -133,24 +133,6 @@ namespace BookLibrary.Business.Services.Managers
                 ? page
                 : 1;
             return currentPages;
-        }
-        private void SetHeaders(int itemCount, int page, int itemPerPage)
-        {
-            if (!(WebOperationContext.Current is WebOperationContext ctx))
-                return;
-
-            ctx.OutgoingResponse.Headers.Add("X-TotalItems", itemCount.ToString());
-
-            if (page <= 0)
-                return;
-
-            var remainItems = itemCount - (itemPerPage * page);
-            if (remainItems > 0)
-                ctx.OutgoingResponse.Headers.Add("X-NextPage",
-                    $"?page={page + 1}&item={itemPerPage}");
-            if (page > 1)
-                ctx.OutgoingResponse.Headers.Add("X-PrevPage",
-                    $"?page={page - 1}&item={itemPerPage}");
         }
     }
 }

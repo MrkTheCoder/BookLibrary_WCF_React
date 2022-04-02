@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
+        [Description("It return list of Books. Three parameters: page, item, category.")]
         Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category);
 
         /// <summary>
@@ -36,6 +38,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books/{isbn}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
+        [Description("It return a Book object based on specified ISBN.")]
         Task<LibraryBookData> GetBookAsync(string isbn);
     }
 }

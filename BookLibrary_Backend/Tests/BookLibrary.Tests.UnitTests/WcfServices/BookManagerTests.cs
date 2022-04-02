@@ -75,6 +75,22 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         [Fact]
         [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_WithWrongValueInArgument_ThrowArgumentException()
+        {
+            var dbBooks = FeedBooks(0);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(-1, 0, null));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(0, -1, null));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(-1, -1, null));
+            Assert.Equal("Page & Item arguments must be zero or a positive number", exception.Message);
+        }
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_EmptyBooksWithPage1_ShouldReturnEmptyArray()
         {
             var dbBooks = FeedBooks(0);
@@ -131,6 +147,38 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+            var actualFirstBook = libraryBooks.FirstOrDefault();
+            var actualLastBook = libraryBooks.LastOrDefault();
+
+            Assert.Equal(DefaultItemsPerPage, libraryBooks.Length);
+            Assert.NotNull(actualFirstBook);
+            Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
+            Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
+            Assert.Equal(_bookIdOne.BookCategory.Name, actualFirstBook.Category);
+            Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
+
+
+            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            Assert.NotNull(actualLastBook);
+            Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
+            Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
+            Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
+            Assert.Equal(expectedLastBookInPage.CoverLinkThumbnail, actualLastBook.CoverLink);
+        }
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_10BooksTwiceRequest_ShouldReturn10Books()
+        {
+            var dbBooks = FeedBooks(10);
+            _moqBookRepository.Setup(s => s.GetAllAsync())
+                .ReturnsAsync(dbBooks);
+
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+
             var actualFirstBook = libraryBooks.FirstOrDefault();
             var actualLastBook = libraryBooks.LastOrDefault();
 
@@ -359,13 +407,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         public static IEnumerable<object[]> DifferentPages()
         {
-            yield return new object[] { 0, -1, null, 10 };
-            yield return new object[] { -1, 0, null, 10 };
-            yield return new object[] { -1, -1, null, 10 };
             yield return new object[] { 0, 0, "", 21 };
-            yield return new object[] { -1, -1, "cat1", 10 };
-            yield return new object[] { -1, -1, "cat", 0 };
-            yield return new object[] { -1, -1, "a", 0 };
             yield return new object[] { 0, 0, "a", 0 };
             yield return new object[] { 0, 0, "cat2", 10 };
             yield return new object[] { 0, 0, "CaT2", 10 };
@@ -373,6 +415,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             yield return new object[] { 2, 0, "cat1", 1 };
             yield return new object[] { 2, 20, "cat1", 0 };
             yield return new object[] { 3, 0, null, 1 };
+            yield return new object[] { 1, 20, null, 20 };
+            yield return new object[] { 1, 30, null, 21 };
             yield return new object[] { 3, 0, "", 1 };
             yield return new object[] { 3, 0, "  ", 1 };
             yield return new object[] { 4, 0, null, 0 };
