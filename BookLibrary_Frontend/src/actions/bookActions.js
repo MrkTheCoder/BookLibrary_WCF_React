@@ -35,10 +35,12 @@ export const listBooks =
     }
   };
 
-export const bookDetails = (Isbn) => async (dispatch) => {
+export const bookDetailsAction = (Isbn) => async (dispatch) => {
   try {
     dispatch({ type: BOOK_DETAILS_REQUEST });
-    const { data } = await axios.get(`http://localhost:51202/api/book/${Isbn}`);
+    const { data } = await axios.get(
+      `http://localhost:51202/api/books/${Isbn}`
+    );
     dispatch({ type: BOOK_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
