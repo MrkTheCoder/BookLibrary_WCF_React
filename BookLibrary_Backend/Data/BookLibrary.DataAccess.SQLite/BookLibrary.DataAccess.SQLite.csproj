@@ -170,6 +170,8 @@
     <Compile Include="Seeds\BookCategorySeeds.cs" />
     <Compile Include="Seeds\BookCopySeeds.cs" />
     <Compile Include="Seeds\BookSeeds.cs" />
+    <Compile Include="Seeds\BorrowerSeeds.cs" />
+    <Compile Include="Seeds\GenderSeeds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

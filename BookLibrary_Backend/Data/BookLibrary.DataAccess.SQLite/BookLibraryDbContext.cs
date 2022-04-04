@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.IO;
+using System.Linq;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.SQLite.Seeds;
 using Core.Common.Interfaces.Entities;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite
@@ -12,6 +15,7 @@ namespace BookLibrary.DataAccess.SQLite
         private const string DatabaseFilename = "LocalDb.sqlite";
         private static bool HasCheckedDatabase { get; set; }
         private static string _databasePath = null;
+
 
         public BookLibraryDbContext()
         {
@@ -25,10 +29,12 @@ namespace BookLibrary.DataAccess.SQLite
             : base(options)
         {
         }
-
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<BookCategory> BookCategories { get; set; }
         public virtual DbSet<BookCopy> BookCopies { get; set; }
+        public virtual DbSet<Borrower> Borrowers { get; set; }
+        public virtual DbSet<Gender> Genders { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,6 +56,8 @@ namespace BookLibrary.DataAccess.SQLite
             modelBuilder.Entity<Book>(entity =>
             {
                 entity.ToTable("Book", "BookSchema");
+
+                entity.Property(e => e.CoverLinkOriginal).HasMaxLength(255);
 
                 entity.Property(e => e.CoverLinkThumbnail).HasMaxLength(255);
 
@@ -93,6 +101,70 @@ namespace BookLibrary.DataAccess.SQLite
                     .HasConstraintName("FK_BookCopy_Book_Id");
             });
 
+            // Borrower Related Tables
+
+            modelBuilder.Entity<Borrower>(entity =>
+            {
+                entity.ToTable("Borrower", "BorrowerSchema");
+
+                entity.HasIndex(e => e.PhoneNo)
+                    .HasName("UK_Borrower_PhoneNo")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Username)
+                    .HasName("UK_Borrower_Username")
+                    .IsUnique();
+
+                entity.Property(e => e.AvatarLink)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.MiddleName).HasMaxLength(50);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PhoneNo)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Gender)
+                    .WithMany(p => p.Borrowers)
+                    .HasForeignKey(d => d.GenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Borrower_Gender_Id");
+            });
+
+            modelBuilder.Entity<Gender>(entity =>
+            {
+                entity.ToTable("Gender", "BorrowerSchema");
+
+                entity.HasIndex(e => e.Type)
+                    .HasName("IX_Gender")
+                    .IsUnique();
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             OnModelCreatingPartial(modelBuilder);
 
             SeedingDatabase(modelBuilder);
@@ -100,11 +172,14 @@ namespace BookLibrary.DataAccess.SQLite
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
+
         private void SeedingDatabase(ModelBuilder modelBuilder)
         {
             BookCategorySeeds.Data(modelBuilder);
             BookSeeds.Data(modelBuilder);
             BookCopySeeds.Data(modelBuilder);
+            GenderSeeds.Data(modelBuilder);
+            BorrowerSeeds.Data(modelBuilder);
         }
 
         private string GetDatabaseFile()
@@ -134,5 +209,5 @@ namespace BookLibrary.DataAccess.SQLite
                 throw new Exception(e.Message);
             }
         }
-    }
+        }
 }
