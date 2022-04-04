@@ -7,6 +7,7 @@ import { listBooks } from "../actions/bookActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
+import Navigation from "../components/Navigation";
 
 function HomeScreen() {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ function HomeScreen() {
         <Message variant="danger">{error}</Message>
       ) : headers ? (
         <div className="homeScreenBody">
+          <Navigation />
           <div className="cardRows">
             <Row data-testid="cardRow" className="mainScreen">
               {books.map((book) => (

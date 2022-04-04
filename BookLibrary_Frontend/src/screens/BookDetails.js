@@ -30,8 +30,10 @@ function BookDetails() {
       {console.log(book)}
       <Col md={8}>
         <ListGroup>
-          <ListGroup.Item>Price: $/day</ListGroup.Item>
-          <ListGroup.Item>Available</ListGroup.Item>
+          <ListGroup.Item>{book.Title}</ListGroup.Item>
+          <ListGroup.Item>
+            {book.IsAvailable === true ? "available" : "not available"}
+          </ListGroup.Item>
           <ListGroup.Item>Available</ListGroup.Item>
         </ListGroup>
         <div className="navButtons">
