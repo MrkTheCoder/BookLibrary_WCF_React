@@ -51,6 +51,8 @@ namespace BookLibrary.DataAccess.SQLite
             modelBuilder.Entity<Book>().Ignore(p => p.EntityId);
             modelBuilder.Entity<BookCategory>().Ignore(p => p.EntityId);
             modelBuilder.Entity<BookCopy>().Ignore(p => p.EntityId);
+            modelBuilder.Entity<Borrower>().Ignore(p => p.EntityId);
+            modelBuilder.Entity<Gender>().Ignore(p => p.EntityId);
 
 
             modelBuilder.Entity<Book>(entity =>
@@ -143,6 +145,8 @@ namespace BookLibrary.DataAccess.SQLite
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                
+                entity.Property(e => e.RegistrationDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Gender)
                     .WithMany(p => p.Borrowers)
@@ -209,5 +213,5 @@ namespace BookLibrary.DataAccess.SQLite
                 throw new Exception(e.Message);
             }
         }
-        }
+    }
 }

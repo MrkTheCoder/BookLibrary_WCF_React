@@ -50,6 +50,7 @@
     <Compile Include="Behaviors\OperationFaultHandlingAttribute.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="Managers\BookManager.cs" />
+    <Compile Include="Managers\BorrowerManager.cs" />
     <Compile Include="Managers\CategoryManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

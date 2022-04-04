@@ -45,10 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContracts\BookCategoryData.cs" />
+    <Compile Include="DataContracts\BorrowerData.cs" />
     <Compile Include="DataContracts\HttpErrorMessage.cs" />
     <Compile Include="DataContracts\LibraryBookData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContracts\IBookService.cs" />
+    <Compile Include="ServiceContracts\IBorrowerService.cs" />
     <Compile Include="ServiceContracts\ICategoryService.cs" />
   </ItemGroup>
   <ItemGroup />

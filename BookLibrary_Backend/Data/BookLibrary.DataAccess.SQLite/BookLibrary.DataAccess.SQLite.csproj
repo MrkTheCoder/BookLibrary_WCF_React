@@ -164,6 +164,7 @@
     <Compile Include="Repositories\BookCategoryRepository.cs" />
     <Compile Include="Repositories\BookCopyRepositoryRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
+    <Compile Include="Repositories\BorrowerRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="RepositoryFactory.cs" />

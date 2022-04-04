@@ -1,4 +1,5 @@
-﻿using Core.Common.Interfaces.Entities;
+﻿using System;
+using Core.Common.Interfaces.Entities;
 
 namespace BookLibrary.Business.Entities
 {
@@ -13,6 +14,7 @@ namespace BookLibrary.Business.Entities
         public string Username { get; set; }
         public string Password { get; set; }
         public string AvatarLink { get; set; }
+        public DateTime RegistrationDate { get; set; }
 
         public virtual Gender Gender { get; set; }
 

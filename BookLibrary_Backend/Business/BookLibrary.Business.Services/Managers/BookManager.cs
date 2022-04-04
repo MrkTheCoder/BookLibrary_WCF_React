@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Threading.Tasks;
+using BookLibrary.DataAccess.Dto;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -42,7 +43,7 @@ namespace BookLibrary.Business.Services.Managers
             InitializePaging(page, item);
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var filteredBookDto = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
+            PagingEntityDto<Book> filteredBookDto = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
 
             SetHeaders(filteredBookDto.TotalItems, CurrentPage, CurrentItemsPerPage);
 

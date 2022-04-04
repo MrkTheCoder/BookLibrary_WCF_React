@@ -44,6 +44,7 @@
     <Compile Include="IBookCategoryRepository.cs" />
     <Compile Include="IBookCopyRepository.cs" />
     <Compile Include="IBookRepository.cs" />
+    <Compile Include="IBorrowerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
