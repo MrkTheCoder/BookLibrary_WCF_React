@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.ServiceModel.Web;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using BookLibrary.Business.Contracts.DataContracts;
+﻿using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Exceptions;
+using Core.Common.Helpers;
 using Core.Common.Interfaces.Data;
+using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.Threading.Tasks;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -35,33 +33,20 @@ namespace BookLibrary.Business.Services.Managers
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
-        /// <param name="isThumbnail"></param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
         public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category)
         {
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
 
-            var libraryBooks = new List<LibraryBookData>();
+            InitializePaging(page, item);
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var books = string.IsNullOrEmpty(category?.Trim())
-                ? await bookRepository.GetAllAsync()
-                : await bookRepository.GetAllAsync(w => w.BookCategory.Name.ToLower() == category.ToLower());
+            var filteredBookDto = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
 
-            var bookCounts = books.Count();
-            var currentPages = ValidatePage(page);
-            var currentItems = ValidateItemPerPage(page, item, bookCounts);
-            
-            SetHeaders(bookCounts, currentPages, currentItems);
+            SetHeaders(filteredBookDto.TotalItems, CurrentPage, CurrentItemsPerPage);
 
-            books = books
-                .Skip(currentItems * (currentPages - 1))
-                .Take(currentItems);
-
-            MapBooksToLibraryBooks(books, libraryBooks);
-
-            return libraryBooks.ToArray();
+            return MapBooksToLibraryBooks(filteredBookDto.Entities);
         }
 
         /// <summary>
@@ -69,70 +54,49 @@ namespace BookLibrary.Business.Services.Managers
         /// </summary>
         /// <param name="isbn">a string value represent ISBN-13. It should be in this format: ###-########## [3digits-10digits]</param>
         /// // <returns>Object of LibraryBookData.</returns>
-        public async  Task<LibraryBookData> GetBookAsync(string isbn)
+        public async Task<LibraryBookData> GetBookAsync(string isbn)
         {
-            if (!VerifyIsbn(isbn))
+            if (!BookHelper.VerifyIsbn(isbn))
                 throw new ArgumentException("ISBN is in a wrong format.");
 
-            var findIsbn = isbn.Length ==14 
-                ? isbn
-                : isbn.Insert(3, "-");
+            var dashedIsbn = BookHelper.AddDashToIsbn(isbn);
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            var book = await bookRepository.GetByExpressionAsync(b => b.Isbn == findIsbn);
+            var book = await bookRepository.GetByExpressionAsync(b => b.Isbn == dashedIsbn);
 
             if (book == null)
                 throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
 
-            return MapBookToLibraryBook(book, new Random(1), isThumbnail:false);
+            return MapBookToLibraryBook(book, new Random(1), isThumbnail: false);
         }
 
-        private bool VerifyIsbn(string isbn)
-        {
-            var isbnPattern = @"^\d{3}-{0,1}\d{10}$";
-            return !string.IsNullOrEmpty(isbn) && 
-                   Regex.IsMatch(isbn, isbnPattern);
-        }
 
-        private void MapBooksToLibraryBooks(IEnumerable<Book> books, List<LibraryBookData> libraryBooks,
-            bool isThumbnail = true)
+
+        private LibraryBookData[] MapBooksToLibraryBooks(IEnumerable<Book> books, bool isThumbnail = true)
         {
+            var libraryBooks = new List<LibraryBookData>();
             var rand = new Random();
+
             foreach (var book in books)
             {
                 libraryBooks.Add(MapBookToLibraryBook(book, rand, isThumbnail));
             }
+
+            return libraryBooks.ToArray();
         }
 
-        private static LibraryBookData MapBookToLibraryBook(Book book, Random rand, bool isThumbnail = true)
+        private LibraryBookData MapBookToLibraryBook(Book book, Random rand, bool isThumbnail = true)
         {
             return new LibraryBookData
             {
                 Isbn = book.Isbn,
                 Title = book.Title,
                 Category = book.BookCategory.Name,
-                CoverLink = isThumbnail 
-                    ? book.CoverLinkThumbnail 
+                CoverLink = isThumbnail
+                    ? book.CoverLinkThumbnail
                     : book.CoverLinkOriginal,
                 IsAvailable = rand.Next(2) >= 1
             };
-        }
-
-        private int ValidateItemPerPage(int page, int item, int itemCounts)
-        {
-            var currentItems = AcceptedItemsPerPage.Contains(item)
-                ? item
-                : page == 0 && item == 0
-                    ? itemCounts
-                    : DefaultItemsPerPage;
-            return currentItems;
-        }
-        private int ValidatePage(int page)
-        {
-            var currentPages = page > 0
-                ? page
-                : 1;
-            return currentPages;
         }
     }
 }

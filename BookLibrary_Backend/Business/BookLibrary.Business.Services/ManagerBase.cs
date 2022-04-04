@@ -1,4 +1,5 @@
-﻿using System.ServiceModel.Web;
+﻿using System.Linq;
+using System.ServiceModel.Web;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Services.Behaviors;
 using Core.Common.Interfaces.Data;
@@ -12,18 +13,18 @@ namespace BookLibrary.Business.Services
     [OperationFaultHandling]
     public abstract class ManagerBase
     {
-        private Container _container;
-        
         protected IRepositoryFactory RepositoryFactory { get; set; }
         protected virtual int DefaultItemsPerPage => 10;
-        protected readonly int[] AcceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
+        protected int CurrentItemsPerPage { get; private set; }
+        protected int CurrentPage { get; private set; }
+        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
 
         /// <summary>
         /// Default constructor for use in services.
         /// </summary>
         protected ManagerBase()
         {
-            RepositoryFactory = Container.Resolve<IRepositoryFactory>();
+            RepositoryFactory = BootContainer.Builder.Resolve<IRepositoryFactory>();
         }
 
         /// <summary>
@@ -35,13 +36,6 @@ namespace BookLibrary.Business.Services
             RepositoryFactory = repositoryFactory;
         }
 
-        /// <summary>
-        /// Give access to IoC container. If it is not initialized yet, It will load it.
-        /// </summary>
-        protected Container Container => _container ?? 
-                                         (_container = BootContainer.Builder = Bootstrapper.Bootstrapper.LoadContainer);
-
-
         protected void SetHeaders(int itemCount, int page, int itemPerPage)
         {
             if (!(WebOperationContext.Current is WebOperationContext ctx))
@@ -49,7 +43,7 @@ namespace BookLibrary.Business.Services
 
             ctx.OutgoingResponse.Headers.Add("X-TotalItems", itemCount.ToString());
 
-            if (page <= 0)
+            if (itemPerPage <= 0)
                 return;
 
             var remainItems = itemCount - (itemPerPage * page);
@@ -59,6 +53,30 @@ namespace BookLibrary.Business.Services
             if (page > 1)
                 ctx.OutgoingResponse.Headers.Add("X-PrevPage",
                     $"?page={page - 1}&item={itemPerPage}");
+        }
+
+        protected void InitializePaging(int page, int item)
+        {
+            CurrentPage = ValidatePage(page);
+            CurrentItemsPerPage = ValidateItemPerPage(page, item);
+        }
+
+        private int ValidateItemPerPage(int page, int item)
+        {
+            var currentItems = _acceptedItemsPerPage.Contains(item)
+                ? item
+                : page == 0 && item == 0
+                    ? -1
+                    : DefaultItemsPerPage;
+            return currentItems;
+        }
+
+        private int ValidatePage(int page)
+        {
+            var currentPages = page > 0
+                ? page
+                : 1;
+            return currentPages;
         }
     }
 }

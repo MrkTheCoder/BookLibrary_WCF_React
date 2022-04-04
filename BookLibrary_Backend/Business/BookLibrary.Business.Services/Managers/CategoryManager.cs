@@ -29,29 +29,19 @@ namespace BookLibrary.Business.Services.Managers
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
 
-            var bookCategoryDataItems = new List<BookCategoryData>();
+            InitializePaging(page, item);
 
             var bookCategoryRepository = RepositoryFactory.GetEntityRepository<IBookCategoryRepository>();
-            var bookCategories =  await bookCategoryRepository.GetAllAsync();
+            var pagingEntityDto =  await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
 
-            var bookCategoryCount = bookCategories.Count();
-            var currentPages = ValidatePage(page);
-            var currentItems = ValidateItemPerPage(page, item, bookCategoryCount);
-            
-            SetHeaders(bookCategoryCount, currentPages, currentItems);
+            SetHeaders(pagingEntityDto.TotalItems, CurrentPage, CurrentItemsPerPage);
 
-            bookCategories = bookCategories
-                .Skip(currentItems * (currentPages - 1))
-                .Take(currentItems);
-
-            MapBookCategoriesToBookCategoryData(bookCategories, bookCategoryDataItems);
-
-            return bookCategoryDataItems.ToArray();
+            return MapBookCategoriesToBookCategoryData(pagingEntityDto.Entities);
         }
 
-        private void MapBookCategoriesToBookCategoryData(IEnumerable<BookCategory> bookCategories, List<BookCategoryData> bookCategoryDataItems)
+        private BookCategoryData[] MapBookCategoriesToBookCategoryData(IEnumerable<BookCategory> bookCategories)
         {
-            bookCategoryDataItems.Clear();
+            var bookCategoryDataItems = new List<BookCategoryData>();
 
             foreach (var bookCategory in bookCategories)
             {
@@ -61,24 +51,8 @@ namespace BookLibrary.Business.Services.Managers
                      BooksInCategory = bookCategory.Books.Count
                 });
             }
-        }
 
-
-        private int ValidateItemPerPage(int page, int item, int itemCounts)
-        {
-            var currentItems = AcceptedItemsPerPage.Contains(item)
-                ? item
-                : page == 0 && item == 0
-                    ? itemCounts
-                    : DefaultItemsPerPage;
-            return currentItems;
-        }
-        private int ValidatePage(int page)
-        {
-            var currentPages = page > 0
-                ? page
-                : 1;
-            return currentPages;
+            return bookCategoryDataItems.ToArray();
         }
     }
 }

@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DryIoc, Version=4.8.7.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DryIoc.dll.4.8.7\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -133,6 +136,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.AppConfigs\BookLibrary.Business.AppConfigs.csproj">
+      <Project>{BA8705B9-0957-45FE-BC4C-51F5610B7665}</Project>
+      <Name>BookLibrary.Business.AppConfigs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Business\BookLibrary.Business.Bootstrapper\BookLibrary.Business.Bootstrapper.csproj">
+      <Project>{BC84A01A-3F00-4A92-B768-A86D48717400}</Project>
+      <Name>BookLibrary.Business.Bootstrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Business\BookLibrary.Business.Contracts\BookLibrary.Business.Contracts.csproj">
       <Project>{882cec2c-35ee-453a-9830-a6e858ee1955}</Project>
       <Name>BookLibrary.Business.Contracts</Name>

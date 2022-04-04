@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using BookLibrary.Business.AppConfigs;
+using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Services.Managers;
 using Xunit;
 
@@ -7,6 +9,11 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
 {
     public class BookManagerIntegrationTests
     {
+        public BookManagerIntegrationTests()
+        {
+            BootContainer.Builder = Bootstrapper.LoadContainer;
+        }
+
         [Fact]
         public async Task GetBooks_ShouldReturnBooks()
         {

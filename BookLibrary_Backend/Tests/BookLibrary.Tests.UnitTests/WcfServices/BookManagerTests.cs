@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
+using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
@@ -16,7 +17,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 {
     public class BookManagerTests
     {
-        private readonly List<Book> _fakeDbBooks;
+        private List<Book> _fakeDbBooks;
         private readonly Book _bookIdOne;
         private readonly Mock<IRepositoryFactory> _moqRepositoryFactory;
         private readonly Mock<IBookRepository> _moqBookRepository;
@@ -32,12 +33,28 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             _moqBookRepository = new Mock<IBookRepository>();
             
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(_fakeDbBooks);
-            
-            _moqBookRepository.Setup(s => s.GetAllAsync(It.IsAny<Expression<Func<Book, bool>>>()))
-                .ReturnsAsync((Expression<Func<Book, bool>> f) => _fakeDbBooks.AsQueryable().Where(f));
+            _moqBookRepository.Setup(s => s.GetFilteredBooksAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync((int page, int item, string category) =>
+                {
+                    var filteredBooksDto = new PagingEntityDto<Book>();
 
+                    var books = _fakeDbBooks
+                            .Where(w => string.IsNullOrEmpty(category) ||
+                                   w.BookCategory.Name.ToLower() == category.ToLower())
+                            .ToList();
+                
+                    filteredBooksDto.TotalItems = books.Count;
+                
+                    var newItem = item == -1 ? filteredBooksDto.TotalItems : item;
+
+                    filteredBooksDto.Entities = books
+                        .Skip(newItem * (page - 1))
+                        .Take(newItem)
+                        .ToList();
+                    return filteredBooksDto;
+                    //return _fakeDbBooks;
+                });
+            
             _moqBookRepository.Setup(s => s.GetByExpressionAsync(It.IsAny<Expression<Func<Book, bool>>>()))
                 .Returns<Expression<Func<Book, bool>>>(f =>
                     Task.FromResult(_fakeDbBooks.AsQueryable().FirstOrDefault(f)));
@@ -62,10 +79,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_EmptyBooks_ShouldReturnEmptyArray()
         {
-            var dbBooks = FeedBooks(0);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(0);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
@@ -77,10 +91,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_WithWrongValueInArgument_ThrowArgumentException()
         {
-            var dbBooks = FeedBooks(0);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(0);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(-1, 0, null));
@@ -93,10 +104,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_EmptyBooksWithPage1_ShouldReturnEmptyArray()
         {
-            var dbBooks = FeedBooks(0);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(0);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(1, 0, null);
@@ -108,10 +116,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_LessThan10Books_ShouldReturnAllBooks()
         {
-            var dbBooks = FeedBooks(8);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(8);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
@@ -128,7 +133,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
             Assert.Equal($"http://{_bookIdOne.Title}-tn.jpg", actualFirstBook.CoverLink);
 
-            var expectedLastBookInPage = dbBooks.Single(s => s.Id == 8);
+            var expectedLastBookInPage = _fakeDbBooks.Single(s => s.Id == 8);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
             Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
@@ -140,10 +145,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_10Books_ShouldReturn10Books()
         {
-            var dbBooks = FeedBooks(10);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(10);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
@@ -158,7 +160,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
 
 
-            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            var expectedLastBookInPage = _fakeDbBooks.Single(s => s.Id == DefaultItemsPerPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
             Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
@@ -170,10 +172,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_10BooksTwiceRequest_ShouldReturn10Books()
         {
-            var dbBooks = FeedBooks(10);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(10);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             await bookManager.GetBooksAsync(0, 0, null);
@@ -190,7 +189,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
 
 
-            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            var expectedLastBookInPage = _fakeDbBooks.Single(s => s.Id == DefaultItemsPerPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
             Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
@@ -202,9 +201,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_10BooksPage1ItemsMoreThanExists_ShouldReturn10Books()
         {
-            var dbBooks = FeedBooks(10);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
+            _fakeDbBooks = FeedBooks(10);
 
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
@@ -221,7 +218,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
 
-            var expectedLastBookInPage = dbBooks.Single(s => s.Id == DefaultItemsPerPage);
+            var expectedLastBookInPage = _fakeDbBooks.Single(s => s.Id == DefaultItemsPerPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
             Assert.Equal(expectedLastBookInPage.Title, actualLastBook.Title);
@@ -233,17 +230,14 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_11Books_ShouldReturnFirst10Books()
         {
-            var dbBooks = FeedBooks(11);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-
+            _fakeDbBooks = FeedBooks(11);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
             var actualFirstBook = libraryBooks.FirstOrDefault();
             var actualLastBook = libraryBooks.LastOrDefault();
 
-            Assert.Equal(dbBooks.Count, libraryBooks.Length);
+            Assert.Equal(_fakeDbBooks.Count, libraryBooks.Length);
             Assert.NotNull(actualFirstBook);
             Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
             Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
@@ -251,7 +245,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
 
 
-            var expectedLastBookInPage = dbBooks.LastOrDefault();
+            var expectedLastBookInPage = _fakeDbBooks.LastOrDefault();
             Assert.NotNull(expectedLastBookInPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
@@ -264,10 +258,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Trait("BookManagerTests", "GetBooks")]
         public async Task GetBooks_11BooksPage2_ShouldReturn1Book()
         {
-            var dbBooks = FeedBooks(11);
-            _moqBookRepository.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(dbBooks);
-            var firstBookOfPageTwo = dbBooks.Single(s => s.Id == 11);
+            _fakeDbBooks = FeedBooks(11);
+            var firstBookOfPageTwo = _fakeDbBooks.Single(s => s.Id == 11);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(2, 0, null);
@@ -408,6 +400,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         public static IEnumerable<object[]> DifferentPages()
         {
             yield return new object[] { 0, 0, "", 21 };
+            yield return new object[] { 0, 0, " ", 0 };
             yield return new object[] { 0, 0, "a", 0 };
             yield return new object[] { 0, 0, "cat2", 10 };
             yield return new object[] { 0, 0, "CaT2", 10 };
@@ -418,7 +411,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             yield return new object[] { 1, 20, null, 20 };
             yield return new object[] { 1, 30, null, 21 };
             yield return new object[] { 3, 0, "", 1 };
-            yield return new object[] { 3, 0, "  ", 1 };
+            yield return new object[] { 3, 0, "  ", 0 };
             yield return new object[] { 4, 0, null, 0 };
             yield return new object[] { 2, 20, null, 1 };
             yield return new object[] { 3, 20, null, 0 };

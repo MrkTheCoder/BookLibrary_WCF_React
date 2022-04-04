@@ -77,9 +77,9 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             var findBook = (await bookRepository.GetAllAsync()).FirstOrDefault(f => f.Id == book.Id);
             var bookCat = await bookCategoryRepository.GetByIdAsync(1);
 
+            Assert.True(book.Id != 0);
             Assert.NotNull(findBook);
             Assert.NotNull(bookCat);
-            Assert.True(book.Id != 0);
             Assert.Equal(newBook.Isbn, findBook.Isbn);
             Assert.Equal(bookCat.EntityId, findBook.BookCategoryId);
             Assert.Equal(bookCat.Name, findBook.BookCategory.Name);

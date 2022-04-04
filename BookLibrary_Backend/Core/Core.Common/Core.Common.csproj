@@ -48,6 +48,7 @@
     <Compile Include="CorsOnWcf\CustomHeaderMessageInspector.cs" />
     <Compile Include="CorsOnWcf\EnableCrossOriginResourceSharingBehavior.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Helpers\BookHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

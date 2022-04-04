@@ -7,12 +7,15 @@ using DryIoc;
 namespace BookLibrary.Business.Bootstrapper
 {
     /// <summary>
-    /// This is loader for IoC Container and registering all defined DI's.
+    /// Registering all DI's in here.
     /// </summary>
     public static class Bootstrapper
     {
         private static Container _loadContainer;
         private static readonly object PadLock = new object();
+
+        static Bootstrapper()
+        { }
 
         public static Container LoadContainer
         {

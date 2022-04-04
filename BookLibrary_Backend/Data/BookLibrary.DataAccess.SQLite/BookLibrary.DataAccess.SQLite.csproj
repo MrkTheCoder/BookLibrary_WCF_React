@@ -188,6 +188,10 @@
       <Project>{7a40e1d6-8eb5-4cb8-9247-f2a2cb2efe1b}</Project>
       <Name>Core.Common.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BookLibrary.DataAccess.Dto\BookLibrary.DataAccess.Dto.csproj">
+      <Project>{39A1A01C-F88A-4193-AF57-0F7580CD89A1}</Project>
+      <Name>BookLibrary.DataAccess.Dto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
       <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>
       <Name>BookLibrary.DataAccess.Interfaces</Name>

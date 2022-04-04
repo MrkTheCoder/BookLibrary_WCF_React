@@ -1,5 +1,7 @@
 ﻿using BookLibrary.Business.Services.Managers;
 using System.ServiceModel;
+using BookLibrary.Business.AppConfigs;
+using BookLibrary.Business.Bootstrapper;
 
 namespace BookLibrary.Hot.Wcf.ConsoleHost
 {
@@ -9,6 +11,10 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
         {
             // If Unattended Process need Principal Permission Security!?
             // Then we should define it here
+
+            
+            // Build IoC container.
+            BootContainer.Builder = Bootstrapper.LoadContainer;
 
             var bookHost = new ServiceHost(typeof(BookManager));
             var categoryHost = new ServiceHost(typeof(CategoryManager));
