@@ -16,10 +16,13 @@
   line-height: 20px;
   text-transform: none;
 }
-.cardBody {
+.categoryList {
+  display: flex;
+  justify-content: space-between;
 }
-.cardImage {
-}
-
-.bookCards {
+.roundInfo {
+  background-color: rgb(66, 10, 63);
+  border-radius: 50px;
+  padding: 0.1rem;
+  color: white;
 }
