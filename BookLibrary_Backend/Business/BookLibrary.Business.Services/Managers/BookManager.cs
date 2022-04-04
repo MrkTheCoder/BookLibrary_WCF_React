@@ -27,6 +27,8 @@ namespace BookLibrary.Business.Services.Managers
         { }
         public BookManager(IRepositoryFactory resRepositoryFactory) : base(resRepositoryFactory)
         { }
+        
+        private readonly Random _rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// Gather simple information about books and if they are available for borrowing.
@@ -68,7 +70,7 @@ namespace BookLibrary.Business.Services.Managers
             if (book == null)
                 throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
 
-            return MapBookToLibraryBook(book, new Random(1), isThumbnail: false);
+            return MapBookToLibraryBook(book, isThumbnail: false);
         }
 
 
@@ -76,17 +78,16 @@ namespace BookLibrary.Business.Services.Managers
         private LibraryBookData[] MapBooksToLibraryBooks(IEnumerable<Book> books, bool isThumbnail = true)
         {
             var libraryBooks = new List<LibraryBookData>();
-            var rand = new Random();
-
+            
             foreach (var book in books)
             {
-                libraryBooks.Add(MapBookToLibraryBook(book, rand, isThumbnail));
+                libraryBooks.Add(MapBookToLibraryBook(book, isThumbnail));
             }
 
             return libraryBooks.ToArray();
         }
 
-        private LibraryBookData MapBookToLibraryBook(Book book, Random rand, bool isThumbnail = true)
+        private LibraryBookData MapBookToLibraryBook(Book book, bool isThumbnail = true)
         {
             return new LibraryBookData
             {
@@ -96,7 +97,7 @@ namespace BookLibrary.Business.Services.Managers
                 CoverLink = isThumbnail
                     ? book.CoverLinkThumbnail
                     : book.CoverLinkOriginal,
-                IsAvailable = rand.Next(2) >= 1
+                IsAvailable = _rand.Next(2) >= 1
             };
         }
     }

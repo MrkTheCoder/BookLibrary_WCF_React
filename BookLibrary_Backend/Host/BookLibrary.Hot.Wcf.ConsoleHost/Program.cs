@@ -18,9 +18,11 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
 
             var bookHost = new ServiceHost(typeof(BookManager));
             var categoryHost = new ServiceHost(typeof(CategoryManager));
+            var borrowerHost = new ServiceHost(typeof(BorrowerManager));
 
             StartHost(bookHost, nameof(BookManager));
             StartHost(categoryHost, nameof(CategoryManager));
+            StartHost(borrowerHost, nameof(BorrowerManager));
 
             // Unattended process place here (Timer Start) ...
 
@@ -32,6 +34,7 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
             // Timer Stop for Unattended process ...
             StopHost(bookHost, nameof(BookManager));
             StopHost(categoryHost, nameof(CategoryManager));
+            StopHost(borrowerHost, nameof(BorrowerManager));
         }
 
         private static void StartHost(ServiceHost host, string serviceName)

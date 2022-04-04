@@ -28,6 +28,7 @@ namespace BookLibrary.Business.Services.Managers
         public BorrowerManager(IRepositoryFactory resRepositoryFactory) : base(resRepositoryFactory)
         { }
 
+        private readonly Random _rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// 
@@ -62,15 +63,15 @@ namespace BookLibrary.Business.Services.Managers
 
         private BorrowerData MapBorrowerToBorrowerData(Borrower borrower)
         {
-            var rand = new Random(DateTime.Now.Millisecond);
-
+            
+            
             return new BorrowerData
             {
                 FirstName = borrower.FirstName,
                 MiddleName = borrower.MiddleName,
                 LastName = borrower.LastName,
                 ImageLink = borrower.AvatarLink,
-                TotalBorrows = rand.Next(1,20),
+                TotalBorrows = _rand.Next(1,20),
                 RegistrationDate = borrower.RegistrationDate,
                 Gender = borrower.Gender.Type,
                 PhoneNo = borrower.PhoneNo
