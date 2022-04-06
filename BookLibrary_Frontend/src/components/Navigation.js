@@ -22,7 +22,7 @@ function Navigation({ Showcategories }) {
     error: filterError,
   } = filtersFromState;
 
-  const [CATEGORY, setCATEGORY] = useState();
+  const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());

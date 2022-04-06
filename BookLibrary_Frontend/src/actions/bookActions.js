@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useSelector } from "react-redux";
 import {
   BOOK_LIST_REQUEST,
   BOOK_LIST_SUCCESS,
@@ -10,13 +11,15 @@ import {
 } from "../constants/bookConstants";
 
 export const listBooks =
-  (page = 1, item = 10, category = null) =>
+  (page = 1, item = 10, filters) =>
   async (dispatch) => {
     try {
+      console.log(filters);
       dispatch({ type: BOOK_LIST_REQUEST });
-      console.log(item);
+
       const { data, headers } = await axios.get(
-        `http://localhost:51202/api/books?page=${page}&item=${item}`
+        `http://localhost:51202/api/books?page=${page}&item=${item}`,
+        { params: filters }
       );
 
       dispatch({

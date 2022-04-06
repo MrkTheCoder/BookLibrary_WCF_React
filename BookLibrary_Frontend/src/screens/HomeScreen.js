@@ -18,6 +18,10 @@ function HomeScreen() {
   const [currentItem, setCurrentItem] = useState(10);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const filtersFromState = useSelector((state) => state.filters);
+
+  const { success, filters } = filtersFromState;
+  console.log(filters);
 
   useEffect(() => {
     if (searchParams.get("page") && searchParams.get("item")) {
@@ -27,15 +31,16 @@ function HomeScreen() {
       dispatch(
         listBooks(
           Number(searchParams.get("page")),
-          Number(searchParams.get("item"))
+          Number(searchParams.get("item")),
+          filters
         )
       );
     } else {
-      dispatch(listBooks());
+      dispatch(listBooks(1, 10, filters));
       setCurrentPage(1);
       setCurrentItem(10);
     }
-  }, [dispatch, searchParams]);
+  }, [dispatch, searchParams, filters]);
 
   return (
     <div>
