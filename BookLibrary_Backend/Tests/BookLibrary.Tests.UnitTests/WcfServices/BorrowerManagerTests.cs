@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BookLibrary.Business.Entities;
+﻿using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
 using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
-using BookLibrary.DataAccess.SQLite;
-using BookLibrary.DataAccess.SQLite.Seeds;
+using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BookLibrary.Tests.UnitTests.WcfServices
@@ -31,7 +31,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
                {
                    var newItem = item == -1 ? _fakeDbBorrowers.ToList().Count : item;
                    var pagingEntityDto = new PagingEntityDto<Borrower>
-                   { TotalItems = _fakeDbBorrowers.ToList().Count,
+                   {
+                       TotalItems = _fakeDbBorrowers.ToList().Count,
                        Entities = _fakeDbBorrowers
                            .Skip(newItem * (page - 1))
                            .Take(newItem)
@@ -40,11 +41,17 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
                    return pagingEntityDto;
                });
+            _moqBorrowerRepository.Setup(s =>
+                    s.GetByExpressionAsync(It.IsAny<Expression<Func<Borrower, bool>>>()))
+                .Returns<Expression<Func<Borrower, bool>>>(p =>
+                    Task.FromResult(_fakeDbBorrowers.AsQueryable().FirstOrDefault(p)));
 
             _moqRepositoryFactory = new Mock<IRepositoryFactory>();
             _moqRepositoryFactory.Setup(s => s.GetEntityRepository<IBorrowerRepository>())
                 .Returns(_moqBorrowerRepository.Object);
         }
+
+
 
 
         [Fact]
@@ -88,19 +95,20 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
 
             var borrowerDataItems = await borrowerManager.GetBorrowersAsync(0, 0);
-
             var firstBorrowerData = borrowerDataItems.First();
+            var borrowerFromDb = _fakeDbBorrowers.First();
 
-            Assert.Equal(_fakeDbBorrowers.First().PhoneNo, firstBorrowerData.PhoneNo);
-            Assert.Equal(_fakeDbBorrowers.First().AvatarLink, firstBorrowerData.ImageLink);
-            Assert.Equal(_fakeDbBorrowers.First().Email, firstBorrowerData.Email);
-            Assert.Equal(_fakeDbBorrowers.First().FirstName, firstBorrowerData.FirstName);
-            Assert.Equal(_fakeDbBorrowers.First().MiddleName, firstBorrowerData.MiddleName);
-            Assert.Equal(_fakeDbBorrowers.First().LastName, firstBorrowerData.LastName);
-            Assert.Equal(_fakeDbBorrowers.First().Gender.Type, firstBorrowerData.Gender);
-            Assert.Equal(_fakeDbBorrowers.First().GenderId, 
+            Assert.Equal(borrowerFromDb.PhoneNo, firstBorrowerData.PhoneNo);
+            Assert.Equal(borrowerFromDb.AvatarLink, firstBorrowerData.ImageLink);
+            Assert.Equal(borrowerFromDb.Email, firstBorrowerData.Email);
+            Assert.Equal(borrowerFromDb.FirstName, firstBorrowerData.FirstName);
+            Assert.Equal(borrowerFromDb.MiddleName, firstBorrowerData.MiddleName);
+            Assert.Equal(borrowerFromDb.LastName, firstBorrowerData.LastName);
+            Assert.Equal(borrowerFromDb.Gender.Type, firstBorrowerData.Gender);
+            Assert.Equal(borrowerFromDb.GenderId,
                 _fakeDatabaseGenders.Single(s => s.Type == firstBorrowerData.Gender).Id);
-            Assert.Equal(_fakeDbBorrowers.First().RegistrationDate, firstBorrowerData.RegistrationDate);
+            Assert.Equal(borrowerFromDb.RegistrationDate, firstBorrowerData.RegistrationDate);
+            Assert.Equal(borrowerFromDb.Username, firstBorrowerData.Username);
         }
 
         [Fact]
@@ -204,6 +212,64 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(expected, borrowerDataItems.Length);
         }
 
+
+        // ===========================================================================================
+        // GetBook
+        // ===========================================================================================
+
+
+        [Fact]
+        [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_EmailExists_ReturnABorrower()
+        {
+            var email = "A@mail.local";
+            var dbBorrower = _fakeDbBorrowers.Single(s => s.Email == email);
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            var borrowerData = await borrowerManager.GetBorrowerAsync(email);
+
+            Assert.NotNull(borrowerData);
+            Assert.Equal(dbBorrower.PhoneNo, borrowerData.PhoneNo);
+            Assert.Equal(dbBorrower.AvatarLink, borrowerData.ImageLink);
+            Assert.Equal(dbBorrower.Email, borrowerData.Email);
+            Assert.Equal(dbBorrower.FirstName, borrowerData.FirstName);
+            Assert.Equal(dbBorrower.MiddleName, borrowerData.MiddleName);
+            Assert.Equal(dbBorrower.LastName, borrowerData.LastName);
+            Assert.Equal(dbBorrower.Gender.Type, borrowerData.Gender);
+            Assert.Equal(dbBorrower.GenderId,
+                _fakeDatabaseGenders.Single(s => s.Type == borrowerData.Gender).Id);
+            Assert.Equal(dbBorrower.RegistrationDate, borrowerData.RegistrationDate);
+            Assert.Equal(dbBorrower.Username, borrowerData.Username);
+        }
+
+        [Fact]
+        [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_EmailNotExist_throwNotFoundException()
+        {
+            var email = "@mail.local";
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            var exception = await Assert.ThrowsAsync<NotFoundException>(
+                async () => await borrowerManager.GetBorrowerAsync(email));
+            Assert.Equal($"Email does not exists!", exception.Message);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        [InlineData(null)]
+        [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_WrongIsbnFormat_ThrowNotFoundException(string email)
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(
+                async () => await borrowerManager.GetBorrowerAsync(email));
+            Assert.Equal("Email cannot be null or empty!", exception.Message);
+        }
+
+
+
         public static IEnumerable<object[]> DifferentArguments()
         {
             yield return new object[] { 0, 0, 21 };
@@ -237,8 +303,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             for (int i = 1; i <= 21; i++)
             {
-                var gender = i % 2 != 0 
-                    ? _fakeDatabaseGenders.ToList()[i % 2-1]
+                var gender = i % 2 != 0
+                    ? _fakeDatabaseGenders.ToList()[i % 2 - 1]
                     : _fakeDatabaseGenders.ToList()[1];
                 var letter = ((char)('A' + i - 1)).ToString();
                 cats.Add(new Borrower

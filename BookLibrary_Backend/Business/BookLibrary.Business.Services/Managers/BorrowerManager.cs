@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Threading;
-using System.Threading.Tasks;
-using BookLibrary.Business.Contracts.DataContracts;
+﻿using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
+using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
-using Timer = System.Timers.Timer;
+using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.Threading.Tasks;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -51,11 +50,32 @@ namespace BookLibrary.Business.Services.Managers
             return MapBorrowersToBorrowersData(filteredBorrowers.Entities);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<BorrowerData> GetBorrowerAsync(string email)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email.Trim()))
+                throw new ArgumentException("Email cannot be null or empty!");
+
+            var borrowerRepository = RepositoryFactory.GetEntityRepository<IBorrowerRepository>();
+            var borrower = await borrowerRepository.GetByExpressionAsync(b => b.Email == email);
+
+            if (borrower == null)
+                throw new NotFoundException("Email does not exists!");
+
+            return MapBorrowerToBorrowerData(borrower);
+        }
+
+
+
         private BorrowerData[] MapBorrowersToBorrowersData(List<Borrower> borrowers)
         {
             var borrowerData = new List<BorrowerData>();
 
-            foreach (var borrower in borrowers) 
+            foreach (var borrower in borrowers)
                 borrowerData.Add(MapBorrowerToBorrowerData(borrower));
 
             return borrowerData.ToArray();
@@ -63,19 +83,20 @@ namespace BookLibrary.Business.Services.Managers
 
         private BorrowerData MapBorrowerToBorrowerData(Borrower borrower)
         {
-            
-            
+
+
             return new BorrowerData
             {
                 FirstName = borrower.FirstName,
                 MiddleName = borrower.MiddleName,
                 LastName = borrower.LastName,
                 ImageLink = borrower.AvatarLink,
-                TotalBorrows = _rand.Next(1,20),
+                TotalBorrows = _rand.Next(1, 20),
                 RegistrationDate = borrower.RegistrationDate,
                 Gender = borrower.Gender.Type,
                 PhoneNo = borrower.PhoneNo,
                 Email = borrower.Email,
+                Username = borrower.Username,
             };
         }
     }

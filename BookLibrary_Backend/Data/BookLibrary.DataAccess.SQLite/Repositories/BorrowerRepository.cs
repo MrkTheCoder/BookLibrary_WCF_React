@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Dto;
@@ -12,6 +14,13 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
         protected override DbSet<Borrower> Entities(BookLibraryDbContext entityContext)
         {
             return entityContext.Borrowers;
+        }
+
+        protected override async  Task<Borrower> GetEntityAsync(BookLibraryDbContext entityContext, Expression<Func<Borrower, bool>> predicate)
+        {
+            return await Entities(entityContext)
+                .Include(i => i.Gender)
+                .FirstOrDefaultAsync(predicate);
         }
 
         public async Task<PagingEntityDto<Borrower>> GetFilteredBorrowersAsync(int page, int item)

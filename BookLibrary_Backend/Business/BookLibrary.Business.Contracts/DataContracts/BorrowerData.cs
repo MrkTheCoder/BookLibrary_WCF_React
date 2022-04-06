@@ -30,6 +30,9 @@ namespace BookLibrary.Business.Contracts.DataContracts
 
         [DataMember] 
         public string PhoneNo { get; set; }
+        
+        [DataMember]
+        public string Username { get; set; }
 
         [DataMember] 
         public DateTime RegistrationDate { get; set; }

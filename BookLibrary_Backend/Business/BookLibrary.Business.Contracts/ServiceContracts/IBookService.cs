@@ -24,7 +24,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        [Description("It return list of Books. Three parameters: page, item, category.")]
+        [Description("'books?page={page}&item={item}&category={category}' API return list of Books. Three parameters: page, item, category.")]
         Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books/{isbn}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        [Description("It return a Book object based on specified ISBN.")]
+        [Description("'books/{isbn}' API return a Book object based on specified ISBN.")]
         Task<LibraryBookData> GetBookAsync(string isbn);
     }
 }
