@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Card, Container, Col, ListGroup, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { bookDetailsAction } from "../actions/bookActions";
-import books from "../data";
+import "./BookDetails.css";
 
 function BookDetails() {
   const match = useParams();
@@ -27,25 +27,27 @@ function BookDetails() {
   };
   return (
     <Container className="CustomContainer">
-      {console.log(book)}
-      <Col md={8}>
-        <ListGroup>
-          <ListGroup.Item>{book.Title}</ListGroup.Item>
-          <ListGroup.Item>
-            {book.IsAvailable === true ? "available" : "not available"}
-          </ListGroup.Item>
-          <ListGroup.Item>Available</ListGroup.Item>
-        </ListGroup>
-        <div className="navButtons">
-          <LinkContainer to={"/"}>
-            <Button className="bg-dark">Take me back </Button>
-          </LinkContainer>
-
-          <Button className="bg-dark" onClick={addToListhandler}>
-            Add to list
-          </Button>
+      <section className="detailBody">
+        <div className="detailsCard">
+          <div className="detailsContent">
+            <div className="detailsText">
+              <div className="titleEl">
+                <h2>{book.Title}</h2>
+                <h6>{book.Isbn}</h6>
+              </div>
+              <div>
+                <ul className="infoEl">
+                  <li>Category: {book.Category}</li>
+                  <li>Status: {book.IsAvailable}</li>
+                </ul>
+              </div>
+            </div>
+            <div className="detailsImage">
+              <img src={book.CoverLink}></img>
+            </div>
+          </div>
         </div>
-      </Col>
+      </section>
     </Container>
   );
 }

@@ -1,0 +1,19 @@
+.detailBody {
+  background-color: aliceblue;
+  border-radius: 15px;
+  margin: auto;
+
+  max-width: 100%;
+}
+.detailsContent {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.infoEl {
+  list-style-type: none;
+  padding: 0;
+}
+.detailsText {
+  padding: 15px;
+}
