@@ -26,6 +26,9 @@ namespace BookLibrary.Business.Contracts.DataContracts
         public int TotalBorrows { get; set; }
 
         [DataMember] 
+        public string Email { get; set; }
+
+        [DataMember] 
         public string PhoneNo { get; set; }
 
         [DataMember] 

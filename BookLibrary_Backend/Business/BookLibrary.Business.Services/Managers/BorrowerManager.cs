@@ -74,7 +74,8 @@ namespace BookLibrary.Business.Services.Managers
                 TotalBorrows = _rand.Next(1,20),
                 RegistrationDate = borrower.RegistrationDate,
                 Gender = borrower.Gender.Type,
-                PhoneNo = borrower.PhoneNo
+                PhoneNo = borrower.PhoneNo,
+                Email = borrower.Email,
             };
         }
     }

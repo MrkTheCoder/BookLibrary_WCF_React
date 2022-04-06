@@ -7,6 +7,7 @@ using BookLibrary.Business.Services.Managers;
 using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using BookLibrary.DataAccess.SQLite;
+using BookLibrary.DataAccess.SQLite.Seeds;
 using Core.Common.Interfaces.Data;
 using Moq;
 using Xunit;
@@ -18,6 +19,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         private readonly Mock<IRepositoryFactory> _moqRepositoryFactory;
         private readonly Mock<IBorrowerRepository> _moqBorrowerRepository;
         private IEnumerable<Borrower> _fakeDbBorrowers;
+        private IEnumerable<Gender> _fakeDatabaseGenders;
 
         public BorrowerManagerTests()
         {
@@ -77,6 +79,28 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var firstBorrowerData = borrowerDataItems.First();
 
             Assert.Equal(_fakeDbBorrowers.First().PhoneNo, firstBorrowerData.PhoneNo);
+        }
+
+        [Fact]
+        [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowersAsync))]
+        public async Task GetBorrowers_WithoutParameters_ShouldFirstBorrowerHasCorrectData()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            var borrowerDataItems = await borrowerManager.GetBorrowersAsync(0, 0);
+
+            var firstBorrowerData = borrowerDataItems.First();
+
+            Assert.Equal(_fakeDbBorrowers.First().PhoneNo, firstBorrowerData.PhoneNo);
+            Assert.Equal(_fakeDbBorrowers.First().AvatarLink, firstBorrowerData.ImageLink);
+            Assert.Equal(_fakeDbBorrowers.First().Email, firstBorrowerData.Email);
+            Assert.Equal(_fakeDbBorrowers.First().FirstName, firstBorrowerData.FirstName);
+            Assert.Equal(_fakeDbBorrowers.First().MiddleName, firstBorrowerData.MiddleName);
+            Assert.Equal(_fakeDbBorrowers.First().LastName, firstBorrowerData.LastName);
+            Assert.Equal(_fakeDbBorrowers.First().Gender.Type, firstBorrowerData.Gender);
+            Assert.Equal(_fakeDbBorrowers.First().GenderId, 
+                _fakeDatabaseGenders.Single(s => s.Type == firstBorrowerData.Gender).Id);
+            Assert.Equal(_fakeDbBorrowers.First().RegistrationDate, firstBorrowerData.RegistrationDate);
         }
 
         [Fact]
@@ -204,24 +228,37 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         private IEnumerable<Borrower> FeedCategories()
         {
             var cats = new List<Borrower>();
+
+            _fakeDatabaseGenders = new List<Gender>
+            {
+                new Gender { Id = 1, Type = "female" },
+                new Gender { Id = 2, Type = "male" }
+            };
+
             for (int i = 1; i <= 21; i++)
             {
+                var gender = i % 2 != 0 
+                    ? _fakeDatabaseGenders.ToList()[i % 2-1]
+                    : _fakeDatabaseGenders.ToList()[1];
+                var letter = ((char)('A' + i - 1)).ToString();
                 cats.Add(new Borrower
                 {
                     Id = i,
-                    FirstName = "F_" + ((char)('A' + i - 1)).ToString(),
-                    MiddleName = "M_" + ((char)('A' + i - 1)).ToString(),
-                    LastName = "L_" + ((char)('A' + i - 1)).ToString(),
-                    Gender = new Gender(),// TODO
+                    FirstName = "F_" + letter,
+                    MiddleName = "M_" + letter,
+                    LastName = "L_" + letter,
+                    Gender = gender,
                     PhoneNo = i.ToString(),
                     AvatarLink = "http://" + ((char)('A' + i - 1)) + ".jpg",
-                    GenderId = i,// TODO
-                    Password = i.ToString(), // TODO
+                    GenderId = gender.Id,
+                    Password = i.ToString(), // TODO ake it MD5 hash code
                     RegistrationDate = DateTime.Now,
-                    Username = ((char)('A' + i - 1)).ToString() + i // TODO
-
+                    Email = $"{letter}@mail.local",
+                    Username = letter + i // TODO
                 });
             }
+
+
 
             return cats;
         }

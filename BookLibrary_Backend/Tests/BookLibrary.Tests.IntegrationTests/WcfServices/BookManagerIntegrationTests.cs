@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Services.Managers;
+using BookLibrary.DataAccess.SQLite;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace BookLibrary.Tests.IntegrationTests.WcfServices
