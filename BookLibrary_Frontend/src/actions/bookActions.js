@@ -10,7 +10,7 @@ import {
 } from "../constants/bookConstants";
 
 export const listBooks =
-  (page = 1, item = 10) =>
+  (page = 1, item = 10, category = null) =>
   async (dispatch) => {
     try {
       dispatch({ type: BOOK_LIST_REQUEST });

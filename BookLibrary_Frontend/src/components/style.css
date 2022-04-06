@@ -26,3 +26,13 @@
   padding: 0.1rem;
   color: white;
 }
+.navigation {
+  display: flex;
+  justify-content: space-between;
+}
+.noDecoration {
+  text-decoration: none;
+}
+.navigationItems {
+  margin: auto 0;
+}

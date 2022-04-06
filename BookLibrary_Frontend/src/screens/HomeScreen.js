@@ -45,7 +45,7 @@ function HomeScreen() {
         <Message variant="danger">{error}</Message>
       ) : headers ? (
         <div className="homeScreenBody">
-          <Navigation categories />
+          <Navigation Showcategories />
           <div className="cardRows">
             <Row data-testid="cardRow" className="mainScreen">
               {books.map((book) => (

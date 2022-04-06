@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Nav, NavDropdown, Badge } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import { categoryList } from "../actions/categoryActions";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -12,6 +14,10 @@ function Categories() {
   useEffect(() => {
     dispatch(categoryList());
   }, [dispatch]);
+  const history = useNavigate();
+  const navHandler = (cat) => {
+    history(cat);
+  };
   return (
     <div>
       {loading ? (
@@ -24,10 +30,12 @@ function Categories() {
             {console.log(categories)}
             {categories.map((cat) => (
               <NavDropdown.Item key={cat.Name}>
-                <div className="categoryList">
-                  <div>{cat.Name}</div>
-                  <div className="roundInfo">{cat.BooksInCategory}</div>
-                </div>
+                <LinkContainer to={`?category=${cat.Name}&item=10`}>
+                  <div className="categoryList">
+                    <span>{cat.Name}</span>
+                    <div className="roundInfo">{cat.BooksInCategory}</div>
+                  </div>
+                </LinkContainer>
               </NavDropdown.Item>
             ))}
           </NavDropdown>
