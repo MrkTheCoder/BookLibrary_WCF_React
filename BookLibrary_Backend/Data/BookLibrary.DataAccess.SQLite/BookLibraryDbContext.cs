@@ -1,12 +1,9 @@
-﻿using System;
-using System.Data;
-using System.IO;
-using System.Linq;
-using BookLibrary.Business.Entities;
+﻿using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.SQLite.Seeds;
 using Core.Common.Interfaces.Entities;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
 
 namespace BookLibrary.DataAccess.SQLite
 {
@@ -59,16 +56,22 @@ namespace BookLibrary.DataAccess.SQLite
             {
                 entity.ToTable("Book", "BookSchema");
 
+                entity.HasIndex(e => e.Isbn)
+                    .HasName("UK_Book_ISBN")
+                    .IsUnique();
+
                 entity.Property(e => e.CoverLinkOriginal).HasMaxLength(255);
 
                 entity.Property(e => e.CoverLinkThumbnail).HasMaxLength(255);
 
                 entity.Property(e => e.Isbn)
+                    .IsRequired()
                     .HasColumnName("ISBN")
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Title)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -82,6 +85,10 @@ namespace BookLibrary.DataAccess.SQLite
             modelBuilder.Entity<BookCategory>(entity =>
             {
                 entity.ToTable("BookCategory", "BookSchema");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("UK_BookCategory_Name")
+                    .IsUnique();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -109,6 +116,10 @@ namespace BookLibrary.DataAccess.SQLite
             {
                 entity.ToTable("Borrower", "BorrowerSchema");
 
+                entity.HasIndex(e => e.Email)
+                    .HasName("UK_Borrower_Email")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.PhoneNo)
                     .HasName("UK_Borrower_PhoneNo")
                     .IsUnique();
@@ -118,6 +129,11 @@ namespace BookLibrary.DataAccess.SQLite
                     .IsUnique();
 
                 entity.Property(e => e.AvatarLink)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
@@ -141,12 +157,12 @@ namespace BookLibrary.DataAccess.SQLite
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RegistrationDate).HasColumnType("date");
+
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                
-                entity.Property(e => e.RegistrationDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Gender)
                     .WithMany(p => p.Borrowers)
@@ -168,6 +184,7 @@ namespace BookLibrary.DataAccess.SQLite
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
+
 
             OnModelCreatingPartial(modelBuilder);
 
