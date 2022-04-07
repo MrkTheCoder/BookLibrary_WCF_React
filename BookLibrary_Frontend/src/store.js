@@ -6,6 +6,7 @@ import {
   categoryListReducer,
   filtersReducer,
 } from "./reducers/categoryReducers";
+import { borrowerListReducer } from "./reducers/borrowersReducers";
 
 const reducer = combineReducers({
   bookList: bookListReducer,
@@ -13,6 +14,8 @@ const reducer = combineReducers({
 
   categories: categoryListReducer,
   filters: filtersReducer,
+
+  borrowers: borrowerListReducer,
 });
 
 const initialState = {};

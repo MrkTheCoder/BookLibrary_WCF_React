@@ -14,7 +14,6 @@ export const listBooks =
   (page = 1, item = 10, filters) =>
   async (dispatch) => {
     try {
-      console.log(filters);
       dispatch({ type: BOOK_LIST_REQUEST });
 
       const { data, headers } = await axios.get(

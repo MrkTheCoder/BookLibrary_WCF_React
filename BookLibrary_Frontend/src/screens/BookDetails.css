@@ -35,3 +35,9 @@ img {
 .detailsContent {
   min-width: 0;
 }
+.titleEl h2 {
+  color: black;
+}
+.infoEl li {
+  color: black;
+}
