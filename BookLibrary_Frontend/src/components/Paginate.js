@@ -4,7 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import "./Paginate.css";
 
-function Paginate({ pages, page, nextPage = 1, prevPage = 1, item = 10 }) {
+function Paginate({ pages, page, nextPage = 1, prevPage = 1, item }) {
   return (
     pages > 1 && (
       <Pagination className="pagination">
