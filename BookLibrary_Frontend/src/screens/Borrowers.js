@@ -9,6 +9,8 @@ import {
   Table,
 } from "react-bootstrap";
 import { listBorrowers } from "../actions/borrowersActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 function Borrowers() {
   const dispatch = useDispatch();
@@ -21,36 +23,51 @@ function Borrowers() {
   }, [dispatch]);
   return (
     <div>
-      <Table responsive striped bordered hover variant="light">
-        <thead>
-          <tr>
-            <th>#</th>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <th key={index}>Table heading</th>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">error</Message>
+      ) : (
+        <Table
+          responsive
+          striped
+          bordered
+          hover
+          variant="light"
+          className="table-sm"
+        >
+          <thead>
+            <tr>
+              <th>Profile picture</th>
+              <th>FirstName</th>
+              <th>LastName</th>
+              <th>MiddleName</th>
+              <th>Username</th>
+              <th>TotalBorrows</th>
+              <th>Email</th>
+              <th>PhoneNo</th>
+              <th>RegistrationDate</th>
+              <th>Gender</th>
+            </tr>
+          </thead>
+          <tbody>
+            {borrowers.map((borrower) => (
+              <tr key={borrower.username}>
+                <td>Profile picture</td>
+                <td>{borrower.FirstName}</td>
+                <td>{borrower.LastNanme}</td>
+                <td>{borrower.MiddleName}</td>
+                <td>{borrower.Username}</td>
+                <td>{borrower.TotalBorrows}</td>
+                <td>{borrower.Email}</td>
+                <td>{borrower.PhoneNo}</td>
+                <td>{borrower.RegistrationDate}</td>
+                <td>{borrower.Gender}</td>
+              </tr>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <td key={index}>Table cell {index}</td>
-            ))}
-          </tr>
-          <tr>
-            <td>2</td>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <td key={index}>Table cell {index}</td>
-            ))}
-          </tr>
-          <tr>
-            <td>3</td>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <td key={index}>Table cell {index}</td>
-            ))}
-          </tr>
-        </tbody>
-      </Table>
+          </tbody>
+        </Table>
+      )}
     </div>
   );
 }
