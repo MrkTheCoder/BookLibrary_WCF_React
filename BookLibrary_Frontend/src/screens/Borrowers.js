@@ -16,8 +16,12 @@ function Borrowers() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    setCurrentPage(Number(searchParams.get("page")));
-    setCurrentItem(Number(searchParams.get("item")));
+    setCurrentPage(
+      Number(searchParams.get("page")) ? Number(searchParams.get("page")) : 1
+    );
+    setCurrentItem(
+      Number(searchParams.get("item")) ? Number(searchParams.get("item")) : 10
+    );
     dispatch(
       listBorrowers(
         Number(searchParams.get("page")),
@@ -80,7 +84,7 @@ function Borrowers() {
                 pages={3}
                 nextPage={headers["x-nextpage"]}
                 prevPage={headers["x-prevpage"]}
-                item={currentItem}
+                item={Number(currentItem)}
               />
             )}
           </div>
