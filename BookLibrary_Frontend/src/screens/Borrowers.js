@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { listBorrowers } from "../actions/borrowersActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
+import { LinkContainer } from "react-router-bootstrap";
 function Borrowers() {
   const dispatch = useDispatch();
   const borrowersFromState = useSelector((state) => state.borrowers);
@@ -54,9 +56,7 @@ function Borrowers() {
                 <th>Username</th>
                 <th>TotalBorrows</th>
                 <th>Email</th>
-                <th>PhoneNo</th>
-                <th>RegistrationDate</th>
-                <th>Gender</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -69,9 +69,13 @@ function Borrowers() {
                   <td>{borrower.Username}</td>
                   <td>{borrower.TotalBorrows}</td>
                   <td>{borrower.Email}</td>
-                  <td>{borrower.PhoneNo}</td>
-                  <td>{borrower.RegistrationDate}</td>
-                  <td>{borrower.Gender}</td>
+                  <td>
+                    <LinkContainer to={`/admin/borrowers/${borrower.Email}`}>
+                      <Button>
+                        <i className="fas 	fa-ellipsis-h"></i>
+                      </Button>
+                    </LinkContainer>
+                  </td>
                 </tr>
               ))}
             </tbody>
