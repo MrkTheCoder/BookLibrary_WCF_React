@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BookLibrary.Business.AppConfigs;
+using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
 using BookLibrary.DataAccess.Dto;
@@ -68,6 +69,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Fact]
         public void Initialize_ShouldIoCContainerInitializeToo()
         {
+            BootContainer.Builder = Bootstrapper.LoadContainer;
             var bookManager = new BookManager();
 
             Assert.NotNull(BootContainer.Builder);

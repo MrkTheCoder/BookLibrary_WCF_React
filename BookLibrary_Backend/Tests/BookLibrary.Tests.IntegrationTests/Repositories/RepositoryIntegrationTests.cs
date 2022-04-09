@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BookLibrary.Business.Entities;
+using BookLibrary.DataAccess.SQLite;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Xunit;
 
@@ -14,6 +15,8 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 
         public RepositoryIntegrationTests()
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
             _newBook1 = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1};
             _bookRepository = new BookRepository();
         }

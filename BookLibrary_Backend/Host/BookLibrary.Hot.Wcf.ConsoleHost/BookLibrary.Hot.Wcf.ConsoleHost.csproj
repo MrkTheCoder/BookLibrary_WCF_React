@@ -152,6 +152,10 @@
       <Project>{21acbda7-df05-4c3d-977c-7b7b0fc23657}</Project>
       <Name>BookLibrary.Business.Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.SQLite\BookLibrary.DataAccess.SQLite.csproj">
+      <Project>{51BD3175-3A08-4710-9CB8-1127FEFC7C39}</Project>
+      <Name>BookLibrary.DataAccess.SQLite</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

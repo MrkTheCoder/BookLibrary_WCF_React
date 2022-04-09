@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
+using BookLibrary.DataAccess.SQLite;
 
 namespace BookLibrary.Hot.Wcf.ConsoleHost
 {
@@ -9,12 +10,15 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
     {
         static void Main(string[] args)
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+            // Build IoC container.
+            BootContainer.Builder = Bootstrapper.LoadContainer;
+            
+            
             // If Unattended Process need Principal Permission Security!?
             // Then we should define it here
 
-            
-            // Build IoC container.
-            BootContainer.Builder = Bootstrapper.LoadContainer;
 
             var bookHost = new ServiceHost(typeof(BookManager));
             var categoryHost = new ServiceHost(typeof(CategoryManager));

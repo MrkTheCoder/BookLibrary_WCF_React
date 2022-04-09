@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookLibraryDbContext.cs" />
+    <Compile Include="CreateInitialDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BookCategoryRepository.cs" />
     <Compile Include="Repositories\BookCopyRepositoryRepository.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Seeds\BookCopySeeds.cs" />
     <Compile Include="Seeds\BookSeeds.cs" />
     <Compile Include="Seeds\BorrowerSeeds.cs" />
+    <Compile Include="Seeds\DbVersionSeed.cs" />
     <Compile Include="Seeds\GenderSeeds.cs" />
   </ItemGroup>
   <ItemGroup>

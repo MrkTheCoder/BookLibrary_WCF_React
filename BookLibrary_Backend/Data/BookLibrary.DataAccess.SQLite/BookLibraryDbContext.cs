@@ -9,8 +9,8 @@ namespace BookLibrary.DataAccess.SQLite
 {
     public partial class BookLibraryDbContext : DbContext
     {
+        public const string DbVer = "v0.6.11";
         private const string DatabaseFilename = "LocalDb.sqlite";
-        private static bool HasCheckedDatabase { get; set; }
         private static string _databasePath = null;
 
 
@@ -18,14 +18,16 @@ namespace BookLibrary.DataAccess.SQLite
         {
             if (_databasePath == null)
                 _databasePath = GetDatabaseFile();
-            if (!HasCheckedDatabase)
-                CheckDatabase();
         }
 
         public BookLibraryDbContext(DbContextOptions<BookLibraryDbContext> options)
             : base(options)
         {
         }
+
+        // A table with one record for checking current Database version.
+        public virtual DbSet<DbVersion> DbVersion { get; set; }
+        // Main app entities
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<BookCategory> BookCategories { get; set; }
         public virtual DbSet<BookCopy> BookCopies { get; set; }
@@ -196,6 +198,9 @@ namespace BookLibrary.DataAccess.SQLite
 
         private void SeedingDatabase(ModelBuilder modelBuilder)
         {
+            // Set current Database version.
+            DbVersionSeed.Data(modelBuilder);
+            // App Entities
             BookCategorySeeds.Data(modelBuilder);
             BookSeeds.Data(modelBuilder);
             BookCopySeeds.Data(modelBuilder);
@@ -209,26 +214,6 @@ namespace BookLibrary.DataAccess.SQLite
             var filePath = Path.Combine(installationDirectory, DatabaseFilename);
 
             return filePath;
-        }
-
-        /// <summary>
-        /// Create database if it is not exists.
-        /// After finishing all actions 'HasCheckedDatabase' property will set to true to prevent call it again.
-        /// </summary>
-        private void CheckDatabase()
-        {
-            try
-            {
-                // TODO: add more info about "SQLitePCL.Batteries.Init();" & "SQLitePCL.Batteries_V2.Init();"
-                SQLitePCL.Batteries.Init();
-                // SQLitePCL.Batteries_V2.Init();
-                Database.EnsureCreated();
-                HasCheckedDatabase = true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
         }
     }
 }

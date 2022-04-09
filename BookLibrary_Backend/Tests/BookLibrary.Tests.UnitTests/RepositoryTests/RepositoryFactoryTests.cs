@@ -32,6 +32,8 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         [Fact]
         public void RepositoryFactoryWithIBookRepository_ShouldReturnBookRepository()
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
             BootContainer.Builder = Bootstrapper.LoadContainer;
             IRepositoryFactory repositoryFactory = new RepositoryFactory();
             

@@ -50,6 +50,7 @@
     <Compile Include="BookCategory.cs" />
     <Compile Include="BookCopy.cs" />
     <Compile Include="Borrower.cs" />
+    <Compile Include="DbVersion.cs" />
     <Compile Include="Gender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -13,9 +13,12 @@ namespace BookLibrary.Tests.ConsoleTests
     {
         static void Main(string[] args)
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+            BootContainer.Builder = Bootstrapper.LoadContainer;
+
             BookRepositoryIntegrationTests();
 
-            BootContainer.Builder = Bootstrapper.LoadContainer;
 
             RepositoryFactoryIntegrationTests(BootContainer.Builder.Resolve<IRepositoryFactory>());
 

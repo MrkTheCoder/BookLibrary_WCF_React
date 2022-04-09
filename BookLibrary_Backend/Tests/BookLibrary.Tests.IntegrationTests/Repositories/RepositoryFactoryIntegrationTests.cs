@@ -5,6 +5,7 @@ using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
+using BookLibrary.DataAccess.SQLite;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Core.Common.Interfaces.Data;
 using DryIoc;
@@ -18,6 +19,9 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 
         public RepositoryFactoryIntegrationTests()
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+
             BootContainer.Builder = Bootstrapper.LoadContainer;
 
             _repositoryFactory = BootContainer.Builder.Resolve<IRepositoryFactory>();
