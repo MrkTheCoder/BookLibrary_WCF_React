@@ -13,14 +13,12 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "borrowers?page={page}&item={item}")]
-        [Description("'borrowers?page={page}&item={item}' API return list of registred users in library. It has two parameters: page, item.")]
         Task<BorrowerData[]> GetBorrowersAsync(int page = 0, int item = 0);
 
         [OperationContract]
         [WebGet(RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "borrowers/{email}")]
-        [Description("'borrowers/{email}' API get an email and return detail of registred users in library.")]
         Task<BorrowerData> GetBorrowerAsync(string email);
     }
 }

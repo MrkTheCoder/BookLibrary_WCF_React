@@ -13,7 +13,6 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "categories?page={page}&item={item}")]
-        [Description("It return list of categories. Two parameters: page, item.")]
         Task<BookCategoryData[]> GetCategoriesAsync(int page, int item);
     }
 }

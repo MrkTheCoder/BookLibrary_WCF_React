@@ -18,13 +18,11 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
-        /// <param name="isThumbnail"></param>
         /// <returns>a Json format of LibraryBookData array.</returns>
         [OperationContract]
         [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        [Description("'books?page={page}&item={item}&category={category}' API return list of Books. Three parameters: page, item, category.")]
         Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category);
 
         /// <summary>
@@ -38,7 +36,6 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         [WebGet(UriTemplate = "books/{isbn}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        [Description("'books/{isbn}' API return a Book object based on specified ISBN.")]
         Task<LibraryBookData> GetBookAsync(string isbn);
     }
 }

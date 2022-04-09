@@ -27,6 +27,8 @@ namespace BookLibrary.DataAccess.SQLite
                 var hasExceptions = false;
                 try
                 {
+                    SQLitePCL.Batteries.Init();
+
                     while (true)
                     {
                         try
