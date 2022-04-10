@@ -4,7 +4,12 @@ using System.Linq;
 
 namespace BookLibrary.DataAccess.SQLite
 {
-    public class CreateInitialDatabase
+    /// <summary>
+    /// If Database is old version or not exists, It will be recreated.
+    /// Call it like this:
+    ///     CreateInitialDatabase.Initialize();
+    /// </summary>
+    public static class CreateInitialDatabase
     {
         private static bool _isInitialized = false;
         private static readonly object PadLock = new object();
@@ -13,67 +18,67 @@ namespace BookLibrary.DataAccess.SQLite
         // (https://csharpindepth.com/articles/BeforeFieldInit)
         static CreateInitialDatabase() { }
 
-        private CreateInitialDatabase()
-        { }
-
         public static void Initialize()
         {
+            // Double Check Lock Pattern
             if (_isInitialized) return;
+
             lock (PadLock)
             {
                 if (_isInitialized) return;
 
-                // a flag to make sure not get in unlimited loops!
-                var hasExceptions = false;
                 try
                 {
                     SQLitePCL.Batteries.Init();
 
-                    while (true)
+                    try
                     {
-                        try
-                        {
-                            using (var ctx = new BookLibraryDbContext())
-                            {
-                                var version = ctx.DbVersion.First().Version;
-
-                                if (version != BookLibraryDbContext.DbVer)
-                                    throw new SqliteException("Old version!", 1);
-
-                                break;
-                            }
-                        }
-                        catch (SqliteException ex)
-                        {
-                            if (!hasExceptions &&
-                                (
-                                    ex.Message == "SQLite Error 1: 'no such table: DbVersion'." ||
-                                    ex.Message == "Old version!"
-                                ))
-                                using (var ctx = new BookLibraryDbContext())
-                                {
-                                    hasExceptions = true;
-                                    ctx.Database.EnsureDeleted();
-                                    ctx.Database.EnsureCreated();
-                                    continue;
-                                }
-
-                            Console.WriteLine(ex.Message);
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Exception Name: {ex.GetType().Name}{Environment.NewLine}" +
-                                              $"Message:        {ex.Message}");
-                            break;
-                        }
+                        IsDatabaseLatestVersion();
                     }
-
+                    catch (SqliteException ex)
+                    {
+                        if (ex.Message.Contains("no such table: DbVersion") || ex.Message == "Old version!")
+                        {
+                            RebuildDatabase();
+                            IsDatabaseLatestVersion();
+                        }
+                        else
+                            Console.WriteLine(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Exception Name: {ex.GetType().Name}{Environment.NewLine}" +
+                                          $"Message:        {ex.Message}");
+                    }
                 }
                 catch (System.Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
+                finally
+                {
+                    _isInitialized = true;
+                }
+            }
+        }
+
+        private static void RebuildDatabase()
+        {
+            using (var ctx = new BookLibraryDbContext())
+            {
+                ctx.Database.EnsureDeleted();
+                ctx.Database.EnsureCreated();
+            }
+        }
+
+        private static void IsDatabaseLatestVersion()
+        {
+            using (var ctx = new BookLibraryDbContext())
+            {
+                var version = ctx.DbVersion.First().Version;
+
+                if (version != BookLibraryDbContext.DbVer)
+                    throw new SqliteException("Old version!", 1);
             }
         }
     }

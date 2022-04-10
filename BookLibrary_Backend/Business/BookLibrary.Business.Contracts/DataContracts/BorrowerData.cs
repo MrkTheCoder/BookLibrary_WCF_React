@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 namespace BookLibrary.Business.Contracts.DataContracts
 {
+    /// <summary>
+    /// Borrower data for List and Detail page.
+    /// </summary>
     [DataContract]
     public class BorrowerData
     {

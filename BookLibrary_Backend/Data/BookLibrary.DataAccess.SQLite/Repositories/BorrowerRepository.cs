@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
+    /// <summary>
+    /// Managing all CROD actions for Borrower entity.
+    /// </summary>
     public class BorrowerRepository : RepositoryBase<Borrower>, IBorrowerRepository
     {
         protected override DbSet<Borrower> Entities(BookLibraryDbContext entityContext)

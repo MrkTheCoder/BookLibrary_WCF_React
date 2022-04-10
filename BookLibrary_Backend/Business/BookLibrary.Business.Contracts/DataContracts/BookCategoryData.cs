@@ -2,6 +2,9 @@
 
 namespace BookLibrary.Business.Contracts.DataContracts
 {
+    /// <summary>
+    /// Return Categories data.
+    /// </summary>
     [DataContract]
     public class BookCategoryData
     {

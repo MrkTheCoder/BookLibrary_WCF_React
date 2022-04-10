@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
+    /// <summary>
+    /// Managing all CROD actions for Category entity.
+    /// </summary>
     public class BookCategoryRepository : RepositoryBase<BookCategory>, IBookCategoryRepository
     {
         protected override DbSet<BookCategory> Entities(BookLibraryDbContext entityContext)
