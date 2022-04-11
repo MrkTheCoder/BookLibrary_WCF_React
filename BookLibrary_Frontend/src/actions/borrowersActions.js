@@ -36,7 +36,7 @@ export const borrowerDetails = (email) => async (dispatch) => {
   try {
     dispatch({ type: BORROWER_DETAILS_REQUEST });
     const { data } = await axios.get(
-      `http://localhost:51202/api/BorrowerManager/borrowers?email=${email}`
+      `http://localhost:51202/api/BorrowerManager/borrowers/${email}`
     );
     dispatch({
       type: BORROWER_DETAILS_SUCCESS,

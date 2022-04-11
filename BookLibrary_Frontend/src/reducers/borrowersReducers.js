@@ -25,7 +25,7 @@ export const borrowerListReducer = (state = { borrowers: [] }, action) => {
       return state;
   }
 };
-export const borrowerDetailsReducer = (state = { borrower: {} }, action) => {
+export const borrowerDetailsReducer = (state = {}, action) => {
   switch (action.type) {
     case BORROWER_DETAILS_REQUEST:
       return { loading: true, ...state };
@@ -36,6 +36,8 @@ export const borrowerDetailsReducer = (state = { borrower: {} }, action) => {
       };
     case BORROWER_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case BORROWER_DETAILS_RESET:
+      return {};
     case BORROWER_DETAILS_REQUEST:
       return {};
     default:
