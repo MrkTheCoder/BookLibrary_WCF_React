@@ -21,7 +21,6 @@ function HomeScreen() {
   const filtersFromState = useSelector((state) => state.filters);
 
   const { success, filters } = filtersFromState;
-  console.log(filters);
 
   useEffect(() => {
     if (searchParams.get("page") && searchParams.get("item")) {

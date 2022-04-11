@@ -26,7 +26,6 @@ function Navigation({ Showcategories }) {
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
-    console.log(CATEGORY);
   }, [dispatch, CATEGORY]);
   const history = useNavigate();
   const addFilterHandler = () => {
