@@ -11,7 +11,9 @@ export const categoryList = () => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_LIST_REQUEST });
 
-    const { data } = await axios.get(`http://localhost:51203/api/categories`);
+    const { data } = await axios.get(
+      `http://localhost:51202/api/CategoryManager/categories`
+    );
 
     dispatch({
       type: CATEGORY_LIST_SUCCESS,

@@ -15,7 +15,7 @@ export const listBorrowers =
     try {
       dispatch({ type: BORROWER_LIST_REQUEST });
       const { data, headers } = await axios.get(
-        `http://localhost:51204/api/borrowers?page=${page}&item=${item}`
+        `http://localhost:51202/api/BorrowerManager/borrowers?page=${page}&item=${item}`
       );
       dispatch({
         type: BORROWER_LIST_SUCCESS,
@@ -36,7 +36,7 @@ export const borrowerDetails = (email) => async (dispatch) => {
   try {
     dispatch({ type: BORROWER_DETAILS_REQUEST });
     const { data } = await axios.get(
-      `http://localhost:51204/api/borrowers?email=${email}`
+      `http://localhost:51202/api/BorrowerManager/borrowers?email=${email}`
     );
     dispatch({
       type: BORROWER_DETAILS_SUCCESS,

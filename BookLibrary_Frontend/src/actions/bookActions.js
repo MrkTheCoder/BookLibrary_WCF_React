@@ -17,7 +17,7 @@ export const listBooks =
       dispatch({ type: BOOK_LIST_REQUEST });
 
       const { data, headers } = await axios.get(
-        `http://localhost:51202/api/books?page=${page}&item=${item}`,
+        `http://localhost:51202/api/BookManager/books?page=${page}&item=${item}`,
         { params: filters }
       );
 
@@ -41,7 +41,7 @@ export const bookDetailsAction = (Isbn) => async (dispatch) => {
   try {
     dispatch({ type: BOOK_DETAILS_REQUEST });
     const { data } = await axios.get(
-      `http://localhost:51202/api/books/${Isbn}`
+      `http://localhost:51202/api/BookManager/books/${Isbn}`
     );
     dispatch({ type: BOOK_DETAILS_SUCCESS, payload: data });
   } catch (error) {
