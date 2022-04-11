@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Table } from "react-bootstrap";
+import { Button, Table, Image } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -50,11 +50,10 @@ function Borrowers() {
             <thead>
               <tr>
                 <th>Profile picture</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>MiddleName</th>
+                <th>Name</th>
+
                 <th>Username</th>
-                <th>TotalBorrows</th>
+
                 <th>Email</th>
                 <th></th>
               </tr>
@@ -62,12 +61,19 @@ function Borrowers() {
             <tbody>
               {borrowers.map((borrower) => (
                 <tr key={borrower.username}>
-                  <td>Profile picture</td>
-                  <td>{borrower.FirstName}</td>
-                  <td>{borrower.LastNanme}</td>
-                  <td>{borrower.MiddleName}</td>
+                  <td>
+                    <Image
+                      src={borrower.ImageLink}
+                      style={{ "max-width": "50px" }}
+                    />
+                  </td>
+                  <td>
+                    {borrower.FirstName} {borrower.MiddleName}{" "}
+                    {borrower.LastNanme}
+                  </td>
+
                   <td>{borrower.Username}</td>
-                  <td>{borrower.TotalBorrows}</td>
+
                   <td>{borrower.Email}</td>
                   <td>
                     <LinkContainer to={`/admin/borrowers/${borrower.Email}`}>
