@@ -69,7 +69,7 @@ function Borrowers() {
                   </td>
                   <td>
                     {borrower.FirstName} {borrower.MiddleName}{" "}
-                    {borrower.LastNanme}
+                    {borrower.LastName}
                   </td>
 
                   <td>{borrower.Username}</td>
