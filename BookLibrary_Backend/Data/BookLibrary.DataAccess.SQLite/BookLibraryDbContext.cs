@@ -26,6 +26,7 @@ namespace BookLibrary.DataAccess.SQLite
         }
 
         // A table with one record for checking current Database version.
+        public virtual DbSet<SpResult> SpResults{ get; set; }
         public virtual DbSet<DbVersion> DbVersion { get; set; }
         // Main app entities
         public virtual DbSet<Book> Books { get; set; }
@@ -53,7 +54,10 @@ namespace BookLibrary.DataAccess.SQLite
             modelBuilder.Entity<Borrower>().Ignore(p => p.EntityId);
             modelBuilder.Entity<Gender>().Ignore(p => p.EntityId);
 
+            // A dummy NotMapped Table to use here: CreateInitialDatabase.IsTableExists(BookLibraryDbContext ctx, string tableName)
+            modelBuilder.Entity<SpResult>().HasNoKey();
 
+            // Book Related tables
             modelBuilder.Entity<Book>(entity =>
             {
                 entity.ToTable("Book", "BookSchema");

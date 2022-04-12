@@ -175,6 +175,7 @@
     <Compile Include="Seeds\BorrowerSeeds.cs" />
     <Compile Include="Seeds\DbVersionSeed.cs" />
     <Compile Include="Seeds\GenderSeeds.cs" />
+    <Compile Include="SpResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
