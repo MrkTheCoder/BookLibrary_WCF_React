@@ -1,0 +1,32 @@
+.detailsBody {
+  background-color: #788aa3;
+  border-radius: 15px;
+  margin: auto;
+  padding: 10px;
+
+  max-width: 100%;
+
+  display: flex;
+}
+.detailsListItem {
+  list-style: none;
+  color: black;
+}
+.detailsText {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background-color: #666a86;
+  padding: 0, 2.5rem;
+  padding-right: 2.5rem;
+  margin-left: 5rem;
+  border-radius: 15px;
+  margin-bottom: 0;
+  margin-bottom: 0;
+}
+.DetailsListItemSpan {
+  margin-right: 0.2rem;
+  font-weight: bold;
+  font-size: 20px;
+}

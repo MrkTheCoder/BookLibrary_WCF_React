@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { LinkContainer } from "react-router-bootstrap";
-import { Image, Button, Table } from "react-bootstrap";
+import { Image, Button, Table, Container } from "react-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { BORROWER_DETAILS_RESET } from "../constants/borrowersConstants";
-
+import "./BorrowerDetails.css";
 import { borrowerDetails } from "../actions/borrowersActions";
 
 function BorrowerDetails() {
@@ -33,51 +33,42 @@ function BorrowerDetails() {
       {loading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">error</Message>
+        <Message variant="danger">{error}</Message>
       ) : (
         <div>
           {borrower && (
-            <Table
-              responsive
-              striped
-              bordered
-              hover
-              variant="light"
-              className="table-sm"
-            >
-              <thead>
-                <tr>
-                  <th>Profile picture</th>
-                  <th>Name</th>
+            <div className="detailsBody">
+              <Image src={borrower.ImageLink} />
+              <ul className="detailsText">
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">Name:</span>
+                  {borrower.FirstName} {borrower.MiddleName} {borrower.LastName}
+                </li>
 
-                  <th>Username</th>
-                  <th>Phone number</th>
-                  <th>TotalBorrows</th>
-                  <th>Gender</th>
-                  <th>Registration date</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr key={borrower.username}>
-                  <td>
-                    <Image
-                      src={borrower.ImageLink}
-                      style={{ "max-width": "50px" }}
-                    />
-                  </td>
-                  <td>
-                    {borrower.FirstName} {borrower.MiddleName}{" "}
-                    {borrower.LastName}
-                  </td>
-
-                  <td>{borrower.Username}</td>
-                  <td>{borrower.PhoneNo}</td>
-                  <td>{borrower.TotalBorrows}</td>
-                  <td>{borrower.Gender}</td>
-                  <td>{borrower.RegistrationDate}</td>
-                </tr>
-              </tbody>
-            </Table>
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">Username:</span>
+                  {borrower.Username}
+                </li>
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">Phone number:</span>
+                  {borrower.PhoneNo}
+                </li>
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">Total borrows:</span>{" "}
+                  {borrower.TotalBorrows}
+                </li>
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">Gender:</span>{" "}
+                  {borrower.Gender}
+                </li>
+                <li className="detailsListItem">
+                  <span className="DetailsListItemSpan">
+                    Registration date:
+                  </span>
+                  {borrower.RegistrationDate}
+                </li>
+              </ul>
+            </div>
           )}
         </div>
       )}
