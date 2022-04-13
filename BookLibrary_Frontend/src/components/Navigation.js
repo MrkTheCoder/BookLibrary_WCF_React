@@ -13,7 +13,7 @@ import { RESET_FILTERS } from "../constants/categoryConstants";
 function Navigation({ Showcategories }) {
   const dispatch = useDispatch();
   const categoriesFromState = useSelector((state) => state.categories);
-  const { categories, loading, error } = categoriesFromState;
+  const { categories, loading, error: categoryError } = categoriesFromState;
 
   const filtersFromState = useSelector((state) => state.filters);
   const {
@@ -43,7 +43,9 @@ function Navigation({ Showcategories }) {
     <div>
       <Nav variant="pills" className="bg-light navigation">
         <div className="navigationItems">
-          {Showcategories && (
+          {Showcategories && categoryError ? (
+            <div></div>
+          ) : (
             <Nav.Item>
               <NavDropdown
                 title={CATEGORY ? CATEGORY : "Category"}
