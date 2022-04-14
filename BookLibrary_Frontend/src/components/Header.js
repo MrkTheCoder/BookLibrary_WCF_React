@@ -30,6 +30,9 @@ export default function Header() {
               <LinkContainer to={"/userbooks"}>
                 <NavDropdown.Item>Books</NavDropdown.Item>
               </LinkContainer>
+              <LinkContainer to={"/admin/borrowers"}>
+                <NavDropdown.Item>Borrowers list</NavDropdown.Item>
+              </LinkContainer>
               <NavDropdown.Divider />
               <LinkContainer to={"/logout"}>
                 <NavDropdown.Item>Logout</NavDropdown.Item>
