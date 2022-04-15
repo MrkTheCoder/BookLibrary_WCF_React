@@ -59,7 +59,7 @@ function HomeScreen() {
               ))}
             </Row>
           </div>
-          <div className="paginateItem">
+          <div>
             {headers && (
               <Paginate
                 page={currentPage}
