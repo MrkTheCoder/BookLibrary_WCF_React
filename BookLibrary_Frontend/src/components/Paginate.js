@@ -1,25 +1,59 @@
 import React, { useState } from "react";
-import { Pagination } from "react-bootstrap";
+import { Pagination, Form, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import "./Paginate.css";
 
-function Paginate({ pages, page, nextPage = 1, prevPage = 1, item }) {
+function Paginate({ pages, page, nextPage, prevPage, item }) {
+  const [CustomPage, setCustomPage] = useState();
+  const history = useNavigate();
+
+  const customPageHandler = (e) => {
+    console.log(CustomPage);
+    e.preventDefault();
+
+    history(`?page=${CustomPage}&item=${item}`);
+  };
   return (
     pages > 1 && (
-      <Pagination className="pagination">
-        <LinkContainer to={`${prevPage}`}>
-          <Pagination.Prev className={page == 1 ? "disabled" : ""} />
-        </LinkContainer>
-        {[...Array(pages).keys()].map((x) => (
-          <LinkContainer key={x + 1} to={`?page=${x + 1}&item=${item}`}>
-            <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
+      <div className="mainPaginationBody">
+        <Pagination className="pagination">
+          <LinkContainer to={`${prevPage}`}>
+            <Pagination.Prev className={prevPage ? "" : "disabled"} />
           </LinkContainer>
-        ))}
-        <LinkContainer to={`${nextPage}`}>
-          <Pagination.Next className={page == pages ? "disabled" : ""} />
-        </LinkContainer>
-      </Pagination>
+          {prevPage && (
+            <LinkContainer to={`?page=${page - 1}&item=${item}`}>
+              <Pagination.Item>{page - 1}</Pagination.Item>
+            </LinkContainer>
+          )}
+
+          <LinkContainer to={`?page=${page}&item=${item}`}>
+            <Pagination.Item active={page === page}>{page}</Pagination.Item>
+          </LinkContainer>
+
+          {nextPage && (
+            <LinkContainer to={`?page=${page + 1}&item=${item}`}>
+              <Pagination.Item active={page + 1 === page}>
+                {page + 1}
+              </Pagination.Item>
+            </LinkContainer>
+          )}
+
+          <LinkContainer to={`${nextPage}`}>
+            <Pagination.Next className={nextPage ? "" : "disabled"} />
+          </LinkContainer>
+        </Pagination>
+        <Form className="customPage" onSubmit={customPageHandler}>
+          <Form.Group>
+            <Form.Control
+              onChange={(e) => setCustomPage(e.target.value)}
+              placeholder="Enter page number..."
+            />
+          </Form.Group>
+          <Button type="submit">GO!</Button>
+        </Form>
+      </div>
     )
   );
 }

@@ -17,7 +17,7 @@ export const listBooks =
       dispatch({ type: BOOK_LIST_REQUEST });
 
       const { data, headers } = await axios.get(
-        `http://localhost:51202/api/BookManager/books?page=${page}&item=${item}`,
+        `http://localhost:51202/api/BookManager/books?page=${page}`,
         { params: filters }
       );
 
