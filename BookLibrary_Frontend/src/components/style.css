@@ -35,4 +35,5 @@
 }
 .navigationItems {
   margin: auto 0;
+  display: flex;
 }
