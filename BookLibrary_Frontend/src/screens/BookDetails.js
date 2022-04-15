@@ -38,7 +38,14 @@ function BookDetails() {
               <div>
                 <ul className="infoEl">
                   <li>Category: {book.Category}</li>
-                  <li>Status: {book.IsAvailable}</li>
+                  <li>
+                    Status:{" "}
+                    {book.IsAvailable == true ? (
+                      <span>Available</span>
+                    ) : (
+                      <span>Not available</span>
+                    )}
+                  </li>
                 </ul>
               </div>
             </div>
