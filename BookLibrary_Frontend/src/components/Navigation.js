@@ -23,6 +23,9 @@ function Navigation({ Showcategories }) {
   } = filtersFromState;
 
   const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
+  const [ITEM, setITEM] = useState(filters ? filters.item : null);
+
+  const itemsList = [1, 10, 20, 30, 50];
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
@@ -32,6 +35,7 @@ function Navigation({ Showcategories }) {
     dispatch(
       addFilters({
         category: CATEGORY,
+        item: Number(ITEM),
       })
     );
   };
@@ -65,6 +69,15 @@ function Navigation({ Showcategories }) {
               </NavDropdown>
             </Nav.Item>
           )}
+          <Nav.Item>
+            <NavDropdown title={ITEM != null ? ITEM : "Items"}>
+              {itemsList.map((item) => (
+                <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
+                  <div>{item}</div>
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+          </Nav.Item>
         </div>
         <div>
           <Button
