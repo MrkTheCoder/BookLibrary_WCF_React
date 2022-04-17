@@ -37,25 +37,19 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             _moqBookRepository.Setup(s => s.GetFilteredBooksAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((int page, int item, string category) =>
                 {
-                    var filteredBooksDto = new PagingEntityDto<Book>();
-
-                    var books = _fakeDbBooks
-                            .Where(w => string.IsNullOrEmpty(category) ||
-                                   w.BookCategory.Name.ToLower() == category.ToLower())
-                            .ToList();
-                
-                    filteredBooksDto.TotalItems = books.Count;
-                
-                    var newItem = item == -1 ? filteredBooksDto.TotalItems : item;
-
-                    filteredBooksDto.Entities = books
-                        .Skip(newItem * (page - 1))
-                        .Take(newItem)
+                    return  _fakeDbBooks
+                        .Where(w => string.IsNullOrEmpty(category) ||
+                                    w.BookCategory.Name.ToLower() == category.ToLower())
+                        .Skip(item * (page - 1))
+                        .Take(item)
                         .ToList();
-                    return filteredBooksDto;
-                    //return _fakeDbBooks;
                 });
             
+            _moqBookRepository.Setup(s => s.GetCountAsync()).ReturnsAsync(_fakeDbBooks.Count);
+            _moqBookRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<Book,bool>>>()))
+                .Returns<Expression<Func<Book, bool>>>(f =>
+                    Task.FromResult(_fakeDbBooks.AsQueryable().Count(f)));
+
             _moqBookRepository.Setup(s => s.GetByExpressionAsync(It.IsAny<Expression<Func<Book, bool>>>()))
                 .Returns<Expression<Func<Book, bool>>>(f =>
                     Task.FromResult(_fakeDbBooks.AsQueryable().FirstOrDefault(f)));
@@ -283,14 +277,16 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Theory]
         [MemberData(nameof(DifferentPages))]
         [Trait("BookManagerTests", "GetBooks")]
-        public async Task GetBooks_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, string category, int expectedItems)
+        public async Task GetBooks_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, string category, 
+            int expectedItems, int expectedPage, int expectedItemsPerPage)
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
             var libraryBooks = await bookManager.GetBooksAsync(pageNumber, itemsPerPage, category);
 
             Assert.Equal(expectedItems, libraryBooks.Length);
-            // TODO: Assert Available property
+            Assert.Equal(expectedPage, bookManager.CurrentPage);
+            Assert.Equal(expectedItemsPerPage, bookManager.CurrentItemsPerPage);
         }
 
         [Fact]
@@ -401,23 +397,24 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         public static IEnumerable<object[]> DifferentPages()
         {
-            yield return new object[] { 0, 0, "", 21 };
-            yield return new object[] { 0, 0, " ", 0 };
-            yield return new object[] { 0, 0, "a", 0 };
-            yield return new object[] { 0, 0, "cat2", 10 };
-            yield return new object[] { 0, 0, "CaT2", 10 };
-            yield return new object[] { 0, 20, "cat1", 11 };
-            yield return new object[] { 2, 0, "cat1", 1 };
-            yield return new object[] { 2, 20, "cat1", 0 };
-            yield return new object[] { 3, 0, null, 1 };
-            yield return new object[] { 1, 20, null, 20 };
-            yield return new object[] { 1, 30, null, 21 };
-            yield return new object[] { 3, 0, "", 1 };
-            yield return new object[] { 3, 0, "  ", 0 };
-            yield return new object[] { 4, 0, null, 0 };
-            yield return new object[] { 2, 20, null, 1 };
-            yield return new object[] { 3, 20, null, 0 };
-            yield return new object[] { 0, 30, null, 21 };
+            //{page, item, category,    expectedReturnedItems, expectedPage#, expectedItemsPerPage}
+            yield return new object[] { 0, 0, "", 10 , 1, 10};
+            yield return new object[] { 0, 0, " ", 0 , 1, 10};
+            yield return new object[] { 0, 0, "a", 0, 1, 10 };
+            yield return new object[] { 0, 0, "cat2", 10, 1, 10 };
+            yield return new object[] { 0, 0, "CaT2", 10, 1, 10 };
+            yield return new object[] { 0, 20, "cat1", 11, 1, 20 };
+            yield return new object[] { 2, 0, "cat1", 1, 2, 10 };
+            yield return new object[] { 2, 20, "cat1", 11, 1, 20  };
+            yield return new object[] { 3, 0, null, 1, 3, 10 };
+            yield return new object[] { 1, 20, null, 20, 1, 20 };
+            yield return new object[] { 1, 30, null, 21, 1, 30 };
+            yield return new object[] { 3, 0, "", 1, 3, 10 };
+            yield return new object[] { 3, 0, "  ", 0, 1, 0 };
+            yield return new object[] { 4, 0, null, 1 , 3, 10};
+            yield return new object[] { 2, 20, null, 1 , 2, 20};
+            yield return new object[] { 3, 20, null, 1 , 2, 20};
+            yield return new object[] { 0, 30, null, 21 ,1 , 30};
         }
 
         private static List<Book> FeedBooks(int items)

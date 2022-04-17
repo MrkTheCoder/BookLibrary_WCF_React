@@ -7,6 +7,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,19 +25,16 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             _moqCategoryRepository = new Mock<IBookCategoryRepository>();
             _moqCategoryRepository.Setup(s => s.GetFilteredCategories(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync((int page, int item) =>
-               {
-                   var newItem = item == -1 ? _fakeDbCategories.ToList().Count : item;
-                   var pagingEntityDto = new PagingEntityDto<BookCategory>
-                   { TotalItems = _fakeDbCategories.ToList().Count };
+                .ReturnsAsync((int page, int item) => 
+                    _fakeDbCategories
+                        .Skip(item * (page - 1))
+                        .Take(item)
+                        .ToList());
 
-                   pagingEntityDto.Entities = _fakeDbCategories
-                       .Skip(newItem * (page - 1))
-                       .Take(newItem)
-                       .ToList();
-
-                   return pagingEntityDto;
-               });
+            _moqCategoryRepository.Setup(s => s.GetCountAsync()).ReturnsAsync(_fakeDbCategories.Count);
+            _moqCategoryRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<BookCategory,bool>>>()))
+                .Returns<Expression<Func<BookCategory, bool>>>(f =>
+                    Task.FromResult(_fakeDbCategories.AsQueryable().Count(f)));
 
             _moqRepositoryFactory = new Mock<IRepositoryFactory>();
             _moqRepositoryFactory.Setup(s => s.GetEntityRepository<IBookCategoryRepository>())
@@ -178,34 +176,37 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Theory]
         [MemberData(nameof(DifferentArguments))]
         [Trait(nameof(CategoryManagerTests), nameof(CategoryManager.GetCategoriesAsync))]
-        public async Task GetCategories_DifferentObjects_ShouldReturnExpectedItems(int page, int item, int expected)
+        public async Task GetCategories_DifferentObjects_ShouldReturnExpectedItems(int page, int item, 
+            int expectedReturnedItems, int expectedPages, int expectedItemsPP)
         {
             var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
 
             var categoryDataItems = await categoryManager.GetCategoriesAsync(page, item);
 
-            Assert.Equal(expected, categoryDataItems.Length);
+            Assert.Equal(expectedReturnedItems, categoryDataItems.Length);
+            Assert.Equal(expectedPages, categoryManager.CurrentPage);
+            Assert.Equal(expectedItemsPP, categoryManager.CurrentItemsPerPage);
         }
 
         public static IEnumerable<object[]> DifferentArguments()
         {
-            yield return new object[] { 0, 0, 21 };
-            yield return new object[] { 0, 1, 10 };
-            yield return new object[] { 0, 10, 10 };
-            yield return new object[] { 0, 15, 10 };
-            yield return new object[] { 0, 20, 20 };
-            yield return new object[] { 0, 25, 10 };
-            yield return new object[] { 0, 30, 21 };
-            yield return new object[] { 1, 0, 10 };
-            yield return new object[] { 1, 20, 20 };
-            yield return new object[] { 1, 30, 21 };
-            yield return new object[] { 2, 0, 10 };
-            yield return new object[] { 2, 1, 10 };
-            yield return new object[] { 2, 20, 1 };
-            yield return new object[] { 2, 30, 0 };
-            yield return new object[] { 3, 0, 1 };
-            yield return new object[] { 3, 1, 1 };
-            yield return new object[] { 3, 20, 0 };
+            yield return new object[] { 0, 0, 21, 1, 21 };
+            yield return new object[] { 0, 1, 10, 1, 10 };
+            yield return new object[] { 0, 10, 10, 1, 10 };
+            yield return new object[] { 0, 15, 10, 1, 10 };
+            yield return new object[] { 0, 20, 20, 1 ,20 };
+            yield return new object[] { 0, 25, 10, 1, 10 };
+            yield return new object[] { 0, 30, 21, 1, 30 };
+            yield return new object[] { 1, 0, 10, 1, 10};
+            yield return new object[] { 1, 20, 20, 1, 20 };
+            yield return new object[] { 1, 30, 21, 1, 30 };
+            yield return new object[] { 2, 0, 10, 2, 10 };
+            yield return new object[] { 2, 1, 10, 2, 10 };
+            yield return new object[] { 2, 20, 1, 2, 20 };
+            yield return new object[] { 2, 30, 21 , 1, 30};
+            yield return new object[] { 3, 0, 1, 3, 10 };
+            yield return new object[] { 3, 1, 1, 3, 10 };
+            yield return new object[] { 3, 20, 1, 2, 20 };
         }
 
         private IEnumerable<BookCategory> FeedCategories()

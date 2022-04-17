@@ -42,14 +42,18 @@ namespace BookLibrary.Business.Services.Managers
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
 
-            InitializePaging(page, item);
-
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
-            PagingEntityDto<Book> filteredBookDto = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
 
-            SetHeaders(filteredBookDto.TotalItems, CurrentPage, CurrentItemsPerPage);
+            var totalItems = String.IsNullOrEmpty(category)
+                ? await bookRepository.GetCountAsync()
+                : await bookRepository.GetCountAsync(b => b.BookCategory.Name == category);
 
-            return MapBooksToLibraryBooks(filteredBookDto.Entities);
+            InitializePaging(totalItems, page, item);
+
+            var books = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
+
+
+            return MapBooksToLibraryBooks(books);
         }
 
         /// <summary>

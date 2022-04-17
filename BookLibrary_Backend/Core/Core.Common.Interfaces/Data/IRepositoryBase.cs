@@ -20,7 +20,8 @@ namespace Core.Common.Interfaces.Data
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
         Task<bool> AnyExistsAsync();
         Task<bool> AnyExistsAsync(Expression<Func<TEntity, bool>> predicate);
-
+        Task<int> GetCountAsync();
+        Task<int> GetCountAsync(Expression<Func<TEntity, bool>> predicate);
 
         TEntity Add(TEntity entity);
 

@@ -40,14 +40,15 @@ namespace BookLibrary.Business.Services.Managers
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
 
-            InitializePaging(page, item);
-
             var borrowerRepository = RepositoryFactory.GetEntityRepository<IBorrowerRepository>();
-            PagingEntityDto<Borrower> filteredBorrowers = await borrowerRepository.GetFilteredBorrowersAsync(CurrentPage, CurrentItemsPerPage);
 
-            SetHeaders(filteredBorrowers.TotalItems, CurrentPage, CurrentItemsPerPage);
+            var totalItems = await borrowerRepository.GetCountAsync();
 
-            return MapBorrowersToBorrowersData(filteredBorrowers.Entities);
+            InitializePaging(totalItems, page, item);
+
+            var borrowers = await borrowerRepository.GetFilteredBorrowersAsync(CurrentPage, CurrentItemsPerPage);
+
+            return MapBorrowersToBorrowersData(borrowers);
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace BookLibrary.Business.Services.Managers
 
 
 
-        private BorrowerData[] MapBorrowersToBorrowersData(List<Borrower> borrowers)
+        private BorrowerData[] MapBorrowersToBorrowersData(IEnumerable<Borrower> borrowers)
         {
             var borrowerData = new List<BorrowerData>();
 

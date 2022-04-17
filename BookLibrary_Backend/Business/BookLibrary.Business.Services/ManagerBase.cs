@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.ServiceModel.Web;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Services.Behaviors;
+using BookLibrary.Business.Services.Managers;
 using Core.Common.Interfaces.Data;
 using DryIoc;
 
@@ -13,11 +15,16 @@ namespace BookLibrary.Business.Services
     [OperationFaultHandling]
     public abstract class ManagerBase
     {
+        private int DefaultPage => 1;
+        private readonly int[] _acceptedItemsPerPage = new[] { 1, 10, 20, 30, 40, 50 };
+        private bool IsRequestedAllItems { get; set; }
+        
         protected IRepositoryFactory RepositoryFactory { get; set; }
         protected virtual int DefaultItemsPerPage => 10;
-        protected int CurrentItemsPerPage { get; private set; }
-        protected int CurrentPage { get; private set; }
-        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
+        
+        public int CurrentItemsPerPage { get; private set; }
+        public int CurrentPage { get; private set; }
+        public int TotalItems { get; private set; }
 
         /// <summary>
         /// Default constructor for use in services.
@@ -36,47 +43,50 @@ namespace BookLibrary.Business.Services
             RepositoryFactory = repositoryFactory;
         }
 
-        protected void SetHeaders(int itemCount, int page, int itemPerPage)
+        private void SetHeaders()
         {
             if (!(WebOperationContext.Current is WebOperationContext ctx))
                 return;
 
-            ctx.OutgoingResponse.Headers.Add("X-TotalItems", itemCount.ToString());
+            ctx.OutgoingResponse.Headers.Add("X-TotalItems", TotalItems.ToString());
 
-            if (itemPerPage <= 0)
+            if (IsRequestedAllItems)
                 return;
 
-            var remainItems = itemCount - (itemPerPage * page);
+            ctx.OutgoingResponse.Headers.Add("X-CurrentPage", $"?page={CurrentPage}&item={CurrentItemsPerPage}");
+
+            var remainItems = TotalItems - (CurrentItemsPerPage * CurrentPage);
             if (remainItems > 0)
                 ctx.OutgoingResponse.Headers.Add("X-NextPage",
-                    $"?page={page + 1}&item={itemPerPage}");
-            if (page > 1)
+                    $"?page={CurrentPage + 1}&item={CurrentItemsPerPage}");
+            if (CurrentPage > 1)
                 ctx.OutgoingResponse.Headers.Add("X-PrevPage",
-                    $"?page={page - 1}&item={itemPerPage}");
+                    $"?page={CurrentPage - 1}&item={CurrentItemsPerPage}");
         }
 
-        protected void InitializePaging(int page, int item)
+        protected void InitializePaging(int totalItems, int page, int item)
         {
-            CurrentPage = ValidatePage(page);
-            CurrentItemsPerPage = ValidateItemPerPage(page, item);
-        }
+            IsRequestedAllItems = GetType().Name == nameof(CategoryManager) && (page == 0 && item == 0);
 
-        private int ValidateItemPerPage(int page, int item)
-        {
-            var currentItems = _acceptedItemsPerPage.Contains(item)
-                ? item
-                : page == 0 && item == 0
-                    ? -1
+            TotalItems = totalItems;
+
+            CurrentItemsPerPage = IsRequestedAllItems 
+                ? TotalItems 
+                : _acceptedItemsPerPage.Contains(item) 
+                    ? item 
                     : DefaultItemsPerPage;
-            return currentItems;
-        }
 
-        private int ValidatePage(int page)
-        {
-            var currentPages = page > 0
-                ? page
+            var maxPage = CurrentItemsPerPage != 0 
+                ? (int)Math.Ceiling((double)TotalItems / CurrentItemsPerPage)
                 : 1;
-            return currentPages;
+
+            CurrentPage = page == 0 
+                ? DefaultPage 
+                : page > maxPage 
+                    ? maxPage
+                    : page ;
+
+            SetHeaders();
         }
     }
 }

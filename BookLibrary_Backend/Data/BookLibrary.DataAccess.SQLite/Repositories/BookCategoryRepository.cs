@@ -28,27 +28,18 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
 
         }
 
-        public async Task<PagingEntityDto<BookCategory>> GetFilteredCategories(int page, int item)
+        public async Task<IEnumerable<BookCategory>> GetFilteredCategories(int page, int item)
         {
-            var pagingEntityDto = new PagingEntityDto<BookCategory>();
-
             using (var context = new BookLibraryDbContext())
             {
-                var categories = await context
+                return await context
                     .BookCategories
                     .Include(i => i.Books)
+                    .Skip(item * (page - 1))
+                    .Take(item)
                     .ToListAsync();
-                
-                var newItem = item == -1 ? categories.Count: item;
-                pagingEntityDto.TotalItems = categories.Count;
 
-                pagingEntityDto.Entities = categories
-                    .Skip(newItem * (page - 1))
-                    .Take(newItem)
-                    .ToList();
             }
-
-            return pagingEntityDto;
         }
     }
 }

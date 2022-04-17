@@ -81,6 +81,17 @@ namespace BookLibrary.DataAccess.SQLite
                 .AnyAsync(predicate);
         }
 
+        protected virtual async Task<int> GetCountAsync(TDbContext entityContext)
+        {
+            return await Entities(entityContext).CountAsync();
+                
+        }
+
+        protected virtual async Task<int> GetCountAsync(TDbContext entityContext,
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Entities(entityContext).CountAsync(predicate);
+        }
 
 
         public async Task<TEntity> GetByIdAsync(int id)
@@ -123,6 +134,18 @@ namespace BookLibrary.DataAccess.SQLite
         {
             using (var context = new TDbContext())
                 return await AnyExistsAsync(context, predicate);
+        }
+
+        public async Task<int> GetCountAsync()
+        {
+            using (var context = new TDbContext())
+                return await GetCountAsync(context);
+        }
+
+        public async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            using (var context = new TDbContext())
+                return await GetCountAsync(context, predicate);
         }
 
         public TEntity Add(TEntity entity)

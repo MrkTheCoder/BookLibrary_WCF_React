@@ -29,14 +29,15 @@ namespace BookLibrary.Business.Services.Managers
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
 
-            InitializePaging(page, item);
-
             var bookCategoryRepository = RepositoryFactory.GetEntityRepository<IBookCategoryRepository>();
-            var pagingEntityDto =  await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
 
-            SetHeaders(pagingEntityDto.TotalItems, CurrentPage, CurrentItemsPerPage);
+            var totalItems = await bookCategoryRepository.GetCountAsync();
 
-            return MapBookCategoriesToBookCategoryData(pagingEntityDto.Entities);
+            InitializePaging(totalItems, page, item);
+
+            var bookCategories =  await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
+
+            return MapBookCategoriesToBookCategoryData(bookCategories);
         }
 
         private BookCategoryData[] MapBookCategoriesToBookCategoryData(IEnumerable<BookCategory> bookCategories)

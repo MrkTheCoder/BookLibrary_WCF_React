@@ -8,6 +8,6 @@ namespace BookLibrary.DataAccess.Interfaces
 {
     public interface IBookCategoryRepository : IRepositoryBase<BookCategory>
     {
-        Task<PagingEntityDto<BookCategory>> GetFilteredCategories(int page, int item);
+        Task<IEnumerable<BookCategory>> GetFilteredCategories(int page, int item);
     }
 }

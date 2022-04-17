@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -19,34 +20,24 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
             return entityContext.Borrowers;
         }
 
-        protected override async  Task<Borrower> GetEntityAsync(BookLibraryDbContext entityContext, Expression<Func<Borrower, bool>> predicate)
+        protected override async Task<Borrower> GetEntityAsync(BookLibraryDbContext entityContext, Expression<Func<Borrower, bool>> predicate)
         {
             return await Entities(entityContext)
                 .Include(i => i.Gender)
                 .FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<PagingEntityDto<Borrower>> GetFilteredBorrowersAsync(int page, int item)
+        public async Task<IEnumerable<Borrower>> GetFilteredBorrowersAsync(int page, int item)
         {
-            var pagingEntityDto = new PagingEntityDto<Borrower>();
-
             using (var context = new BookLibraryDbContext())
             {
-                var categories = await context
+                return await context
                     .Borrowers
                     .Include(i => i.Gender)
+                    .Skip(item * (page - 1))
+                    .Take(item)
                     .ToListAsync();
-                
-                var newItem = item == -1 ? categories.Count: item;
-                pagingEntityDto.TotalItems = categories.Count;
-
-                pagingEntityDto.Entities = categories
-                    .Skip(newItem * (page - 1))
-                    .Take(newItem)
-                    .ToList();
             }
-
-            return pagingEntityDto;
         }
     }
 }
