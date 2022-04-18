@@ -11,7 +11,7 @@ import {
 } from "../constants/bookConstants";
 
 export const listBooks =
-  (page = 1, item = 10, filters) =>
+  (page = 1, filters) =>
   async (dispatch) => {
     try {
       dispatch({ type: BOOK_LIST_REQUEST });

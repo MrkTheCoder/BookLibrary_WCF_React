@@ -91,10 +91,10 @@ function Borrowers() {
             {headers && (
               <Paginate
                 page={currentPage}
-                pages={3}
+                totalItems={headers["x-totalitems"]}
                 nextPage={headers["x-nextpage"]}
                 prevPage={headers["x-prevpage"]}
-                item={Number(currentItem)}
+                item={currentItem}
               />
             )}
           </div>

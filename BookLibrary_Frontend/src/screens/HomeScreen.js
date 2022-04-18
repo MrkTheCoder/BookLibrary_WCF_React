@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Bookcard from "../components/Bookcard";
@@ -22,6 +22,8 @@ function HomeScreen() {
 
   const { success, filters } = filtersFromState;
 
+  const history = useNavigate();
+
   useEffect(() => {
     if (searchParams.get("page") && searchParams.get("item")) {
       setCurrentPage(Number(searchParams.get("page")));
@@ -30,14 +32,14 @@ function HomeScreen() {
       dispatch(
         listBooks(
           Number(searchParams.get("page")),
-          Number(searchParams.get("item")),
+
           filters
         )
       );
     } else {
-      dispatch(listBooks(1, 10, filters));
-      setCurrentPage(1);
-      setCurrentItem(10);
+      history(`?page=${1}&item=${filters ? filters.item : 10}`);
+      setCurrentPage(Number(searchParams.get("page")));
+      setCurrentItem(Number(searchParams.get("item")));
     }
   }, [dispatch, searchParams, filters]);
 
@@ -63,7 +65,7 @@ function HomeScreen() {
             {headers && (
               <Paginate
                 page={currentPage}
-                pages={3}
+                totalItems={headers["x-totalitems"]}
                 nextPage={headers["x-nextpage"]}
                 prevPage={headers["x-prevpage"]}
                 item={currentItem}

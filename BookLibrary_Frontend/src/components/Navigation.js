@@ -10,7 +10,7 @@ import Loader from "../components/Loader";
 import "./style.css";
 import { RESET_FILTERS } from "../constants/categoryConstants";
 
-function Navigation({ Showcategories }) {
+function Navigation({ Showcategories, showItems }) {
   const dispatch = useDispatch();
   const categoriesFromState = useSelector((state) => state.categories);
   const { categories, loading, error: categoryError } = categoriesFromState;
@@ -32,6 +32,9 @@ function Navigation({ Showcategories }) {
   }, [dispatch, CATEGORY]);
   const history = useNavigate();
   const addFilterHandler = () => {
+    ITEM && history(`?item=${ITEM}`);
+    CATEGORY && history(`?category=${CATEGORY}`);
+
     dispatch(
       addFilters({
         category: CATEGORY,
@@ -42,6 +45,7 @@ function Navigation({ Showcategories }) {
   const clearFiltersHandler = () => {
     dispatch({ type: RESET_FILTERS });
     setCATEGORY();
+    history("/");
   };
   return (
     <div>
@@ -69,6 +73,7 @@ function Navigation({ Showcategories }) {
               </NavDropdown>
             </Nav.Item>
           )}
+
           <Nav.Item>
             <NavDropdown title={ITEM != null ? ITEM : "Items"}>
               {itemsList.map((item) => (
