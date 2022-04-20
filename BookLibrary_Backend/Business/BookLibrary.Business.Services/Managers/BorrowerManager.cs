@@ -1,7 +1,6 @@
 ﻿using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
-using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;

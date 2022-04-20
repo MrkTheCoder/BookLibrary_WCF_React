@@ -1,8 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using BookLibrary.Business.Entities;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using BookLibrary.Business.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite
 {

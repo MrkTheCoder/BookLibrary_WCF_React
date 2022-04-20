@@ -1,6 +1,5 @@
 ﻿using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
-using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Interfaces.Data;
 using Moq;
@@ -25,14 +24,14 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             _moqCategoryRepository = new Mock<IBookCategoryRepository>();
             _moqCategoryRepository.Setup(s => s.GetFilteredCategories(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync((int page, int item) => 
+                .ReturnsAsync((int page, int item) =>
                     _fakeDbCategories
                         .Skip(item * (page - 1))
                         .Take(item)
                         .ToList());
 
             _moqCategoryRepository.Setup(s => s.GetCountAsync()).ReturnsAsync(_fakeDbCategories.Count);
-            _moqCategoryRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<BookCategory,bool>>>()))
+            _moqCategoryRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<BookCategory, bool>>>()))
                 .Returns<Expression<Func<BookCategory, bool>>>(f =>
                     Task.FromResult(_fakeDbCategories.AsQueryable().Count(f)));
 
@@ -176,7 +175,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Theory]
         [MemberData(nameof(DifferentArguments))]
         [Trait(nameof(CategoryManagerTests), nameof(CategoryManager.GetCategoriesAsync))]
-        public async Task GetCategories_DifferentObjects_ShouldReturnExpectedItems(int page, int item, 
+        public async Task GetCategories_DifferentObjects_ShouldReturnExpectedItems(int page, int item,
             int expectedReturnedItems, int expectedPages, int expectedItemsPP)
         {
             var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
@@ -194,16 +193,16 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             yield return new object[] { 0, 1, 10, 1, 10 };
             yield return new object[] { 0, 10, 10, 1, 10 };
             yield return new object[] { 0, 15, 10, 1, 10 };
-            yield return new object[] { 0, 20, 20, 1 ,20 };
+            yield return new object[] { 0, 20, 20, 1, 20 };
             yield return new object[] { 0, 25, 10, 1, 10 };
             yield return new object[] { 0, 30, 21, 1, 30 };
-            yield return new object[] { 1, 0, 10, 1, 10};
+            yield return new object[] { 1, 0, 10, 1, 10 };
             yield return new object[] { 1, 20, 20, 1, 20 };
             yield return new object[] { 1, 30, 21, 1, 30 };
             yield return new object[] { 2, 0, 10, 2, 10 };
             yield return new object[] { 2, 1, 10, 2, 10 };
             yield return new object[] { 2, 20, 1, 2, 20 };
-            yield return new object[] { 2, 30, 21 , 1, 30};
+            yield return new object[] { 2, 30, 21, 1, 30 };
             yield return new object[] { 3, 0, 1, 3, 10 };
             yield return new object[] { 3, 1, 1, 3, 10 };
             yield return new object[] { 3, 20, 1, 2, 20 };

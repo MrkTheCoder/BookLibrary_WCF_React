@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Threading.Tasks;
-using BookLibrary.DataAccess.Dto;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -27,7 +26,7 @@ namespace BookLibrary.Business.Services.Managers
         { }
         public BookManager(IRepositoryFactory resRepositoryFactory) : base(resRepositoryFactory)
         { }
-        
+
         private readonly Random _rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace BookLibrary.Business.Services.Managers
         private LibraryBookData[] MapBooksToLibraryBooks(IEnumerable<Book> books, bool isThumbnail = true)
         {
             var libraryBooks = new List<LibraryBookData>();
-            
+
             foreach (var book in books)
             {
                 libraryBooks.Add(MapBookToLibraryBook(book, isThumbnail));

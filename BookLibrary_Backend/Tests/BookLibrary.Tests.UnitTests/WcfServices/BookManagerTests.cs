@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using BookLibrary.Business.AppConfigs;
+﻿using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
-using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BookLibrary.Tests.UnitTests.WcfServices
@@ -33,20 +32,20 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
 
             _moqBookRepository = new Mock<IBookRepository>();
-            
+
             _moqBookRepository.Setup(s => s.GetFilteredBooksAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((int page, int item, string category) =>
                 {
-                    return  _fakeDbBooks
+                    return _fakeDbBooks
                         .Where(w => string.IsNullOrEmpty(category) ||
                                     w.BookCategory.Name.ToLower() == category.ToLower())
                         .Skip(item * (page - 1))
                         .Take(item)
                         .ToList();
                 });
-            
+
             _moqBookRepository.Setup(s => s.GetCountAsync()).ReturnsAsync(_fakeDbBooks.Count);
-            _moqBookRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<Book,bool>>>()))
+            _moqBookRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<Book, bool>>>()))
                 .Returns<Expression<Func<Book, bool>>>(f =>
                     Task.FromResult(_fakeDbBooks.AsQueryable().Count(f)));
 
@@ -90,9 +89,9 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             _fakeDbBooks = FeedBooks(0);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(-1, 0, null));
-            await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(0, -1, null));
-            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await  bookManager.GetBooksAsync(-1, -1, null));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await bookManager.GetBooksAsync(-1, 0, null));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await bookManager.GetBooksAsync(0, -1, null));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await bookManager.GetBooksAsync(-1, -1, null));
             Assert.Equal("Page & Item arguments must be zero or a positive number", exception.Message);
         }
 
@@ -163,6 +162,39 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(expectedLastBookInPage.BookCategory.Name, actualLastBook.Category);
             Assert.Equal(expectedLastBookInPage.CoverLinkThumbnail, actualLastBook.CoverLink);
         }
+
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_DataStaySameBetweenRequests_ShouldHaveSameHashCodes()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+            var hashCodeRequestFirst = libraryBooks.GetHashCode();
+
+            libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+            var hashCodeRequestSecond = libraryBooks.GetHashCode();
+
+            Assert.Equal(hashCodeRequestFirst, hashCodeRequestSecond);
+        }
+
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_DataChangedBetweenRequests_ShouldHaveDifferentHashCodes()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+            var hashCodeRequestFirst = libraryBooks.GetHashCode();
+
+            libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
+            var hashCodeRequestSecond = libraryBooks.GetHashCode();
+
+            Assert.NotEqual(hashCodeRequestFirst, hashCodeRequestSecond);
+        }
+
 
         [Fact]
         [Trait("BookManagerTests", "GetBooks")]
@@ -277,7 +309,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Theory]
         [MemberData(nameof(DifferentPages))]
         [Trait("BookManagerTests", "GetBooks")]
-        public async Task GetBooks_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, string category, 
+        public async Task GetBooks_21Books_DifferentPageItems(int pageNumber, int itemsPerPage, string category,
             int expectedItems, int expectedPage, int expectedItemsPerPage)
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
@@ -349,7 +381,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var isbn = "000-0000000000";
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var exception = await Assert.ThrowsAsync<NotFoundException>( 
+            var exception = await Assert.ThrowsAsync<NotFoundException>(
                 async () => await bookManager.GetBookAsync(isbn));
             Assert.Equal($"Book with this ISBN {isbn} did not exits!", exception.Message);
         }
@@ -389,32 +421,32 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-           var exception =  await Assert.ThrowsAsync<ArgumentException>(
-               async () => await bookManager.GetBookAsync(isbn));
-           Assert.Equal("ISBN is in a wrong format.", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentException>(
+                async () => await bookManager.GetBookAsync(isbn));
+            Assert.Equal("ISBN is in a wrong format.", exception.Message);
         }
 
 
         public static IEnumerable<object[]> DifferentPages()
         {
             //{page, item, category,    expectedReturnedItems, expectedPage#, expectedItemsPerPage}
-            yield return new object[] { 0, 0, "", 10 , 1, 10};
-            yield return new object[] { 0, 0, " ", 0 , 1, 10};
+            yield return new object[] { 0, 0, "", 10, 1, 10 };
+            yield return new object[] { 0, 0, " ", 0, 1, 10 };
             yield return new object[] { 0, 0, "a", 0, 1, 10 };
             yield return new object[] { 0, 0, "cat2", 10, 1, 10 };
             yield return new object[] { 0, 0, "CaT2", 10, 1, 10 };
             yield return new object[] { 0, 20, "cat1", 11, 1, 20 };
             yield return new object[] { 2, 0, "cat1", 1, 2, 10 };
-            yield return new object[] { 2, 20, "cat1", 11, 1, 20  };
+            yield return new object[] { 2, 20, "cat1", 11, 1, 20 };
             yield return new object[] { 3, 0, null, 1, 3, 10 };
             yield return new object[] { 1, 20, null, 20, 1, 20 };
             yield return new object[] { 1, 30, null, 21, 1, 30 };
             yield return new object[] { 3, 0, "", 1, 3, 10 };
             yield return new object[] { 3, 0, "  ", 0, 1, 0 };
-            yield return new object[] { 4, 0, null, 1 , 3, 10};
-            yield return new object[] { 2, 20, null, 1 , 2, 20};
-            yield return new object[] { 3, 20, null, 1 , 2, 20};
-            yield return new object[] { 0, 30, null, 21 ,1 , 30};
+            yield return new object[] { 4, 0, null, 1, 3, 10 };
+            yield return new object[] { 2, 20, null, 1, 2, 20 };
+            yield return new object[] { 3, 20, null, 1, 2, 20 };
+            yield return new object[] { 0, 30, null, 21, 1, 30 };
         }
 
         private static List<Book> FeedBooks(int items)

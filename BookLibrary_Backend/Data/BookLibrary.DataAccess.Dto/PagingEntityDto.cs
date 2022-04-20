@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using BookLibrary.Business.Entities;
-using Core.Common.Interfaces.Entities;
+﻿using Core.Common.Interfaces.Entities;
+using System.Collections.Generic;
 
 namespace BookLibrary.DataAccess.Dto
 {

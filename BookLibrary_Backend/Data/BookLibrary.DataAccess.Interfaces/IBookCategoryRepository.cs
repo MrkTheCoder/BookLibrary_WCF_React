@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BookLibrary.Business.Entities;
-using BookLibrary.DataAccess.Dto;
+﻿using BookLibrary.Business.Entities;
 using Core.Common.Interfaces.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BookLibrary.DataAccess.Interfaces
 {

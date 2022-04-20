@@ -2,7 +2,6 @@
 using BookLibrary.DataAccess.SQLite.Seeds;
 using Core.Common.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.IO;
 
 namespace BookLibrary.DataAccess.SQLite
@@ -26,7 +25,7 @@ namespace BookLibrary.DataAccess.SQLite
         }
 
         // A table with one record for checking current Database version.
-        public virtual DbSet<SpResult> SpResults{ get; set; }
+        public virtual DbSet<SpResult> SpResults { get; set; }
         public virtual DbSet<DbVersion> DbVersion { get; set; }
         // Main app entities
         public virtual DbSet<Book> Books { get; set; }

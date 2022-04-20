@@ -1,6 +1,5 @@
 ﻿using BookLibrary.Business.Entities;
 using BookLibrary.Business.Services.Managers;
-using BookLibrary.DataAccess.Dto;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Exceptions;
 using Core.Common.Interfaces.Data;
@@ -27,7 +26,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             _moqBorrowerRepository = new Mock<IBorrowerRepository>();
             _moqBorrowerRepository.Setup(s => s.GetFilteredBorrowersAsync(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync((int page, int item) => 
+                .ReturnsAsync((int page, int item) =>
                     _fakeDbBorrowers
                     .Skip(item * (page - 1))
                     .Take(item)
@@ -38,7 +37,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
                     Task.FromResult(_fakeDbBorrowers.AsQueryable().FirstOrDefault(p)));
 
             _moqBorrowerRepository.Setup(s => s.GetCountAsync()).ReturnsAsync(_fakeDbBorrowers.Count);
-            _moqBorrowerRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<Borrower,bool>>>()))
+            _moqBorrowerRepository.Setup(s => s.GetCountAsync(It.IsAny<Expression<Func<Borrower, bool>>>()))
                 .Returns<Expression<Func<Borrower, bool>>>(f =>
                     Task.FromResult(_fakeDbBorrowers.AsQueryable().Count(f)));
 
@@ -199,13 +198,13 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         [Theory]
         [MemberData(nameof(DifferentArguments))]
         [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowersAsync))]
-        public async Task GetBorrowers_DifferentObjects_ShouldReturnExpectedItems(int page, int item, 
+        public async Task GetBorrowers_DifferentObjects_ShouldReturnExpectedItems(int page, int item,
             int expectedReturnItems, int expectedPage, int expectedItemPP)
         {
             var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
 
             var borrowerDataItems = await borrowerManager.GetBorrowersAsync(page, item);
-            
+
             Assert.Equal(expectedReturnItems, borrowerDataItems.Length);
             Assert.Equal(expectedPage, borrowerManager.CurrentPage);
             Assert.Equal(expectedItemPP, borrowerManager.CurrentItemsPerPage);
@@ -271,21 +270,21 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         public static IEnumerable<object[]> DifferentArguments()
         {
-            yield return new object[] { 0, 0, 10, 1, 10};
-            yield return new object[] { 0, 1, 10, 1, 10};
-            yield return new object[] { 0, 10, 10, 1, 10};
-            yield return new object[] { 0, 15, 10, 1, 10};
+            yield return new object[] { 0, 0, 10, 1, 10 };
+            yield return new object[] { 0, 1, 10, 1, 10 };
+            yield return new object[] { 0, 10, 10, 1, 10 };
+            yield return new object[] { 0, 15, 10, 1, 10 };
             yield return new object[] { 0, 20, 20, 1, 20 };
             yield return new object[] { 0, 25, 10, 1, 10 };
-            yield return new object[] { 0, 30, 21, 1, 30};
+            yield return new object[] { 0, 30, 21, 1, 30 };
             yield return new object[] { 1, 0, 10, 1, 10 };
             yield return new object[] { 1, 20, 20, 1, 20 };
             yield return new object[] { 1, 30, 21, 1, 30 };
             yield return new object[] { 2, 0, 10, 2, 10 };
             yield return new object[] { 2, 1, 10, 2, 10 };
             yield return new object[] { 2, 20, 1, 2, 20 };
-            yield return new object[] { 2, 30, 21 , 1, 30};
-            yield return new object[] { 3, 0, 1 , 3, 10};
+            yield return new object[] { 2, 30, 21, 1, 30 };
+            yield return new object[] { 3, 0, 1, 3, 10 };
             yield return new object[] { 3, 1, 1, 3, 10 };
             yield return new object[] { 3, 20, 1, 2, 20 };
         }

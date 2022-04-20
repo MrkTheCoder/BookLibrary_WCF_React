@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Threading.Tasks;
-using BookLibrary.Business.Contracts.DataContracts;
+﻿using BookLibrary.Business.Contracts.DataContracts;
 using BookLibrary.Business.Contracts.ServiceContracts;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Core.Common.Interfaces.Data;
+using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.Threading.Tasks;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -20,10 +19,10 @@ namespace BookLibrary.Business.Services.Managers
     {
         public CategoryManager() : base()
         { }
-        public CategoryManager(IRepositoryFactory repositoryFactory) : base (repositoryFactory)
+        public CategoryManager(IRepositoryFactory repositoryFactory) : base(repositoryFactory)
         { }
-        
-        
+
+
         public async Task<BookCategoryData[]> GetCategoriesAsync(int page, int item)
         {
             if (page < 0 || item < 0)
@@ -35,7 +34,7 @@ namespace BookLibrary.Business.Services.Managers
 
             InitializePaging(totalItems, page, item);
 
-            var bookCategories =  await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
+            var bookCategories = await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
 
             return MapBookCategoriesToBookCategoryData(bookCategories);
         }
@@ -48,8 +47,8 @@ namespace BookLibrary.Business.Services.Managers
             {
                 bookCategoryDataItems.Add(new BookCategoryData
                 {
-                     Name = bookCategory.Name,
-                     BooksInCategory = bookCategory.Books.Count
+                    Name = bookCategory.Name,
+                    BooksInCategory = bookCategory.Books.Count
                 });
             }
 

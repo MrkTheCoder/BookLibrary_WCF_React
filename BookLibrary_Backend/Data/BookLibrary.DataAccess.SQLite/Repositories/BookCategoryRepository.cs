@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BookLibrary.Business.Entities;
-using BookLibrary.DataAccess.Dto;
+﻿using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
