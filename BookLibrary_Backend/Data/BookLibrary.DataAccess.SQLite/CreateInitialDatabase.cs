@@ -55,7 +55,7 @@ namespace BookLibrary.DataAccess.SQLite
                 }
                 catch (System.Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    throw ex;
                 }
                 finally
                 {

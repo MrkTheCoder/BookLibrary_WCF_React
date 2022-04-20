@@ -8,7 +8,7 @@ namespace BookLibrary.DataAccess.SQLite
 {
     public partial class BookLibraryDbContext : DbContext
     {
-        public const string DbVer = "v0.6.11";
+        public const string DbVer = "v0.6.12";
         private const string DatabaseFilename = "LocalDb.sqlite";
         private static string _databasePath = null;
 
@@ -74,6 +74,12 @@ namespace BookLibrary.DataAccess.SQLite
                     .HasColumnName("ISBN")
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                
+                entity.Property(e => e.RowVersion)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .IsConcurrencyToken();
 
                 entity.Property(e => e.Title)
                     .IsRequired()
