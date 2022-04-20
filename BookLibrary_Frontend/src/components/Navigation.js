@@ -25,7 +25,7 @@ function Navigation({ Showcategories, showItems }) {
   const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
   const [ITEM, setITEM] = useState(filters ? filters.item : null);
 
-  const itemsList = [1, 10, 20, 30, 50];
+  const itemsList = [1, 10, 20, 30, 40, 50];
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
