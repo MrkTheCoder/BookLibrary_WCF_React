@@ -2,22 +2,34 @@ import React, { useState, useEffect } from "react";
 import { Pagination, Form, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
-
 import "./Paginate.css";
+import getPageAndItem from "./getPageAndItem";
 
-function Paginate({ totalItems, page, nextPage, prevPage, item }) {
+function Paginate({ totalItems, nextPage, prevPage }) {
   const [CustomPage, setCustomPage] = useState();
-  const [CurrentPage, setCurrentPage] = useState(null);
+  const [item, setCurrentItem] = useState();
+  const [page, SetCurrentPage] = useState();
 
   const history = useNavigate();
 
   let totalPage = Math.ceil(totalItems / item);
-  const currentPage = 0;
 
-  console.log(currentPage);
+  useEffect(() => {
+    if (nextPage) {
+      const { page, item } = getPageAndItem(nextPage, "nextPage");
+
+      SetCurrentPage(Number(page));
+      setCurrentItem(Number(item));
+    } else if (prevPage) {
+      const { page, item } = getPageAndItem(prevPage, "prevPage");
+
+      SetCurrentPage(Number(page));
+      setCurrentItem(Number(item));
+    }
+  }, [nextPage, prevPage]);
 
   const customPageHandler = (e) => {
-    console.log(totalPage);
+    console.log(page, item);
     e.preventDefault();
 
     if (CustomPage && CustomPage >= 1 && CustomPage <= totalPage) {
@@ -30,6 +42,13 @@ function Paginate({ totalItems, page, nextPage, prevPage, item }) {
         <LinkContainer to={`${prevPage}`}>
           <Pagination.Prev className={prevPage ? "" : "disabled"} />
         </LinkContainer>
+        {page - 2 >= 1 && (
+          <LinkContainer to={`?page=${page - 2}&item=${item}`}>
+            <Pagination.Item active={page === page - 2}>
+              {page - 2}
+            </Pagination.Item>
+          </LinkContainer>
+        )}
         {prevPage && (
           <LinkContainer to={`?page=${page - 1}&item=${item}`}>
             <Pagination.Item>{page - 1}</Pagination.Item>
@@ -44,6 +63,13 @@ function Paginate({ totalItems, page, nextPage, prevPage, item }) {
           <LinkContainer to={`?page=${page + 1}&item=${item}`}>
             <Pagination.Item active={page + 1 === page}>
               {page + 1}
+            </Pagination.Item>
+          </LinkContainer>
+        )}
+        {page + 2 <= totalPage && (
+          <LinkContainer to={`?page=${page + 2}&item=${item}`}>
+            <Pagination.Item active={page === page + 2}>
+              {page + 2}
             </Pagination.Item>
           </LinkContainer>
         )}

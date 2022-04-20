@@ -64,11 +64,9 @@ function HomeScreen() {
           <div>
             {headers && (
               <Paginate
-                page={currentPage}
                 totalItems={headers["x-totalitems"]}
                 nextPage={headers["x-nextpage"]}
                 prevPage={headers["x-prevpage"]}
-                item={currentItem}
               />
             )}
           </div>
