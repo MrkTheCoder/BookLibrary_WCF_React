@@ -53,11 +53,11 @@ function Paginate({ totalItems, nextPage, prevPage }) {
         <Pagination className="pagination">
           {totalPage >= 3 && (
             <LinkContainer
-              data-testid="prevPageLink"
+              data-testid="firstPageLink"
               to={`?page=${1}&item=${item}`}
             >
               <Pagination.First
-                data-testid="prevPage"
+                data-testid="firstPageButton"
                 className={page == 1 ? "disabled" : null}
               />
             </LinkContainer>
@@ -70,10 +70,10 @@ function Paginate({ totalItems, nextPage, prevPage }) {
           </LinkContainer>
           {!nextPage && page - 2 > 0 ? (
             <LinkContainer
-              data-testid="1pageBeforeLink"
+              data-testid="2pageBeforeLink"
               to={`?page=${page - 2}&item=${item}`}
             >
-              <Pagination.Item data-testid="1pageBefore">
+              <Pagination.Item data-testid="2pageBeforeButton">
                 {page - 2}
               </Pagination.Item>
             </LinkContainer>
@@ -83,7 +83,7 @@ function Paginate({ totalItems, nextPage, prevPage }) {
               data-testid="1pageBeforeLink"
               to={`?page=${page - 1}&item=${item}`}
             >
-              <Pagination.Item data-testid="1pageBefore">
+              <Pagination.Item data-testid="1pageBeforeButton">
                 {page - 1}
               </Pagination.Item>
             </LinkContainer>
@@ -92,7 +92,10 @@ function Paginate({ totalItems, nextPage, prevPage }) {
             data-testid="currentPageLink"
             to={`?page=${page}&item=${item}`}
           >
-            <Pagination.Item data-testid="currentPage" active={page === page}>
+            <Pagination.Item
+              data-testid="currentPageButton"
+              active={page === page}
+            >
               {page}
             </Pagination.Item>
           </LinkContainer>
@@ -102,7 +105,7 @@ function Paginate({ totalItems, nextPage, prevPage }) {
               to={`?page=${page + 1}&item=${item}`}
             >
               <Pagination.Item
-                data-testid="1pageAfter"
+                data-testid="1pageAfterButton"
                 active={page + 1 === page}
               >
                 {page + 1}
@@ -111,10 +114,10 @@ function Paginate({ totalItems, nextPage, prevPage }) {
           )}
           {!prevPage && page + 2 <= totalPage ? (
             <LinkContainer
-              data-testid="1pageBeforeLink"
+              data-testid="2pageAfterLink"
               to={`?page=${page + 2}&item=${item}`}
             >
-              <Pagination.Item data-testid="1pageBefore">
+              <Pagination.Item data-testid="2pageAfterButton">
                 {page + 2}
               </Pagination.Item>
             </LinkContainer>
@@ -138,19 +141,19 @@ function Paginate({ totalItems, nextPage, prevPage }) {
               </Dropdown.Menu>
             </Dropdown>
           )}
-          <LinkContainer data-testid="prevPageLink" to={`${nextPage}`}>
+          <LinkContainer data-testid="nextPageLink" to={`${nextPage}`}>
             <Pagination.Next
-              data-testid="prevPage"
+              data-testid="nextPageButton"
               className={nextPage ? "" : "disabled"}
             />
           </LinkContainer>
           {totalPage >= 3 && (
             <LinkContainer
-              data-testid="prevPageLink"
+              data-testid="lastPageLink"
               to={`?page=${totalItems}&item=${item}`}
             >
               <Pagination.Last
-                data-testid="prevPage"
+                data-testid="lastPageButton"
                 className={page == totalPage ? "disabled" : null}
               />
             </LinkContainer>
