@@ -39,7 +39,25 @@ Brief description of each folder:
   - **Tests**: Integration and Unit Tests.
 
 ## Layers
-
-
-
-To ⏳ Be 🔨 continue 🔎 ...
+We have these layers
+  - Database:
+    - SQLite: database file created in the root of the app. (LocalDb.sqlite)
+  - Data Access:
+    - EF Core / DbContext
+    - Repositories
+    - Contracts
+    - Dtos
+  - Business: 
+    - Bootstrapper
+    - WCF Contracts
+    - WCF Services
+    - Entities
+  - Core: Common things!
+  - Host: WCF self host:
+    - Console Hosts:
+      - Local network host.
+      - Azure host.
+  - Tests:
+    - (Client) Console Tests
+    - Integrated Tests
+    - Unit Tests
