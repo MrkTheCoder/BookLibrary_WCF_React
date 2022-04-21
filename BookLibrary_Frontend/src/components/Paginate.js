@@ -48,92 +48,116 @@ function Paginate({ totalItems, nextPage, prevPage }) {
     }
   };
   return (
-    <div className="mainPaginationBody">
-      <Pagination className="pagination">
-        <LinkContainer data-testid="prevPageLink" to={`${prevPage}`}>
-          <Pagination.Prev
-            data-testid="prevPageButton"
-            className={prevPage ? "" : "disabled"}
-          />
-        </LinkContainer>
-        {!nextPage && page - 2 > 0 ? (
-          <LinkContainer
-            data-testid="1pageBeforeLink"
-            to={`?page=${page - 2}&item=${item}`}
-          >
-            <Pagination.Item data-testid="1pageBefore">
-              {page - 2}
-            </Pagination.Item>
-          </LinkContainer>
-        ) : null}
-        {prevPage && (
-          <LinkContainer
-            data-testid="1pageBeforeLink"
-            to={`?page=${page - 1}&item=${item}`}
-          >
-            <Pagination.Item data-testid="1pageBefore">
-              {page - 1}
-            </Pagination.Item>
-          </LinkContainer>
-        )}
-        <LinkContainer
-          data-testid="currentPageLink"
-          to={`?page=${page}&item=${item}`}
-        >
-          <Pagination.Item data-testid="currentPage" active={page === page}>
-            {page}
-          </Pagination.Item>
-        </LinkContainer>
-        {nextPage && (
-          <LinkContainer
-            data-testid="1pageAfterLink"
-            to={`?page=${page + 1}&item=${item}`}
-          >
-            <Pagination.Item
-              data-testid="1pageAfter"
-              active={page + 1 === page}
+    totalPage > 1 && (
+      <div className="mainPaginationBody">
+        <Pagination className="pagination">
+          {totalPage >= 3 && (
+            <LinkContainer
+              data-testid="prevPageLink"
+              to={`?page=${1}&item=${item}`}
             >
-              {page + 1}
-            </Pagination.Item>
+              <Pagination.First
+                data-testid="prevPage"
+                className={page == 1 ? "disabled" : null}
+              />
+            </LinkContainer>
+          )}
+          <LinkContainer data-testid="prevPageLink" to={`${prevPage}`}>
+            <Pagination.Prev
+              data-testid="prevPageButton"
+              className={prevPage ? "" : "disabled"}
+            />
           </LinkContainer>
-        )}
-        {!prevPage && page + 2 <= totalPage ? (
+          {!nextPage && page - 2 > 0 ? (
+            <LinkContainer
+              data-testid="1pageBeforeLink"
+              to={`?page=${page - 2}&item=${item}`}
+            >
+              <Pagination.Item data-testid="1pageBefore">
+                {page - 2}
+              </Pagination.Item>
+            </LinkContainer>
+          ) : null}
+          {prevPage && (
+            <LinkContainer
+              data-testid="1pageBeforeLink"
+              to={`?page=${page - 1}&item=${item}`}
+            >
+              <Pagination.Item data-testid="1pageBefore">
+                {page - 1}
+              </Pagination.Item>
+            </LinkContainer>
+          )}
           <LinkContainer
-            data-testid="1pageBeforeLink"
-            to={`?page=${page + 2}&item=${item}`}
+            data-testid="currentPageLink"
+            to={`?page=${page}&item=${item}`}
           >
-            <Pagination.Item data-testid="1pageBefore">
-              {page + 2}
+            <Pagination.Item data-testid="currentPage" active={page === page}>
+              {page}
             </Pagination.Item>
           </LinkContainer>
-        ) : null}
-        {totalPage > 3 && (
-          <Dropdown>
-            <Dropdown.Toggle as={CustomToggle}>
-              <Pagination.Ellipsis />
-            </Dropdown.Toggle>
-            <Dropdown.Menu as={"div"}>
-              <Form className="customPage" onSubmit={customPageHandler}>
-                <Form.Group>
-                  <Form.Control
-                    className="w-auto"
-                    onChange={(e) => setCustomPage(e.target.value)}
-                    placeholder="Enter page number..."
-                  />
-                </Form.Group>
-                <Button type="submit">GO!</Button>
-              </Form>
-            </Dropdown.Menu>
-          </Dropdown>
-        )}
-        <LinkContainer data-testid="prevPageLink" to={`${nextPage}`}>
-          <Pagination.Next
-            data-testid="prevPage"
-            className={nextPage ? "" : "disabled"}
-          />
-        </LinkContainer>
-      </Pagination>
-    </div>
+          {nextPage && (
+            <LinkContainer
+              data-testid="1pageAfterLink"
+              to={`?page=${page + 1}&item=${item}`}
+            >
+              <Pagination.Item
+                data-testid="1pageAfter"
+                active={page + 1 === page}
+              >
+                {page + 1}
+              </Pagination.Item>
+            </LinkContainer>
+          )}
+          {!prevPage && page + 2 <= totalPage ? (
+            <LinkContainer
+              data-testid="1pageBeforeLink"
+              to={`?page=${page + 2}&item=${item}`}
+            >
+              <Pagination.Item data-testid="1pageBefore">
+                {page + 2}
+              </Pagination.Item>
+            </LinkContainer>
+          ) : null}
+          {totalPage > 3 && (
+            <Dropdown>
+              <Dropdown.Toggle as={CustomToggle}>
+                <Pagination.Ellipsis />
+              </Dropdown.Toggle>
+              <Dropdown.Menu as={"div"}>
+                <Form className="customPage" onSubmit={customPageHandler}>
+                  <Form.Group>
+                    <Form.Control
+                      className="w-auto"
+                      onChange={(e) => setCustomPage(e.target.value)}
+                      placeholder="Enter page number..."
+                    />
+                  </Form.Group>
+                  <Button type="submit">GO!</Button>
+                </Form>
+              </Dropdown.Menu>
+            </Dropdown>
+          )}
+          <LinkContainer data-testid="prevPageLink" to={`${nextPage}`}>
+            <Pagination.Next
+              data-testid="prevPage"
+              className={nextPage ? "" : "disabled"}
+            />
+          </LinkContainer>
+          {totalPage >= 3 && (
+            <LinkContainer
+              data-testid="prevPageLink"
+              to={`?page=${totalItems}&item=${item}`}
+            >
+              <Pagination.Last
+                data-testid="prevPage"
+                className={page == totalPage ? "disabled" : null}
+              />
+            </LinkContainer>
+          )}
+        </Pagination>
+      </div>
+    )
   );
 }
 
