@@ -11,13 +11,17 @@ import {
 } from "../constants/bookConstants";
 
 export const listBooks =
-  (page = 1, filters) =>
+  (page = 1, filters, headers) =>
   async (dispatch) => {
     try {
       dispatch({ type: BOOK_LIST_REQUEST });
+      if (filters == null) {
+        filters = { item: 10 };
+      }
 
       const { data, headers } = await axios.get(
         `http://localhost:51202/api/BookManager/books?page=${page}`,
+
         { params: filters }
       );
 
