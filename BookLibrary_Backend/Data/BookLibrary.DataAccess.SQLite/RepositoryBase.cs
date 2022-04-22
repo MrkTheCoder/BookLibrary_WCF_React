@@ -15,7 +15,7 @@ namespace BookLibrary.DataAccess.SQLite
     /// <typeparam name="TEntity">Database entity.</typeparam>
     /// <typeparam name="TDbContext">Database DbContext.</typeparam>
     public abstract class RepositoryBase<TEntity, TDbContext> : IRepositoryBase<TEntity>
-        where TEntity : class, IIdentifiableEntity, new()
+        where TEntity : class, IEntityBase, new()
         where TDbContext : DbContext, new()
     {
         protected abstract DbSet<TEntity> Entities(TDbContext entityContext);

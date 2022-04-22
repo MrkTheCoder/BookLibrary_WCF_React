@@ -60,14 +60,14 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         [Fact]
         [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowersAsync))]
-        public async Task GetBorrowers_WithoutParameters_ShouldReturnAllBorrowers()
+        public async Task GetBorrowers_WithoutParameters_ShouldReturn10Borrowers()
         {
             var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
 
             var borrowerDataItems = await borrowerManager.GetBorrowersAsync(0, 0);
 
             Assert.NotEmpty(borrowerDataItems);
-            Assert.Equal(_fakeDbBorrowers.Count(), borrowerDataItems.Length);
+            Assert.Equal(10, borrowerDataItems.Length);
         }
 
         [Fact]
@@ -108,7 +108,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
         [Fact]
         [Trait(nameof(BorrowerManagerTests), nameof(BorrowerManager.GetBorrowersAsync))]
-        public async Task GetBorrowers_WithoutParameters_ShouldLastBorrowerPlaceAtLast()
+        public async Task GetBorrowers_WithoutParameters_ShouldReturn10Borrower()
         {
             var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
 
@@ -116,7 +116,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             var lastUser = borrowerDataItems.Last();
 
-            Assert.Equal(_fakeDbBorrowers.Last().PhoneNo, lastUser.PhoneNo);
+            Assert.Equal(_fakeDbBorrowers.ToList()[9].PhoneNo, lastUser.PhoneNo);
         }
 
         [Fact]

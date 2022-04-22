@@ -3,7 +3,7 @@ using Core.Common.Interfaces.Entities;
 
 namespace BookLibrary.Business.Entities
 {
-    public class BookCategory : IIdentifiableEntity
+    public class BookCategory : IEntityBase
     {
         public BookCategory()
         {
@@ -20,5 +20,7 @@ namespace BookLibrary.Business.Entities
             get => Id;
             set => Id = value;
         }
+
+        public string Version { get; }
     }
 }

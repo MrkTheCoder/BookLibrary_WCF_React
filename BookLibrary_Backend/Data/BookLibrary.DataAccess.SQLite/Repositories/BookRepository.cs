@@ -56,6 +56,7 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                     .Include(i => i.BookCopy)
                     .Where(w => string.IsNullOrEmpty(category) ||
                                 w.BookCategory.Name.ToLower() == category.ToLower())
+                    .OrderBy(o => o.Title)
                     .Skip(item * (page - 1))
                     .Take(item)
                     .ToListAsync();

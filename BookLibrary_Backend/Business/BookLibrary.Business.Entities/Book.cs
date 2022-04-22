@@ -11,7 +11,7 @@ namespace BookLibrary.Business.Entities
         public string Title { get; set; }
         public string CoverLinkOriginal { get; set; }
         public string CoverLinkThumbnail { get; set; }
-        public byte[] RowVersion { get; set; }
+        public long RowVersion { get; set; }
 
         public virtual BookCategory BookCategory { get; set; }
         public virtual BookCopy BookCopy { get; set; }
@@ -22,6 +22,6 @@ namespace BookLibrary.Business.Entities
             set => Id = value;
         }
 
-        public string Version => RowVersion.ToHexString();
+        public string Version => Isbn + RowVersion.ToString();
     }
 }

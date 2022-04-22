@@ -11,7 +11,7 @@ namespace Core.Common.Interfaces.Data
     /// </summary>
     /// <typeparam name="TEntity">Database entity.</typeparam>
     public interface IRepositoryBase<TEntity> : IRepository
-        where TEntity : class, IIdentifiableEntity
+        where TEntity : class, IEntityBase
     {
         Task<TEntity> GetByIdAsync(int id);
         Task<TEntity> GetByExpressionAsync(Expression<Func<TEntity, bool>> predicate);

@@ -14,7 +14,7 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
         public BookManagerIntegrationTests()
         {
             // Create Database if not exists or if it is old version.
-            CreateInitialDatabase.Initialize();
+            CreateInitialDatabase.Initialize(true);
 
             BootContainer.Builder = Bootstrapper.LoadContainer;
         }

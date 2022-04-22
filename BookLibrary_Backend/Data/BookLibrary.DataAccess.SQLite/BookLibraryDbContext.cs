@@ -8,7 +8,7 @@ namespace BookLibrary.DataAccess.SQLite
 {
     public partial class BookLibraryDbContext : DbContext
     {
-        public const string DbVer = "v0.6.12";
+        public const string DbVer = "v0.6.13";
         private const string DatabaseFilename = "LocalDb.sqlite";
         private static string _databasePath = null;
 
@@ -46,7 +46,9 @@ namespace BookLibrary.DataAccess.SQLite
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Ignoring Interfaces and Entities Properties
+            modelBuilder.Ignore<IEntityBase>();
             modelBuilder.Ignore<IIdentifiableEntity>();
+            modelBuilder.Ignore<IEntityVersion>();
             modelBuilder.Entity<Book>().Ignore(p => p.EntityId);
             modelBuilder.Entity<BookCategory>().Ignore(p => p.EntityId);
             modelBuilder.Entity<BookCopy>().Ignore(p => p.EntityId);
@@ -74,12 +76,11 @@ namespace BookLibrary.DataAccess.SQLite
                     .HasColumnName("ISBN")
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                
+
                 entity.Property(e => e.RowVersion)
                     .IsRequired()
                     .IsRowVersion()
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .IsConcurrencyToken();
+                    .HasDefaultValue(0);
 
                 entity.Property(e => e.Title)
                     .IsRequired()

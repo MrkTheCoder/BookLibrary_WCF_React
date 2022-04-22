@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using Xunit;
 
 namespace BookLibrary.Tests.UnitTests.WcfServices
@@ -163,36 +164,63 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(expectedLastBookInPage.CoverLinkThumbnail, actualLastBook.CoverLink);
         }
 
-
         [Fact]
         [Trait("BookManagerTests", "GetBooks")]
-        public async Task GetBooks_DataStaySameBetweenRequests_ShouldHaveSameHashCodes()
+        public async Task GetBooks_RequestBooks_ShouldHaveAnEtag()
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            
+            Assert.True(string.IsNullOrEmpty(bookManager.ETag));
 
-            var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
-            var hashCodeRequestFirst = libraryBooks.GetHashCode();
+            await bookManager.GetBooksAsync(0, 0, null);
 
-            libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
-            var hashCodeRequestSecond = libraryBooks.GetHashCode();
-
-            Assert.Equal(hashCodeRequestFirst, hashCodeRequestSecond);
+            Assert.True(!string.IsNullOrEmpty(bookManager.ETag));
         }
 
-
         [Fact]
         [Trait("BookManagerTests", "GetBooks")]
-        public async Task GetBooks_DataChangedBetweenRequests_ShouldHaveDifferentHashCodes()
+        public async Task GetBooks_RequestSameBooksTwice_ShouldHaveEqualEtag()
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
 
-            var libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
-            var hashCodeRequestFirst = libraryBooks.GetHashCode();
+            await bookManager.GetBooksAsync(0, 0, null);
+            var eTagList1 = bookManager.ETag;
+            
+            await bookManager.GetBooksAsync(0, 0, null);
+            var eTagList2 = bookManager.ETag;
 
-            libraryBooks = await bookManager.GetBooksAsync(0, 0, null);
-            var hashCodeRequestSecond = libraryBooks.GetHashCode();
+            Assert.Equal(eTagList1, eTagList2);
+        }
 
-            Assert.NotEqual(hashCodeRequestFirst, hashCodeRequestSecond);
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_RequestTwiceForDifferentBooks_ShouldHaveDifferentEtag()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            var eTagList1 = bookManager.ETag;
+            
+            await bookManager.GetBooksAsync(2, 0, null);
+            var eTagList2 = bookManager.ETag;
+
+            Assert.NotEqual(eTagList1, eTagList2);
+        }
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBooks")]
+        public async Task GetBooks_RequestSameListTwiceDataChangedBetweenRequests_ShouldHaveDifferentEtag()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            var eTagList1 = bookManager.ETag;
+
+            _fakeDbBooks[0].RowVersion++;
+            await bookManager.GetBooksAsync(0, 0, null);
+            var eTagList2 = bookManager.ETag;
+
+            Assert.NotEqual(eTagList1, eTagList2);
         }
 
 
@@ -265,7 +293,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             var actualFirstBook = libraryBooks.FirstOrDefault();
             var actualLastBook = libraryBooks.LastOrDefault();
 
-            Assert.Equal(_fakeDbBooks.Count, libraryBooks.Length);
+            Assert.Equal(10, libraryBooks.Length);
             Assert.NotNull(actualFirstBook);
             Assert.Equal(_bookIdOne.Isbn, actualFirstBook.Isbn);
             Assert.Equal(_bookIdOne.Title, actualFirstBook.Title);
@@ -273,7 +301,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(_bookIdOne.CoverLinkThumbnail, actualFirstBook.CoverLink);
 
 
-            var expectedLastBookInPage = _fakeDbBooks.LastOrDefault();
+            var expectedLastBookInPage = _fakeDbBooks[9];
             Assert.NotNull(expectedLastBookInPage);
             Assert.NotNull(actualLastBook);
             Assert.Equal(expectedLastBookInPage.Isbn, actualLastBook.Isbn);
@@ -406,6 +434,27 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(book.CoverLinkOriginal, libraryBook1.CoverLink);
         }
 
+        [Fact]
+        [Trait("BookManagerTests", "GetBook")]
+        public async Task GetBook_RequestingABook_ShouldProduceETag()
+        {
+            var isbn1 = "001-0000000001";
+            var isbn2 = "0010000000001";
+            var book = _fakeDbBooks.Single(s => s.Isbn == isbn1);
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            var libraryBook1 = await bookManager.GetBookAsync(isbn1);
+            var libraryBook2 = await bookManager.GetBookAsync(isbn2);
+
+            Assert.NotNull(libraryBook1);
+            Assert.NotNull(libraryBook2);
+            Assert.Equal(libraryBook1.Isbn, libraryBook2.Isbn);
+            Assert.Equal(book.Isbn, libraryBook1.Isbn);
+            Assert.Equal(book.Title, libraryBook1.Title);
+            Assert.Equal(book.CoverLinkOriginal, libraryBook1.CoverLink);
+        }
+
+
         [Theory]
         [InlineData("")]
         [InlineData("1")]
@@ -442,7 +491,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             yield return new object[] { 1, 20, null, 20, 1, 20 };
             yield return new object[] { 1, 30, null, 21, 1, 30 };
             yield return new object[] { 3, 0, "", 1, 3, 10 };
-            yield return new object[] { 3, 0, "  ", 0, 1, 0 };
+            yield return new object[] { 3, 0, "  ", 0, 1, 10 };
             yield return new object[] { 4, 0, null, 1, 3, 10 };
             yield return new object[] { 2, 20, null, 1, 2, 20 };
             yield return new object[] { 3, 20, null, 1, 2, 20 };

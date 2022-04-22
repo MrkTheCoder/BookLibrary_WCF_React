@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BookLibrary.Business.Contracts.DataContracts;
+using Core.Common.Exceptions;
+using System;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Runtime.Serialization.Json;
@@ -7,8 +9,6 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Web;
-using BookLibrary.Business.Contracts.DataContracts;
-using Core.Common.Exceptions;
 
 namespace BookLibrary.Business.Services.Behaviors
 {
@@ -22,8 +22,9 @@ namespace BookLibrary.Business.Services.Behaviors
         // IErrorHandler members:
         public void ProvideFault(Exception error, MessageVersion version, ref Message fault)
         {
-            var errorCode = HttpStatusCode.BadRequest;
-            var errorResponseMessage = "Unknown Exception";
+
+            HttpStatusCode errorCode;
+            var errorResponseMessage = "";
 
             switch (error)
             {
@@ -39,13 +40,23 @@ namespace BookLibrary.Business.Services.Behaviors
                         errorResponseMessage = "Check Arguments Format!";
                         break;
                     }
+                case WebFaultException e:
+                    {
+                        errorCode = e.StatusCode;
+                        errorResponseMessage = e.Message;
+                        break;
+                    }
                 // General
                 default:
                     {
+                        errorCode = HttpStatusCode.BadRequest;
+                        errorResponseMessage = error.Message;
                         break;
                     }
-
             }
+
+            Console.WriteLine();
+            Console.WriteLine($"Exception: error code: {(int)errorCode} message: {error.Message}");
 
             fault = Message
                 .CreateMessage(version, "",

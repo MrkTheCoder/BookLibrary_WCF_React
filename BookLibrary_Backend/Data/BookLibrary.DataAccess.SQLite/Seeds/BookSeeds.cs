@@ -1,4 +1,6 @@
-﻿using BookLibrary.Business.Entities;
+﻿using System;
+using BookLibrary.Business.Entities;
+using Core.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookLibrary.DataAccess.SQLite.Seeds
@@ -36,5 +38,6 @@ namespace BookLibrary.DataAccess.SQLite.Seeds
                     new Book { Id = 21, Isbn = "987-8864521891", Title = "Be your own boss" , BookCategoryId = 6, CoverLinkThumbnail = thumbnailImage, CoverLinkOriginal = originalImage}
                 );
         }
+
     }
 }

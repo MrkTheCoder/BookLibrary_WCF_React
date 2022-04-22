@@ -29,7 +29,7 @@ namespace Core.Common.CorsOnWcf
             requiredHeaders.Add("Access-Control-Request-Method", "POST,GET,PUT,DELETE,OPTIONS");
             requiredHeaders.Add("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
             // Below line added based on: https://stackoverflow.com/questions/37897523/axios-get-access-to-response-header-fields
-            requiredHeaders.Add("Access-Control-Expose-Headers", "X-TotalItems,X-NextPage,X-PrevPage");
+            requiredHeaders.Add("Access-Control-Expose-Headers", "ETag,X-TotalItems,X-CurrentPage,X-NextPage,X-PrevPage");
             
             endpointDispatcher.DispatchRuntime.MessageInspectors.Add(new CustomHeaderMessageInspector(requiredHeaders));
         }

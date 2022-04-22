@@ -16,7 +16,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         public RepositoryIntegrationTests()
         {
             // Create Database if not exists or if it is old version.
-            CreateInitialDatabase.Initialize();
+            CreateInitialDatabase.Initialize(true);
             _newBook1 = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1};
             _bookRepository = new BookRepository();
         }

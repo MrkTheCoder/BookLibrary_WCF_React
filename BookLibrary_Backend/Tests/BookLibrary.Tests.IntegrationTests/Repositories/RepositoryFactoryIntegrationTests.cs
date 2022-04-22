@@ -20,7 +20,7 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         public RepositoryFactoryIntegrationTests()
         {
             // Create Database if not exists or if it is old version.
-            CreateInitialDatabase.Initialize();
+            CreateInitialDatabase.Initialize(true);
 
             BootContainer.Builder = Bootstrapper.LoadContainer;
 
@@ -108,6 +108,29 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
             Assert.NotNull(findBook);
             Assert.Equal(book.Isbn, findBook.Isbn);
             Assert.Equal(book.Isbn, updatedBook.Isbn);
+            Assert.True(updatedBook.Id == id);
+
+            bookRepository.Remove(id);
+        }
+
+        [Fact]
+        public async Task RepositoryFactory_BookRepositoryUpdate_ShouldTimestampChanged()
+        {
+            var newBook1 = new Book { Isbn = "113-222", Title = "A B C"  , BookCategoryId = 1};
+            var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
+            
+            var newBook = bookRepository.Add(newBook1);
+            var id = newBook.Id;
+            var createdVersion = newBook.Version;
+            var createdRowVersion = newBook.RowVersion;
+            
+            newBook.Isbn = "000-000";
+            var updatedBook = bookRepository.Update(newBook);
+
+            var findBook = (await bookRepository.GetAllAsync()).FirstOrDefault(f => f.Id == id);
+            Assert.NotNull(findBook);
+            Assert.NotEqual(createdRowVersion, updatedBook.RowVersion);
+            Assert.NotEqual(createdVersion, updatedBook.Version);
             Assert.True(updatedBook.Id == id);
 
             bookRepository.Remove(id);

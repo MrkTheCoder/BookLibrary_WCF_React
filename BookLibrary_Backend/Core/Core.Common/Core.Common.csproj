@@ -49,6 +49,8 @@
     <Compile Include="CorsOnWcf\EnableCrossOriginResourceSharingBehavior.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Helpers\BookHelper.cs" />
+    <Compile Include="Helpers\ChecksumHelper.cs" />
+    <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

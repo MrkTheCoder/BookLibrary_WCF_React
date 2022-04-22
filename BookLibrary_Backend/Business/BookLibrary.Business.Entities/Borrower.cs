@@ -3,7 +3,7 @@ using Core.Common.Interfaces.Entities;
 
 namespace BookLibrary.Business.Entities
 {
-    public class Borrower : IIdentifiableEntity
+    public class Borrower : IEntityBase
     {
         public int Id { get; set; }
         public int GenderId { get; set; }
@@ -24,5 +24,7 @@ namespace BookLibrary.Business.Entities
             get => Id;
             set => Id = value;
         }
+
+        public string Version { get; }
     }
 }

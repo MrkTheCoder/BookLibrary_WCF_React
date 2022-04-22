@@ -2,7 +2,7 @@
 
 namespace BookLibrary.Business.Entities
 {
-    public class BookCopy : IIdentifiableEntity
+    public class BookCopy : IEntityBase
     {
         public int BookId { get; set; }
         public int TotalCopy { get; set; }
@@ -14,5 +14,7 @@ namespace BookLibrary.Business.Entities
             get => BookId;
             set => BookId = value;
         }
+
+        public string Version { get; }
     }
 }
