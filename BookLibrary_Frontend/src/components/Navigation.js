@@ -75,7 +75,7 @@ function Navigation({ Showcategories, showItems }) {
           )}
 
           <Nav.Item>
-            <NavDropdown title={ITEM != null ? ITEM : "Items"}>
+            <NavDropdown title={ITEM != null || 0 ? ITEM : "Items"}>
               {itemsList.map((item) => (
                 <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
                   <div>{item}</div>
