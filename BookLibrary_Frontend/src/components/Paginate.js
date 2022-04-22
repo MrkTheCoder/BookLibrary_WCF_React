@@ -40,7 +40,6 @@ function Paginate({ totalItems, nextPage, prevPage }) {
   ));
 
   const customPageHandler = (e) => {
-    console.log(page, item);
     e.preventDefault();
 
     if (CustomPage && CustomPage >= 1 && CustomPage <= totalPage) {
