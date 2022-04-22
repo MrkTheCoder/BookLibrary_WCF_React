@@ -149,7 +149,7 @@ function Paginate({ totalItems, nextPage, prevPage }) {
           {totalPage >= 3 && (
             <LinkContainer
               data-testid="lastPageLink"
-              to={`?page=${totalItems}&item=${item}`}
+              to={`?page=${totalPage}&item=${item}`}
             >
               <Pagination.Last
                 data-testid="lastPageButton"
