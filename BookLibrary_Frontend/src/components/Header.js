@@ -1,8 +1,13 @@
 import React from "react";
 import { Navbar, Container, NavDropdown, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-
+import { RESET_FILTERS } from "../constants/categoryConstants";
+import { useDispatch } from "react-redux";
 export default function Header() {
+  const dispatch = useDispatch();
+  const resetHandler = () => {
+    dispatch({ type: RESET_FILTERS });
+  };
   return (
     <Navbar
       className="navConfig"
@@ -12,7 +17,7 @@ export default function Header() {
       variant="dark"
     >
       <Container>
-        <LinkContainer to={"/"}>
+        <LinkContainer onClick={(e) => resetHandler()} to={"/"}>
           <Navbar.Brand>Library</Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
