@@ -23,7 +23,7 @@ function Navigation({ Showcategories, showItems }) {
   } = filtersFromState;
 
   const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
-  const [ITEM, setITEM] = useState(filters ? filters.item : null);
+  const [ITEM, setITEM] = useState(filters ? filters.item : 10);
 
   const itemsList = [1, 10, 20, 30, 40, 50];
 
