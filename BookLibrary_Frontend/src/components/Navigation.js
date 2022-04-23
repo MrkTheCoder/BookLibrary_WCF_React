@@ -73,16 +73,19 @@ function Navigation({ Showcategories, showItems }) {
               </NavDropdown>
             </Nav.Item>
           )}
-
-          <Nav.Item>
-            <NavDropdown title={ITEM != null || 0 ? ITEM : "Items"}>
-              {itemsList.map((item) => (
-                <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
-                  <div>{item}</div>
-                </NavDropdown.Item>
-              ))}
-            </NavDropdown>
-          </Nav.Item>
+          {showItems && (
+            <Nav.Item>
+              <NavDropdown
+                title={ITEM != null || 0 ? `Items:${ITEM}` : "Items"}
+              >
+                {itemsList.map((item) => (
+                  <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
+                    <div>{item}</div>
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            </Nav.Item>
+          )}
         </div>
         <div>
           <Button
