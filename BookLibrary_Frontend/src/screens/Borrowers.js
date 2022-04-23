@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Table, Image } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { listBorrowers } from "../actions/borrowersActions";
@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import { LinkContainer } from "react-router-bootstrap";
+import Navigation from "../components/Navigation";
 function Borrowers() {
   const dispatch = useDispatch();
   const borrowersFromState = useSelector((state) => state.borrowers);
@@ -16,21 +17,30 @@ function Borrowers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItem, setCurrentItem] = useState(10);
   const [searchParams, setSearchParams] = useSearchParams();
+  const filtersFromState = useSelector((state) => state.filters);
+
+  const { success, filters } = filtersFromState;
+  const history = useNavigate();
 
   useEffect(() => {
-    setCurrentPage(
-      Number(searchParams.get("page")) ? Number(searchParams.get("page")) : 1
-    );
-    setCurrentItem(
-      Number(searchParams.get("item")) ? Number(searchParams.get("item")) : 10
-    );
-    dispatch(
-      listBorrowers(
-        Number(searchParams.get("page")),
-        Number(searchParams.get("item"))
-      )
-    );
-  }, [dispatch, searchParams]);
+    if (searchParams.get("page") && searchParams.get("item")) {
+      setCurrentPage(Number(searchParams.get("page")));
+      setCurrentItem(Number(searchParams.get("item")));
+
+      dispatch(
+        listBorrowers(
+          Number(searchParams.get("page")),
+
+          filters,
+          headers
+        )
+      );
+    } else {
+      history(`?page=${1}&item=${filters ? filters.item : 10}`);
+      setCurrentPage(Number(searchParams.get("page")));
+      setCurrentItem(Number(searchParams.get("item")));
+    }
+  }, [dispatch, searchParams, filters]);
   return (
     <div>
       {loading ? (
@@ -39,6 +49,7 @@ function Borrowers() {
         <Message variant="danger">error</Message>
       ) : (
         <div>
+          <Navigation showItems />
           <Table
             responsive
             striped
@@ -90,11 +101,9 @@ function Borrowers() {
           <div className="paginateItem">
             {headers && (
               <Paginate
-                page={currentPage}
                 totalItems={headers["x-totalitems"]}
                 nextPage={headers["x-nextpage"]}
                 prevPage={headers["x-prevpage"]}
-                item={currentItem}
               />
             )}
           </div>

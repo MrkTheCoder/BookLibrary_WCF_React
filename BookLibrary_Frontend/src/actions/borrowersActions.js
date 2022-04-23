@@ -10,12 +10,16 @@ import {
 } from "../constants/borrowersConstants";
 
 export const listBorrowers =
-  (page = 1, item = 10) =>
+  (page = 1, filters, headers) =>
   async (dispatch) => {
     try {
       dispatch({ type: BORROWER_LIST_REQUEST });
+      if (filters == null) {
+        filters = { item: 10 };
+      }
       const { data, headers } = await axios.get(
-        `http://localhost:51202/api/BorrowerManager/borrowers?page=${page}&item=${item}`
+        `http://localhost:51202/api/BorrowerManager/borrowers?page=${page}`,
+        { params: filters }
       );
       dispatch({
         type: BORROWER_LIST_SUCCESS,
