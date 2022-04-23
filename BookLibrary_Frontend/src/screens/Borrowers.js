@@ -10,6 +10,7 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import { LinkContainer } from "react-router-bootstrap";
 import Navigation from "../components/Navigation";
+import { RESET_FILTERS } from "../constants/categoryConstants";
 function Borrowers() {
   const dispatch = useDispatch();
   const borrowersFromState = useSelector((state) => state.borrowers);
@@ -23,6 +24,9 @@ function Borrowers() {
   const history = useNavigate();
 
   useEffect(() => {
+    if (filters && filters.category) {
+      dispatch({ type: RESET_FILTERS });
+    }
     if (searchParams.get("page") && searchParams.get("item")) {
       setCurrentPage(Number(searchParams.get("page")));
       setCurrentItem(Number(searchParams.get("item")));

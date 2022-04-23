@@ -51,9 +51,9 @@ function Navigation({ Showcategories, showItems }) {
     <div>
       <Nav variant="pills" className="bg-light navigation">
         <div className="navigationItems">
-          {Showcategories && categoryError ? (
+          {categoryError ? (
             <div></div>
-          ) : (
+          ) : Showcategories ? (
             <Nav.Item>
               <NavDropdown
                 title={CATEGORY ? CATEGORY : "Category"}
@@ -72,6 +72,8 @@ function Navigation({ Showcategories, showItems }) {
                 ))}
               </NavDropdown>
             </Nav.Item>
+          ) : (
+            <div></div>
           )}
           {showItems && (
             <Nav.Item>
