@@ -23,14 +23,22 @@ function Borrowers() {
   const { success, filters } = filtersFromState;
   const history = useNavigate();
 
+  if (filters && filters.category) {
+    dispatch({ type: RESET_FILTERS });
+  }
+
   useEffect(() => {
-    if (filters && filters.category) {
-      dispatch({ type: RESET_FILTERS });
+    if (filters) {
+      filters.item = 10;
+    }
+    if (
+      filters &&
+      filters.item != searchParams.get("item") &&
+      searchParams.get("item") != null
+    ) {
+      filters.item = searchParams.get("item");
     }
     if (searchParams.get("page") && searchParams.get("item")) {
-      setCurrentPage(Number(searchParams.get("page")));
-      setCurrentItem(Number(searchParams.get("item")));
-
       dispatch(
         listBorrowers(
           Number(searchParams.get("page")),
@@ -41,8 +49,6 @@ function Borrowers() {
       );
     } else {
       history(`?page=${1}&item=${filters ? filters.item : 10}`);
-      setCurrentPage(Number(searchParams.get("page")));
-      setCurrentItem(Number(searchParams.get("item")));
     }
   }, [dispatch, searchParams, filters]);
   return (
@@ -53,7 +59,7 @@ function Borrowers() {
         <Message variant="danger">error</Message>
       ) : (
         <div>
-          <Navigation showItems />
+          <Navigation showItems redirect={"/admin/borrowers?page=1&item=10"} />
           <Table
             responsive
             striped

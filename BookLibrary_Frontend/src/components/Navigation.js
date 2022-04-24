@@ -10,7 +10,7 @@ import Loader from "../components/Loader";
 import "./style.css";
 import { RESET_FILTERS } from "../constants/categoryConstants";
 
-function Navigation({ Showcategories, showItems }) {
+function Navigation({ Showcategories, showItems, redirect }) {
   const dispatch = useDispatch();
   const categoriesFromState = useSelector((state) => state.categories);
   const { categories, loading, error: categoryError } = categoriesFromState;
@@ -45,7 +45,7 @@ function Navigation({ Showcategories, showItems }) {
   const clearFiltersHandler = () => {
     dispatch({ type: RESET_FILTERS });
     setCATEGORY();
-    history("/");
+    history(redirect ? redirect : "/");
   };
   return (
     <div>

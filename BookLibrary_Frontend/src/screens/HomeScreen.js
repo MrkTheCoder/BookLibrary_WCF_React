@@ -8,27 +8,30 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import Navigation from "../components/Navigation";
+import { addFilters } from "../actions/categoryActions";
 
 function HomeScreen() {
   const dispatch = useDispatch();
   const bookList = useSelector((state) => state.bookList);
   const { error, loading, books, headers } = bookList;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentItem, setCurrentItem] = useState(10);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const filtersFromState = useSelector((state) => state.filters);
+  const [currentPage, setCurrentPage] = useState();
 
   const { success, filters } = filtersFromState;
 
   const history = useNavigate();
 
   useEffect(() => {
+    if (
+      filters &&
+      filters.item != searchParams.get("item") &&
+      searchParams.get("item") != null
+    ) {
+      filters.item = searchParams.get("item");
+    }
     if (searchParams.get("page") && searchParams.get("item")) {
-      setCurrentPage(Number(searchParams.get("page")));
-      setCurrentItem(Number(searchParams.get("item")));
-
       dispatch(
         listBooks(
           Number(searchParams.get("page")),
@@ -39,8 +42,6 @@ function HomeScreen() {
       );
     } else {
       history(`?page=${1}&item=${filters ? filters.item : 10}`);
-      setCurrentPage(Number(searchParams.get("page")));
-      setCurrentItem(Number(searchParams.get("item")));
     }
   }, [dispatch, searchParams, filters]);
 
