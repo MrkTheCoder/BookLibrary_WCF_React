@@ -56,7 +56,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
           ) : Showcategories ? (
             <Nav.Item>
               <NavDropdown
-                title={CATEGORY ? CATEGORY : "Category"}
+                title={CATEGORY ? `Category:${CATEGORY}` : "Category"}
                 id="nav-dropdown"
               >
                 {categories.map((cat) => (
@@ -77,9 +77,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
           )}
           {showItems && (
             <Nav.Item>
-              <NavDropdown
-                title={filters ? `Items:${filters.item}` : `Items:${10}`}
-              >
+              <NavDropdown title={`Items:${ITEM}`}>
                 {itemsList.map((item) => (
                   <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
                     <div>{item}</div>
