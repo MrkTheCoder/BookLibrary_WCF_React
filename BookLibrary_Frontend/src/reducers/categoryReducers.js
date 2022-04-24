@@ -28,7 +28,11 @@ export const filtersReducer = (state = {}, action) => {
       return { success: true, filters: action.payload };
 
     case RESET_FILTERS:
-      return {};
+      return {
+        filters: {
+          item: 10,
+        },
+      };
 
     default:
       return state;

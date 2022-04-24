@@ -17,6 +17,7 @@ export const listBorrowers =
       if (filters == null) {
         filters = { item: 10 };
       }
+
       const { data, headers } = await axios.get(
         `http://localhost:51202/api/BorrowerManager/borrowers?page=${page}`,
         { params: filters }
