@@ -25,7 +25,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
   const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
   const [ITEM, setITEM] = useState(filters ? filters.item : 10);
 
-  const itemsList = [1, 10, 20, 30, 40, 50];
+  const itemsList = [10, 20, 30, 40, 50];
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
@@ -78,7 +78,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
           {showItems && (
             <Nav.Item>
               <NavDropdown
-                title={ITEM != null || 0 ? `Items:${ITEM}` : "Items"}
+                title={filters ? `Items:${filters.item}` : `Items:${10}`}
               >
                 {itemsList.map((item) => (
                   <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
