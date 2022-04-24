@@ -49,11 +49,12 @@ namespace BookLibrary.DataAccess.SQLite
             modelBuilder.Ignore<IEntityBase>();
             modelBuilder.Ignore<IIdentifiableEntity>();
             modelBuilder.Ignore<IEntityVersion>();
-            modelBuilder.Entity<Book>().Ignore(p => p.EntityId);
-            modelBuilder.Entity<BookCategory>().Ignore(p => p.EntityId);
-            modelBuilder.Entity<BookCopy>().Ignore(p => p.EntityId);
-            modelBuilder.Entity<Borrower>().Ignore(p => p.EntityId);
-            modelBuilder.Entity<Gender>().Ignore(p => p.EntityId);
+            modelBuilder.Entity<Book>().Ignore(p => p.EntityId).Ignore(p => p.Version);
+            modelBuilder.Entity<BookCategory>().Ignore(p => p.EntityId).Ignore(p => p.Version);
+            modelBuilder.Entity<BookCopy>().Ignore(p => p.EntityId).Ignore(p => p.Version);
+            modelBuilder.Entity<Borrower>().Ignore(p => p.EntityId).Ignore(p => p.Version);
+            modelBuilder.Entity<Gender>().Ignore(p => p.EntityId).Ignore(p => p.Version);
+
 
             // A dummy NotMapped Table to use here: CreateInitialDatabase.IsTableExists(BookLibraryDbContext ctx, string tableName)
             modelBuilder.Entity<SpResult>().HasNoKey();

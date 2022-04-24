@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
 using System.Threading.Tasks;
 
 namespace BookLibrary.Business.Services.Managers
@@ -35,6 +36,8 @@ namespace BookLibrary.Business.Services.Managers
             InitializePaging(totalItems, page, item);
 
             var bookCategories = await bookCategoryRepository.GetFilteredCategories(CurrentPage, CurrentItemsPerPage);
+            
+            SetHeaders(bookCategories);
 
             return MapBookCategoriesToBookCategoryData(bookCategories);
         }
@@ -51,7 +54,6 @@ namespace BookLibrary.Business.Services.Managers
                     BooksInCategory = bookCategory.Books.Count
                 });
             }
-
             return bookCategoryDataItems.ToArray();
         }
     }

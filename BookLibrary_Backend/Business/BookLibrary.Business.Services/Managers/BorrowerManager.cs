@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
 using System.Threading.Tasks;
 
 namespace BookLibrary.Business.Services.Managers
@@ -46,6 +47,8 @@ namespace BookLibrary.Business.Services.Managers
             InitializePaging(totalItems, page, item);
 
             var borrowers = await borrowerRepository.GetFilteredBorrowersAsync(CurrentPage, CurrentItemsPerPage);
+            
+            SetHeaders(borrowers);
 
             return MapBorrowersToBorrowersData(borrowers);
         }
@@ -65,6 +68,8 @@ namespace BookLibrary.Business.Services.Managers
 
             if (borrower == null)
                 throw new NotFoundException("Email does not exists!");
+            
+            SetHeaders(new []{borrower}, returnList:false);
 
             return MapBorrowerToBorrowerData(borrower);
         }

@@ -33,6 +33,7 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                 return await context
                     .Borrowers
                     .Include(i => i.Gender)
+                    .OrderBy(o => o.LastName)
                     .Skip(item * (page - 1))
                     .Take(item)
                     .ToListAsync();

@@ -32,7 +32,6 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
             Assert.NotNull(libraryBook.Isbn);
             Assert.NotNull(libraryBook.Title);
             Assert.NotNull(libraryBook.Category);
-            Assert.NotNull(libraryBook.CoverLink);
         }
 
     }

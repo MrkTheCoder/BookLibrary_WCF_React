@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Common.Interfaces.Entities;
@@ -45,7 +46,7 @@ namespace BookLibrary.Business.Services.Managers
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
 
-            var totalItems = String.IsNullOrEmpty(category)
+            var totalItems = string.IsNullOrEmpty(category)
                 ? await bookRepository.GetCountAsync()
                 : await bookRepository.GetCountAsync(b => b.BookCategory.Name == category);
 
@@ -53,7 +54,7 @@ namespace BookLibrary.Business.Services.Managers
 
             var books = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
             
-            SetETag(books);
+            SetHeaders(books);
 
             return MapBooksToLibraryBooks(books);
         }
@@ -76,7 +77,7 @@ namespace BookLibrary.Business.Services.Managers
             if (book == null)
                 throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
 
-            SetETag(new []{book});
+            SetHeaders(new []{book}, returnList:false);
 
             return MapBookToLibraryBook(book, isThumbnail: false);
         }

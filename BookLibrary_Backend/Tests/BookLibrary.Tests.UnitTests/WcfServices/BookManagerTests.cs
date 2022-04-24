@@ -169,7 +169,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         public async Task GetBooks_RequestBooks_ShouldHaveAnEtag()
         {
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
-            
+
             Assert.True(string.IsNullOrEmpty(bookManager.ETag));
 
             await bookManager.GetBooksAsync(0, 0, null);
@@ -185,7 +185,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             await bookManager.GetBooksAsync(0, 0, null);
             var eTagList1 = bookManager.ETag;
-            
+
             await bookManager.GetBooksAsync(0, 0, null);
             var eTagList2 = bookManager.ETag;
 
@@ -200,7 +200,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
 
             await bookManager.GetBooksAsync(0, 0, null);
             var eTagList1 = bookManager.ETag;
-            
+
             await bookManager.GetBooksAsync(2, 0, null);
             var eTagList2 = bookManager.ETag;
 
@@ -439,20 +439,47 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         public async Task GetBook_RequestingABook_ShouldProduceETag()
         {
             var isbn1 = "001-0000000001";
-            var isbn2 = "0010000000001";
-            var book = _fakeDbBooks.Single(s => s.Isbn == isbn1);
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            
+            Assert.True(string.IsNullOrEmpty(bookManager.ETag));
 
-            var libraryBook1 = await bookManager.GetBookAsync(isbn1);
-            var libraryBook2 = await bookManager.GetBookAsync(isbn2);
+            await bookManager.GetBookAsync(isbn1);
 
-            Assert.NotNull(libraryBook1);
-            Assert.NotNull(libraryBook2);
-            Assert.Equal(libraryBook1.Isbn, libraryBook2.Isbn);
-            Assert.Equal(book.Isbn, libraryBook1.Isbn);
-            Assert.Equal(book.Title, libraryBook1.Title);
-            Assert.Equal(book.CoverLinkOriginal, libraryBook1.CoverLink);
+            Assert.True(!string.IsNullOrEmpty(bookManager.ETag));
         }
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBook")]
+        public async Task GetBook_RequestingTwiceABook_ShouldProduceSameETag()
+        {
+            var isbn1 = "001-0000000001";
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            
+            await bookManager.GetBookAsync(isbn1);
+            var etag1 = bookManager.ETag;
+            await bookManager.GetBookAsync(isbn1);
+            var etag2 = bookManager.ETag;
+
+
+            Assert.Equal(etag1,etag2);
+        }
+
+        [Fact]
+        [Trait("BookManagerTests", "GetBook")]
+        public async Task GetBook_BookChangedBetweenRequestingTwiceABook_ShouldProduceSameETag()
+        {
+            var isbn1 = "001-0000000001";
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            
+            await bookManager.GetBookAsync(isbn1);
+            var etag1 = bookManager.ETag;
+            await bookManager.GetBookAsync(isbn1);
+            var etag2 = bookManager.ETag;
+
+
+            Assert.Equal(etag1,etag2);
+        }
+
 
 
         [Theory]

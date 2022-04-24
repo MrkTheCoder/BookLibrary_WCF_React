@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BookLibrary.Business.AppConfigs;
+﻿using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
@@ -9,6 +6,10 @@ using BookLibrary.DataAccess.SQLite;
 using BookLibrary.DataAccess.SQLite.Repositories;
 using Core.Common.Interfaces.Data;
 using DryIoc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BookLibrary.Tests.IntegrationTests.Repositories
@@ -44,11 +45,11 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
 
 
         [Fact]
-        public async Task  RepositoryFactory_BookRepositoryGetById_ShouldReturnBookWithId()
+        public async Task RepositoryFactory_BookRepositoryGetById_ShouldReturnBookWithId()
         {
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
             var firstBook = (await bookRepository.GetAllAsync()).Single(i => i.Id == 1);
-            
+
             var book = await bookRepository.GetByIdAsync(1);
 
             Assert.Equal(firstBook.Id, book.Id);
@@ -71,8 +72,9 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public async void RepositoryFactory_BookRepositoryAdd_ShouldAddBook()
         {
+            Thread.Sleep(100);
             var newBookCopy = new BookCopy { TotalCopy = 66 };
-            var newBook = new Book { Isbn = "111-222", Title = "A B C" , BookCategoryId = 1, BookCopy = newBookCopy};
+            var newBook = new Book { Isbn = "111-222", Title = "A B C", BookCategoryId = 1, BookCopy = newBookCopy };
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
             var bookCategoryRepository = _repositoryFactory.GetEntityRepository<IBookCategoryRepository>();
 
@@ -95,12 +97,12 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public async Task RepositoryFactory_BookRepositoryUpdate_ShouldUpdateBook()
         {
-            var newBook1 = new Book { Isbn = "113-222", Title = "A B C"  , BookCategoryId = 1};
+            var newBook1 = new Book { Isbn = "113-222", Title = "A B C", BookCategoryId = 1 };
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
-            
+
             var book = bookRepository.Add(newBook1);
             var id = book.Id;
-            
+
             book.Isbn = "000-000";
             var updatedBook = bookRepository.Update(book);
 
@@ -116,14 +118,14 @@ namespace BookLibrary.Tests.IntegrationTests.Repositories
         [Fact]
         public async Task RepositoryFactory_BookRepositoryUpdate_ShouldTimestampChanged()
         {
-            var newBook1 = new Book { Isbn = "113-222", Title = "A B C"  , BookCategoryId = 1};
+            var newBook1 = new Book { Isbn = "113-222", Title = "A B C", BookCategoryId = 1 };
             var bookRepository = _repositoryFactory.GetEntityRepository<IBookRepository>();
-            
+
             var newBook = bookRepository.Add(newBook1);
             var id = newBook.Id;
             var createdVersion = newBook.Version;
             var createdRowVersion = newBook.RowVersion;
-            
+
             newBook.Isbn = "000-000";
             var updatedBook = bookRepository.Update(newBook);
 

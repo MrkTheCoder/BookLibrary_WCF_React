@@ -34,6 +34,7 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                 return await context
                     .BookCategories
                     .Include(i => i.Books)
+                    .OrderBy(o => o.Name)
                     .Skip(item * (page - 1))
                     .Take(item)
                     .ToListAsync();
