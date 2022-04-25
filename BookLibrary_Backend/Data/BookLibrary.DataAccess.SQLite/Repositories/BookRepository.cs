@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BookLibrary.Business.Entities;
+﻿using BookLibrary.Business.Entities;
 using BookLibrary.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace BookLibrary.DataAccess.SQLite.Repositories
 {
@@ -10,32 +14,53 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
     /// </summary>
     public class BookRepository : RepositoryBase<Book>, IBookRepository
     {
-        protected override Book AddEntity(BookLibraryDbContext entityContext, Book entity)
+        protected override DbSet<Book> Entities(BookLibraryDbContext entityContext)
         {
-            return entityContext
-                .Books
-                .Add(entity)
-                .Entity;
+            return entityContext.Books;
         }
 
-        protected override Book UpdateEntity(BookLibraryDbContext entityContext, Book entity)
+        protected override async Task<IEnumerable<Book>> GetEntitiesAsync(BookLibraryDbContext entityContext)
         {
-            return entityContext
+            return await entityContext
                 .Books
-                .FirstOrDefault(f => f.Id == entity.Id);
+                .Include(i => i.BookCategory)
+                .Include(i => i.BookCopy)
+                .ToListAsync();
         }
 
-        protected override IEnumerable<Book> GetEntities(BookLibraryDbContext entityContext)
+        protected override async Task<Book> GetEntityAsync(BookLibraryDbContext entityContext, int id)
         {
-            return entityContext
-                .Books;
+            return await entityContext
+                .Books
+                .Include(i => i.BookCategory)
+                .Include(i => i.BookCopy)
+                .SingleOrDefaultAsync(f => f.Id == id);
         }
 
-        protected override Book GetEntity(BookLibraryDbContext entityContext, int id)
+        protected override async Task<Book> GetEntityAsync(BookLibraryDbContext entityContext, Expression<Func<Book, bool>> predicate)
         {
-            return entityContext
+            return await entityContext
                 .Books
-                .FirstOrDefault(f => f.Id == id);
+                .Include(i => i.BookCategory)
+                .Include(i => i.BookCopy)
+                .FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<Book>> GetFilteredBooksAsync(int page, int item, string category)
+        {
+            using (var context = new BookLibraryDbContext())
+            {
+                return await context
+                    .Books
+                    .Include(i => i.BookCategory)
+                    .Include(i => i.BookCopy)
+                    .Where(w => string.IsNullOrEmpty(category) ||
+                                w.BookCategory.Name.ToLower() == category.ToLower())
+                    .OrderBy(o => o.Title)
+                    .Skip(item * (page - 1))
+                    .Take(item)
+                    .ToListAsync();
+            }
         }
     }
 }

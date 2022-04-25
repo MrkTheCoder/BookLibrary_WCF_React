@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ServiceModel.Web;
+using BookLibrary.Business.AppConfigs;
+using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Services.Managers;
+using BookLibrary.DataAccess.SQLite;
 
 namespace BookLibrary.Host.Wcf.ConsoleHost.RelayAzure
 {
@@ -8,12 +11,21 @@ namespace BookLibrary.Host.Wcf.ConsoleHost.RelayAzure
     {
         static void Main(string[] args)
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+            // Build IoC container.
+            BootContainer.Builder = Bootstrapper.LoadContainer;
+
             // If Unattended Process need Principal Permission Security!?
             // Then we should define it here
 
-            var hostWeb = new WebServiceHost(typeof(BookManager));
+            var bookHost = new WebServiceHost(typeof(BookManager));
+            var categoryHost = new WebServiceHost(typeof(CategoryManager));
+            var borrowerHost = new WebServiceHost(typeof(BorrowerManager));
 
-            StartHost(hostWeb, nameof(BookManager));
+            StartHost(bookHost, nameof(BookManager));
+            StartHost(categoryHost, nameof(CategoryManager));
+            StartHost(borrowerHost, nameof(BorrowerManager));
 
             // Unattended process place here (Timer Start) ...
 
@@ -24,7 +36,9 @@ namespace BookLibrary.Host.Wcf.ConsoleHost.RelayAzure
 
 
             // Timer Stop for Unattended process ...
-            StopHost(hostWeb, nameof(BookManager));
+            StopHost(bookHost, nameof(BookManager));
+            StopHost(categoryHost, nameof(CategoryManager));
+            StopHost(borrowerHost, nameof(BorrowerManager));
         }
 
         private static void StartHost(WebServiceHost host, string serviceName)

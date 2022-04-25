@@ -7,18 +7,38 @@ using DryIoc;
 namespace BookLibrary.Business.Bootstrapper
 {
     /// <summary>
-    /// This is loader for IoC Container and registering all defined DI's.
+    /// Registering all DI's in here.
     /// </summary>
     public static class Bootstrapper
     {
-        public static Container Bootstrap()
+        private static Container _loadContainer;
+        private static readonly object PadLock = new object();
+
+        static Bootstrapper()
+        { }
+
+        public static Container LoadContainer
+        {
+            get
+            {
+                if (_loadContainer == null)
+                    lock (PadLock)
+                        if (_loadContainer == null)
+                            _loadContainer = Bootstrap();
+                return _loadContainer;
+            }
+        }
+
+        private static Container Bootstrap()
         {
             var builder = new Container();
 
             builder.Register<IRepositoryFactory, RepositoryFactory>();
 
             builder.Register<IBookRepository, BookRepository>();
-            
+            builder.Register<IBookCopyRepository, BookCopyRepository>();
+            builder.Register<IBookCategoryRepository, BookCategoryRepository>();
+            builder.Register<IBorrowerRepository, BorrowerRepository>();
 
             return builder;
         }

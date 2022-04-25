@@ -160,17 +160,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookLibraryDbContext.cs" />
-    <Compile Include="Migrations\20220225105416_InitilDatabase.cs" />
-    <Compile Include="Migrations\20220225105416_InitilDatabase.designer.cs">
-      <DependentUpon>20220225105416_InitilDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\BookLibraryDbContextModelSnapshot.cs" />
+    <Compile Include="CreateInitialDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BookCategoryRepository.cs" />
+    <Compile Include="Repositories\BookCopyRepositoryRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
+    <Compile Include="Repositories\BorrowerRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="RepositoryFactory.cs" />
+    <Compile Include="Seeds\BookCategorySeeds.cs" />
+    <Compile Include="Seeds\BookCopySeeds.cs" />
     <Compile Include="Seeds\BookSeeds.cs" />
+    <Compile Include="Seeds\BorrowerSeeds.cs" />
+    <Compile Include="Seeds\DbVersionSeed.cs" />
+    <Compile Include="Seeds\GenderSeeds.cs" />
+    <Compile Include="SpResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -188,6 +193,14 @@
     <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
       <Project>{7a40e1d6-8eb5-4cb8-9247-f2a2cb2efe1b}</Project>
       <Name>Core.Common.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj">
+      <Project>{DE8E6850-58E5-4759-A260-6EC290DA99CD}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BookLibrary.DataAccess.Dto\BookLibrary.DataAccess.Dto.csproj">
+      <Project>{39A1A01C-F88A-4193-AF57-0F7580CD89A1}</Project>
+      <Name>BookLibrary.DataAccess.Dto</Name>
     </ProjectReference>
     <ProjectReference Include="..\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
       <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>

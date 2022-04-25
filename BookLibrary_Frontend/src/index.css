@@ -1,13 +1,12 @@
 .mainScreen {
   background-color: #564154;
   display: flex;
-  justify-content: center;
+
   padding-top: 50px;
 }
 .bookCards {
-  background-color: #f3f7f0;
   border: 0 px;
-  border-radius: 0.5em;
+
   color: black;
   letter-spacing: normal;
 }
@@ -19,14 +18,32 @@ footer {
   display: flex;
   justify-content: center;
 }
-nav {
-  background-color: teal;
-}
+
 .CustomContainer {
   padding-top: 50px;
 }
 .navButtons {
   padding-top: 15px;
   display: flex;
+  justify-content: space-between;
+}
+
+#cardFrame {
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.cardImg {
+  margin: auto;
+}
+
+#cardTitle {
+  text-transform: none;
+  letter-spacing: normal;
+}
+.homeScreenBody {
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }

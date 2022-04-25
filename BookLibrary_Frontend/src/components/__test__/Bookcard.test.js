@@ -22,6 +22,8 @@ test("card shows correct date", () => {
     IsAvailable: true,
     Isbn: "101-22258489522",
     Title: "Learn Design Patterns in R",
+    IsAvailable: true,
+    CoverLink: "a",
   };
   const { getByTestId } = render(<Bookcard book={data} />, {
     wrapper: MemoryRouter,
@@ -30,9 +32,40 @@ test("card shows correct date", () => {
   const titleEl = getByTestId("title");
   const subtitleEl = getByTestId("subTitle");
   const idEl = getByTestId("link");
+  const statusEl = getByTestId("status");
+  const imageEl = getByTestId("image");
 
   expect(titleEl.textContent).toBe("Learn Design Patterns in R");
   expect(subtitleEl.textContent).toBe("101-22258489522");
   expect(idEl.textContent).toBe("More Details");
-  expect(idEl.closest("a")).toHaveAttribute("href", "/book/2");
+  expect(idEl.closest("a")).toHaveAttribute("href", "/book/101-22258489522");
+  expect(statusEl.className).toBe("green");
+  expect(imageEl).toHaveAttribute("src", "a");
+});
+
+test("status returns the correct color", () => {
+  const data = {
+    Id: 2,
+    IsAvailable: false,
+    Isbn: "101-22258489522",
+    Title: "Learn Design Patterns in R",
+    IsAvailable: false,
+    CoverLink: "a",
+  };
+  const { getByTestId } = render(<Bookcard book={data} />, {
+    wrapper: MemoryRouter,
+  });
+
+  const titleEl = getByTestId("title");
+  const subtitleEl = getByTestId("subTitle");
+  const idEl = getByTestId("link");
+  const statusEl = getByTestId("status");
+  const imageEl = getByTestId("image");
+
+  expect(titleEl.textContent).toBe("Learn Design Patterns in R");
+  expect(subtitleEl.textContent).toBe("101-22258489522");
+  expect(idEl.textContent).toBe("More Details");
+  expect(idEl.closest("a")).toHaveAttribute("href", "/book/101-22258489522");
+  expect(statusEl.className).toBe("red");
+  expect(imageEl).toHaveAttribute("src", "a");
 });

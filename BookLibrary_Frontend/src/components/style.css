@@ -16,3 +16,24 @@
   line-height: 20px;
   text-transform: none;
 }
+.categoryList {
+  display: flex;
+  justify-content: space-between;
+}
+.roundInfo {
+  background-color: rgb(66, 10, 63);
+  border-radius: 50px;
+  padding: 0.1rem;
+  color: white;
+}
+.navigation {
+  display: flex;
+  justify-content: space-between;
+}
+.noDecoration {
+  text-decoration: none;
+}
+.navigationItems {
+  margin: auto 0;
+  display: flex;
+}

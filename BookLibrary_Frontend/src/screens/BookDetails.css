@@ -1,0 +1,43 @@
+.detailBody {
+  background-color: #788aa3;
+  border-radius: 15px;
+  margin: auto;
+  padding: 10px;
+
+  max-width: 100%;
+}
+.detailsContent {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.infoEl {
+  list-style-type: none;
+  padding: 0;
+}
+.detailsCard {
+  padding: 15px;
+  box-shadow: 10px;
+  max-width: 100%;
+  background-color: #666a86;
+}
+.titleEl h2 {
+  text-transform: none;
+}
+img {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.detailsText {
+  padding-top: 15px;
+}
+.detailsContent {
+  min-width: 0;
+}
+.titleEl h2 {
+  color: black;
+}
+.infoEl li {
+  color: black;
+}

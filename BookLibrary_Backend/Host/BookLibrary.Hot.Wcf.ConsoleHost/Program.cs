@@ -1,5 +1,8 @@
 ﻿using BookLibrary.Business.Services.Managers;
 using System.ServiceModel;
+using BookLibrary.Business.AppConfigs;
+using BookLibrary.Business.Bootstrapper;
+using BookLibrary.DataAccess.SQLite;
 
 namespace BookLibrary.Hot.Wcf.ConsoleHost
 {
@@ -7,12 +10,23 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
     {
         static void Main(string[] args)
         {
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+            // Build IoC container.
+            BootContainer.Builder = Bootstrapper.LoadContainer;
+            
+            
             // If Unattended Process need Principal Permission Security!?
             // Then we should define it here
 
+
             var bookHost = new ServiceHost(typeof(BookManager));
+            var categoryHost = new ServiceHost(typeof(CategoryManager));
+            var borrowerHost = new ServiceHost(typeof(BorrowerManager));
 
             StartHost(bookHost, nameof(BookManager));
+            StartHost(categoryHost, nameof(CategoryManager));
+            StartHost(borrowerHost, nameof(BorrowerManager));
 
             // Unattended process place here (Timer Start) ...
 
@@ -23,6 +37,8 @@ namespace BookLibrary.Hot.Wcf.ConsoleHost
 
             // Timer Stop for Unattended process ...
             StopHost(bookHost, nameof(BookManager));
+            StopHost(categoryHost, nameof(CategoryManager));
+            StopHost(borrowerHost, nameof(BorrowerManager));
         }
 
         private static void StartHost(ServiceHost host, string serviceName)

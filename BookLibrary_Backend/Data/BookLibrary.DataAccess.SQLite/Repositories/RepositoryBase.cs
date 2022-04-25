@@ -7,7 +7,7 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
     /// </summary>
     /// <typeparam name="TEntity">Database entity.</typeparam>
     public abstract class RepositoryBase<TEntity> : RepositoryBase<TEntity, BookLibraryDbContext>
-        where TEntity : class, IIdentifiableEntity, new()
+        where TEntity : class, IEntityBase, new()
     {
     }
 }

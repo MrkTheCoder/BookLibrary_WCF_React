@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
 
@@ -12,26 +14,74 @@ namespace Core.Common.CorsOnWcf
     {
         readonly Dictionary<string, string> _requiredHeaders;
 
-        public CustomHeaderMessageInspector (Dictionary<string, string> headers)
+        public CustomHeaderMessageInspector(Dictionary<string, string> headers)
         {
             _requiredHeaders = headers ?? new Dictionary<string, string>();
         }
 
         public object AfterReceiveRequest(ref System.ServiceModel.Channels.Message request, System.ServiceModel.IClientChannel channel, System.ServiceModel.InstanceContext instanceContext)
         {
+            LogAfterReceiveRequest(request);
             return null;
         }
 
         public void BeforeSendReply(ref System.ServiceModel.Channels.Message reply, object correlationState)
         {
-            var httpHeader = reply.Properties["httpResponse"] as HttpResponseMessageProperty;
-            if (httpHeader == null)
-                return;
-
-            foreach (var item in _requiredHeaders)
+            if (reply.Properties.ContainsKey("httpResponse") &&
+                (reply.Properties["httpResponse"] is HttpResponseMessageProperty httpHeader))
             {
-                httpHeader.Headers.Add(item.Key, item.Value);
-            }           
+                foreach (var item in _requiredHeaders)
+                {
+                    httpHeader.Headers.Add(item.Key, item.Value);
+                }
+            }
+
+            LogBeforeSendReply(reply);
+        }
+
+        private static void LogAfterReceiveRequest(Message request)
+        {
+            Console.WriteLine();
+            Console.WriteLine("<<< Received Request:");
+            Console.WriteLine($"URI:\t'{request.Headers.To}'");
+            Console.WriteLine($"Query:\t'{request.Headers.To?.Query}'");
+            if (request.Properties.Values.Count > 0)
+                Console.WriteLine("Properties value:");
+            foreach (var value in request.Properties.Values)
+            {
+                if (value is HttpRequestMessageProperty requestMessage)
+                {
+                    Console.WriteLine($"\tMethod: '{requestMessage.Method}'");
+                    Console.WriteLine("\tHeaders:");
+                    foreach (string key in requestMessage.Headers)
+                    {
+                        Console.WriteLine($"\t\t{key}: {requestMessage.Headers[key]}");
+                    }
+                }
+            }
+        }
+
+        private static void LogBeforeSendReply(Message reply)
+        {
+            Console.WriteLine();
+            Console.WriteLine(" >>> Sent");
+            if (reply.Properties.Values.Count > 0)
+                Console.WriteLine("Properties value:");
+            foreach (var value in reply.Properties.Values)
+            {
+                if (value is HttpResponseMessageProperty messageProperty)
+                {
+                    Console.WriteLine($"\tStatusCode: ({(int)messageProperty.StatusCode}){messageProperty.StatusCode} ");
+                    Console.WriteLine("\tHeaders:");
+                    foreach (string header in messageProperty.Headers)
+                    {
+                        Console.WriteLine($"\t\t{header}: {messageProperty.Headers[header]}");
+                    }
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(new string('*', 50));
         }
     }
 }

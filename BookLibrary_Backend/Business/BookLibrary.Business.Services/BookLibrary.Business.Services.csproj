@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +50,8 @@
     <Compile Include="Behaviors\OperationFaultHandlingAttribute.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="Managers\BookManager.cs" />
+    <Compile Include="Managers\BorrowerManager.cs" />
+    <Compile Include="Managers\CategoryManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +62,10 @@
     <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj">
       <Project>{DE8E6850-58E5-4759-A260-6EC290DA99CD}</Project>
       <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.Dto\BookLibrary.DataAccess.Dto.csproj">
+      <Project>{39A1A01C-F88A-4193-AF57-0F7580CD89A1}</Project>
+      <Name>BookLibrary.DataAccess.Dto</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\BookLibrary.DataAccess.Interfaces\BookLibrary.DataAccess.Interfaces.csproj">
       <Project>{A613DB04-DD47-4E8F-89E1-8FCEAFFA3E6D}</Project>

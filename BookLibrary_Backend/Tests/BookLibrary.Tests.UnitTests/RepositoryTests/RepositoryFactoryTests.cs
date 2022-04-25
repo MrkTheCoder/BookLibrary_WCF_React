@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using BookLibrary.Business.AppConfigs;
 using BookLibrary.Business.Bootstrapper;
 using BookLibrary.Business.Entities;
@@ -31,7 +32,9 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         [Fact]
         public void RepositoryFactoryWithIBookRepository_ShouldReturnBookRepository()
         {
-            BootContainer.Builder = Bootstrapper.Bootstrap();
+            // Create Database if not exists or if it is old version.
+            CreateInitialDatabase.Initialize();
+            BootContainer.Builder = Bootstrapper.LoadContainer;
             IRepositoryFactory repositoryFactory = new RepositoryFactory();
             
             var bookRepository = repositoryFactory.GetEntityRepository<IBookRepository>();
@@ -41,11 +44,12 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
         }
 
         [Fact]
-        public void GetById_BookRepositoryFromRepositoryFactory_ShouldReturnABook()
+        public async Task GetById_BookRepositoryFromRepositoryFactory_ShouldReturnABook()
         {
             var bookRepositoryMoq = new Mock<IBookRepository>();
-            bookRepositoryMoq.Setup(s => s.GetById(It.IsAny<int>()))
-                .Returns<int>(id => _books.FirstOrDefault(f => f.Id == id));
+            bookRepositoryMoq.Setup(s => s.GetByIdAsync(It.IsAny<int>()))
+                .Returns<int>(id => 
+                    Task.FromResult(_books.FirstOrDefault(f => f.Id == id)));
 
             var repositoryFactoryMoq = new Mock<IRepositoryFactory>();
             repositoryFactoryMoq.Setup(s => s.GetEntityRepository<IBookRepository>())
@@ -54,7 +58,7 @@ namespace BookLibrary.Tests.UnitTests.RepositoryTests
             var bookRepository = repositoryFactoryMoq.Object.GetEntityRepository<IBookRepository>();
             
 
-            var book = bookRepository.GetById(1);
+            var book = await bookRepository.GetByIdAsync(1);
 
             Assert.Equal(_bookIdOne.Id, book.EntityId);
             Assert.Equal(_bookIdOne.Isbn, book.Isbn);

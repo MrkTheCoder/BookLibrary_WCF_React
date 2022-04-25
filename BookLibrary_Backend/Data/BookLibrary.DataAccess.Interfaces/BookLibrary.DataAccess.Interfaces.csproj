@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBookCategoryRepository.cs" />
+    <Compile Include="IBookCopyRepository.cs" />
     <Compile Include="IBookRepository.cs" />
+    <Compile Include="IBorrowerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +55,10 @@
     <ProjectReference Include="..\..\Core\Core.Common.Interfaces\Core.Common.Interfaces.csproj">
       <Project>{7A40E1D6-8EB5-4CB8-9247-F2A2CB2EFE1B}</Project>
       <Name>Core.Common.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BookLibrary.DataAccess.Dto\BookLibrary.DataAccess.Dto.csproj">
+      <Project>{39A1A01C-F88A-4193-AF57-0F7580CD89A1}</Project>
+      <Name>BookLibrary.DataAccess.Dto</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
