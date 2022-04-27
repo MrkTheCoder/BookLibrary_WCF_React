@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Nav, NavDropdown, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { categoryList } from "../actions/categoryActions";
@@ -7,7 +7,7 @@ import { addFilters } from "../actions/categoryActions";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import "./style.css";
+import "./Navigation.css";
 import { RESET_FILTERS } from "../constants/categoryConstants";
 
 function Navigation({ Showcategories, showItems, redirect }) {
@@ -24,6 +24,8 @@ function Navigation({ Showcategories, showItems, redirect }) {
 
   const [CATEGORY, setCATEGORY] = useState(filters ? filters.category : null);
   const [ITEM, setITEM] = useState(filters ? filters.item : 10);
+  const [tempFilter, setTempFilter] = useState(filters ? filters : {});
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const itemsList = [10, 20, 30, 40, 50];
 
@@ -32,13 +34,12 @@ function Navigation({ Showcategories, showItems, redirect }) {
   }, [dispatch, CATEGORY]);
   const history = useNavigate();
   const addFilterHandler = () => {
+    console.log(tempFilter);
     ITEM && history(`?item=${ITEM}`);
     CATEGORY && history(`?category=${CATEGORY}`);
-
     dispatch(
       addFilters({
-        category: CATEGORY,
-        item: Number(ITEM),
+        ...tempFilter,
       })
     );
   };
@@ -46,6 +47,30 @@ function Navigation({ Showcategories, showItems, redirect }) {
     dispatch({ type: RESET_FILTERS });
     setCATEGORY();
     history(redirect ? redirect : "/");
+  };
+
+  const selectAllCategiries = (e) => {
+    setCATEGORY(null);
+
+    if (tempFilter && tempFilter.category) {
+      delete tempFilter["category"];
+
+      setCATEGORY(null);
+      addFilterHandler();
+    }
+  };
+
+  const addHandler = (e, value, key) => {
+    if (key == "category") {
+      setCATEGORY(value);
+    }
+    if (key == "item") {
+      setITEM(value);
+    }
+
+    if (tempFilter) {
+      tempFilter[key] = value;
+    }
   };
   return (
     <div>
@@ -56,14 +81,23 @@ function Navigation({ Showcategories, showItems, redirect }) {
           ) : Showcategories ? (
             <Nav.Item>
               <NavDropdown
-                title={CATEGORY ? `Category:${CATEGORY}` : "Category"}
+                title={CATEGORY ? `Category:${CATEGORY}` : "Category:All"}
                 id="nav-dropdown"
               >
+                <NavDropdown.Item>
+                  <div
+                    value={null}
+                    onClick={(e) => selectAllCategiries(e)}
+                    className="categoryList"
+                  >
+                    All
+                  </div>
+                </NavDropdown.Item>
                 {categories.map((cat) => (
                   <NavDropdown.Item key={cat.Name}>
                     <div
                       className="categoryList"
-                      onClick={(e) => setCATEGORY(cat.Name)}
+                      onClick={(e) => addHandler(e, cat.Name, "category")}
                     >
                       <span>{cat.Name}</span>
                       <div className="roundInfo">{cat.BooksInCategory}</div>
@@ -79,7 +113,10 @@ function Navigation({ Showcategories, showItems, redirect }) {
             <Nav.Item>
               <NavDropdown title={`Items:${ITEM}`}>
                 {itemsList.map((item) => (
-                  <NavDropdown.Item key={item} onClick={(e) => setITEM(item)}>
+                  <NavDropdown.Item
+                    key={item}
+                    onClick={(e) => addHandler(e, item, "item")}
+                  >
                     <div>{item}</div>
                   </NavDropdown.Item>
                 ))}
@@ -93,7 +130,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
             type="submit"
             onClick={(e) => addFilterHandler()}
           >
-            <div className="noDecoration">Add filters</div>
+            <div className="noDecoration">Apply filters</div>
           </Button>
           <Button
             className="navigationSubmit noDecoration "
