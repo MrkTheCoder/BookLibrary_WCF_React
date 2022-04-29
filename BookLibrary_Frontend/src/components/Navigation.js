@@ -34,7 +34,6 @@ function Navigation({ Showcategories, showItems, redirect }) {
   }, [dispatch, CATEGORY]);
   const history = useNavigate();
   const addFilterHandler = () => {
-    console.log(tempFilter);
     ITEM && history(`?item=${ITEM}`);
     CATEGORY && history(`?category=${CATEGORY}`);
     dispatch(
