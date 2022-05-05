@@ -61,7 +61,7 @@ function Paginate({ totalItems, nextPage, prevPage }) {
               />
             </LinkContainer>
           )}
-          <LinkContainer data-testid="prevPageLink" to={`${prevPage}`}>
+          <LinkContainer data-testid="prevPageLink" to={`${`?page=${page - 1}&item=${item}`}`}>
             <Pagination.Prev
               data-testid="prevPageButton"
               className={prevPage ? "" : "disabled"}
@@ -124,18 +124,19 @@ function Paginate({ totalItems, nextPage, prevPage }) {
           {totalPage > 3 && (
             <Dropdown>
               <Dropdown.Toggle as={CustomToggle}>
-                <Pagination.Ellipsis />
+                <Pagination.Ellipsis data-testid='threeDots' />
               </Dropdown.Toggle>
               <Dropdown.Menu as={"div"}>
                 <Form className="customPage" onSubmit={customPageHandler}>
                   <Form.Group>
                     <Form.Control
+                    data-testid='customPageForm'
                       className="w-auto"
                       onChange={(e) => setCustomPage(e.target.value)}
                       placeholder="Enter page number..."
                     />
                   </Form.Group>
-                  <Button type="submit">GO!</Button>
+                  <Button data-testid='customButtonFromSubmit' type="submit">GO!</Button>
                 </Form>
               </Dropdown.Menu>
             </Dropdown>

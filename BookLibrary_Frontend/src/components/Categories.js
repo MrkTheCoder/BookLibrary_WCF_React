@@ -27,7 +27,6 @@ function Categories() {
       ) : (
         <Nav.Item>
           <NavDropdown title="Categories" id="nav-dropdown">
-            {console.log(categories)}
             {categories.map((cat) => (
               <NavDropdown.Item key={cat.Name}>
                 <LinkContainer to={`?category=${cat.Name}&item=10`}>
