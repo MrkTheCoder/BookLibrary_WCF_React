@@ -27,7 +27,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
   const [tempFilter, setTempFilter] = useState(filters ? filters : {});
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const itemsList = [10, 20, 30, 40, 50];
+  const itemsList = [1, 10, 20, 30, 40, 50];
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
@@ -82,6 +82,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
               <NavDropdown
                 title={CATEGORY ? `Category:${CATEGORY}` : "Category:All"}
                 id="nav-dropdown"
+                data-testid="category_dropdown_button"
               >
                 <NavDropdown.Item>
                   <div

@@ -68,6 +68,7 @@
     "@storybook/preset-create-react-app": "^4.0.1",
     "@storybook/react": "^6.4.19",
     "@storybook/testing-library": "^0.0.9",
+    "nock": "^13.2.4",
     "webpack": "^5.70.0"
   }
 }
