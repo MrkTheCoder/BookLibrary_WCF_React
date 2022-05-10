@@ -99,7 +99,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
                       className="categoryList"
                       onClick={(e) => addHandler(e, cat.Name, "category")}
                     >
-                      <span>{cat.Name}</span>
+                      <span data-testid="categoryFromApi">{cat.Name}</span>
                       <div className="roundInfo">{cat.BooksInCategory}</div>
                     </div>
                   </NavDropdown.Item>
