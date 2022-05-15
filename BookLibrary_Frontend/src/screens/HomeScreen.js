@@ -8,7 +8,6 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import Navigation from "../components/Navigation";
-import { addFilters } from "../actions/categoryActions";
 
 function HomeScreen() {
   const dispatch = useDispatch();
