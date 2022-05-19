@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Bookcard from "../components/Bookcard";
+import Bookcardsv2 from "../components/Bookcardsv2";
 import { listBooks } from "../actions/bookActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -57,7 +58,7 @@ function HomeScreen() {
             <Row data-testid="cardRow" className="mainScreen">
               {books.map((book) => (
                 <Col key={book.Id} sm={12} md={6} lg={4} xl={3}>
-                  <Bookcard book={book} />
+                  <Bookcardsv2 book={book} />
                 </Col>
               ))}
             </Row>
