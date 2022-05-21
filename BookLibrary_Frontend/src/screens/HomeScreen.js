@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import Navigation from "../components/Navigation";
+import "./HomeScreen.css";
 
 function HomeScreen() {
   const dispatch = useDispatch();
