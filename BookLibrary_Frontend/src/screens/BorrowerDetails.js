@@ -28,6 +28,15 @@ function BorrowerDetails() {
     }
   }, [dispatch]);
 
+  const dateHandler = (date) => {
+    const exp = /([0-9]+)\+([0-9]+)/;
+
+    const [_, dateNumber, __] = exp.exec(date);
+    const formattedDate = new Date(Number(dateNumber));
+
+    return formattedDate.toString();
+  };
+
   return (
     <div>
       {loading ? (
@@ -36,9 +45,15 @@ function BorrowerDetails() {
         <Message variant="danger">{error}</Message>
       ) : (
         <div>
-          {borrower && (
+          {borrower ? (
             <div className="detailsBody">
-              <Image src={borrower.ImageLink} />
+              <div>
+                <img
+                  className="card-image"
+                  alt={borrower.Username}
+                  src={borrower.ImageLink}
+                />
+              </div>
               <ul className="detailsText">
                 <li className="detailsListItem">
                   <span className="DetailsListItemSpan">Name:</span>
@@ -65,10 +80,12 @@ function BorrowerDetails() {
                   <span className="DetailsListItemSpan">
                     Registration date:
                   </span>
-                  {borrower.RegistrationDate}
+                  {dateHandler(borrower.RegistrationDate)}
                 </li>
               </ul>
             </div>
+          ) : (
+            <></>
           )}
         </div>
       )}

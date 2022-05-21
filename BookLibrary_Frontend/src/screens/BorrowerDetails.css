@@ -1,12 +1,17 @@
 .detailsBody {
   background-color: #788aa3;
   border-radius: 15px;
-  margin: auto;
+
   padding: 10px;
 
-  max-width: 100%;
-
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-image {
+  margin: auto;
+  min-width: 200px;
 }
 .detailsListItem {
   list-style: none;
@@ -16,11 +21,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  min-width: auto;
   background-color: #666a86;
   padding: 0, 2.5rem;
   padding-right: 2.5rem;
-  margin-left: 5rem;
+
   border-radius: 15px;
   margin-bottom: 0;
   margin-bottom: 0;
