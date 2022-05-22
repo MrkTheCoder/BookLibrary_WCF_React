@@ -37,8 +37,7 @@ function HomeScreen() {
         listBooks(
           Number(searchParams.get("page")),
 
-          filters,
-          headers
+          filters
         )
       );
     } else {

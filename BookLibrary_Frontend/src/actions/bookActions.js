@@ -9,9 +9,9 @@ import {
   BOOK_DETAILS_SUCCESS,
   BOOK_DETAILS_FAIL,
 } from "../constants/bookConstants";
-
+import etagHandler from "../functions/etagHandler";
 export const listBooks =
-  (page = 1, filters, headers) =>
+  (page = 1, filters) =>
   async (dispatch) => {
     try {
       dispatch({ type: BOOK_LIST_REQUEST });
@@ -24,6 +24,9 @@ export const listBooks =
 
         { params: filters }
       );
+      // checking for etag
+      //console.log(headers, "Recived data");
+      //const newData = await etagHandler(headers, data);
 
       dispatch({
         type: BOOK_LIST_SUCCESS,
