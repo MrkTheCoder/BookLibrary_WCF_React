@@ -3,7 +3,7 @@
     /// <summary>
     /// Base interface to implement all other related Entity interfaces
     /// </summary>
-    public interface IEntityBase : IIdentifiableEntity, IEntityVersion
+    public interface IEntityBase : IIdentifiableEntity, IEntityVersion, IEntityEtag
     {
     }
 }

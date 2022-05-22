@@ -22,5 +22,6 @@ namespace BookLibrary.Business.Entities
         }
 
         public string Version { get; set; }
+        public string ETag { get; }
     }
 }

@@ -22,6 +22,7 @@ namespace BookLibrary.Business.Entities
             set => Id = value;
         }
 
-        public string Version => Isbn + RowVersion.ToString();
+        public string Version => RowVersion.ToString();
+        public string ETag => Isbn + RowVersion.ToString();
     }
 }

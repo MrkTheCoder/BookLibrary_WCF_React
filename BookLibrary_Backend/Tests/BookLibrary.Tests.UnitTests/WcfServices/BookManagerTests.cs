@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter;
 using Xunit;
 
 namespace BookLibrary.Tests.UnitTests.WcfServices
@@ -440,7 +439,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         {
             var isbn1 = "001-0000000001";
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
-            
+
             Assert.True(string.IsNullOrEmpty(bookManager.ETag));
 
             await bookManager.GetBookAsync(isbn1);
@@ -454,14 +453,14 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         {
             var isbn1 = "001-0000000001";
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
-            
+
             await bookManager.GetBookAsync(isbn1);
             var etag1 = bookManager.ETag;
             await bookManager.GetBookAsync(isbn1);
             var etag2 = bookManager.ETag;
 
 
-            Assert.Equal(etag1,etag2);
+            Assert.Equal(etag1, etag2);
         }
 
         [Fact]
@@ -470,17 +469,125 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
         {
             var isbn1 = "001-0000000001";
             var bookManager = new BookManager(_moqRepositoryFactory.Object);
-            
+
             await bookManager.GetBookAsync(isbn1);
             var etag1 = bookManager.ETag;
             await bookManager.GetBookAsync(isbn1);
             var etag2 = bookManager.ETag;
 
 
-            Assert.Equal(etag1,etag2);
+            Assert.Equal(etag1, etag2);
         }
 
 
+        // OperationContext tests
+        // A Good way to moq WebOperationContext: https://weblogs.asp.net/cibrax/unit-tests-for-wcf
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBooks")]
+        public async Task GetBooks_ShouldHaveCtx()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+            
+            await bookManager.GetBooksAsync(0, 0, null);
+            
+            Assert.NotNull(bookManager.Ctx);
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBooks")]
+        public async Task GetBooks_ShouldHaveEtag()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            
+            Assert.NotNull(bookManager.Ctx.OutgoingResponse.ETag);
+            Assert.True(!string.IsNullOrEmpty(bookManager.Ctx.OutgoingResponse.ETag));
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBooks")]
+        public async Task GetBooksTwice_ShouldHaveSameEtag()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            var etag1 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            await bookManager.GetBooksAsync(0, 0, null);
+            var etag2 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.Equal(etag1, etag2);
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBooks")]
+        public async Task GetBooks_TwoPages_ShouldHaveDifferentEtag()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBooksAsync(1, 0, null);
+            var etag1 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            await bookManager.GetBooksAsync(2, 0, null);
+            var etag2 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.NotEqual(etag1, etag2);
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBook")]
+        public async Task GetBook_ShouldHaveCtx()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBookAsync("001-0000000001");
+
+            Assert.NotNull(bookManager.Ctx);
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBook")]
+        public async Task GetBook_ShouldHaveEtg()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBookAsync("001-0000000001");
+
+            Assert.NotNull(bookManager.Ctx.OutgoingResponse.ETag);
+            Assert.True(!string.IsNullOrEmpty(bookManager.Ctx.OutgoingResponse.ETag));
+        }
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBook")]
+        public async Task GetBook_Twice_ShouldHaveSameEtg()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBookAsync("001-0000000001");
+            var etag1 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            await bookManager.GetBookAsync("001-0000000001");
+            var etag2 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.Equal(etag1, etag2);
+        }
+
+
+        [Fact]
+        [Trait("BookManagerEtagTests", "GetBook")]
+        public async Task GetBook_TwoBooks_ShouldHaveDifferentEtg()
+        {
+            var bookManager = new BookManager(_moqRepositoryFactory.Object);
+
+            await bookManager.GetBookAsync("001-0000000001");
+            var etag1 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            await bookManager.GetBookAsync("002-0000000002");
+            var etag2 = bookManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.NotEqual(etag1, etag2);
+        }
 
         [Theory]
         [InlineData("")]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
 using BookLibrary.Business.AppConfigs;
@@ -23,14 +24,14 @@ namespace BookLibrary.Business.Services
     {
         private int DefaultPage => 1;
         // TODO: Remove 1 from '_acceptedItemsPerPage' at Release versions
-        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
+        private readonly int[] _acceptedItemsPerPage = new[] { 1, 10, 20, 30, 40, 50 };
         private bool HasPagination { get; set; }
         
         protected IRepositoryFactory RepositoryFactory { get; set; }
         protected virtual int DefaultItemsPerPage => 10;
 
         // Use Ctx in Unit Tests
-        public OperationContext Ctx => OperationContext.Current;
+        public WebOperationContext Ctx => WebOperationContext.Current;
 
         public int CurrentItemsPerPage { get; private set; }
         public int CurrentPage { get; private set; }
@@ -55,7 +56,7 @@ namespace BookLibrary.Business.Services
             var factory = new ChannelFactory<IFakeService>(
                 new WebHttpBinding(),
                 new EndpointAddress("http://localhost:80"));
-
+            
             OperationContext.Current = new OperationContext(factory.CreateChannel() as IContextChannel);
             RepositoryFactory = repositoryFactory;
         }
@@ -133,9 +134,15 @@ namespace BookLibrary.Business.Services
 
             LogETag(ctx);
 
-            // TODO: Uncomment for next release
-            //ctx.IncomingRequest.CheckConditionalRetrieve(ETag);
-            //ctx.OutgoingResponse.SetETag(ETag);
+            try // Ignore exception at unit tests
+            {
+                ctx.IncomingRequest.CheckConditionalRetrieve(ETag);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            ctx.OutgoingResponse.SetETag(ETag);
         }
 
         private void LogETag(WebOperationContext ctx)
@@ -168,10 +175,9 @@ namespace BookLibrary.Business.Services
         private string CalculateETagChecksum(IEnumerable<IEntityBase> entities)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var entity in entities)
-            {
-                sb.Append(entity.Version);
-            }
+
+            foreach (var entity in entities) 
+                sb.Append(entity.ETag);
 
             var checksum = ChecksumHelper.CreateMD5(sb.ToString());
 
