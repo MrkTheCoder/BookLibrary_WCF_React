@@ -17,16 +17,8 @@ function BorrowerDetails() {
   const { email } = useParams("email");
 
   useEffect(() => {
-    if (!borrower) {
-      dispatch(borrowerDetails(email));
-    }
-    if (borrower) {
-      if (borrower.Email != email) {
-        dispatch({ type: BORROWER_DETAILS_RESET });
-        dispatch(borrowerDetails(email));
-      }
-    }
-  }, [dispatch]);
+    dispatch(borrowerDetails(email));
+  }, []);
 
   const dateHandler = (date) => {
     const exp = /([0-9]+)\+([0-9]+)/;
