@@ -42,6 +42,8 @@ namespace BookLibrary.Business.Services.Behaviors
                     }
                 case WebFaultException e:
                     {
+                        if (error.Message == "Not Modified")
+                            return;
                         errorCode = e.StatusCode;
                         errorResponseMessage = e.Message;
                         break;
@@ -67,10 +69,9 @@ namespace BookLibrary.Business.Services.Behaviors
 
             if (WebOperationContext.Current != null)
             {
-                var response = WebOperationContext.Current.OutgoingResponse;
-                response.ContentType = "application/json";
-                response.StatusCode = errorCode;
-                response.StatusDescription = errorResponseMessage;
+                WebOperationContext.Current.OutgoingResponse.ContentType = "application/json";
+                WebOperationContext.Current.OutgoingResponse.StatusCode = errorCode;
+                WebOperationContext.Current.OutgoingResponse.StatusDescription = errorResponseMessage;
             }
 
         }

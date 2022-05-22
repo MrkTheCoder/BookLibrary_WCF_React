@@ -90,7 +90,7 @@ namespace BookLibrary.DataAccess.SQLite
 
             foreach (var entity in types)
             {
-                var swlCommand = $@"CREATE TRIGGER UpdateBookVersion
+                var swlCommand = $@"CREATE TRIGGER Update{entity.Name}Version
                 AFTER UPDATE ON {entity.Name}
                 BEGIN
                     UPDATE {entity.Name}

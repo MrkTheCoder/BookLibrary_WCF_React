@@ -12,6 +12,7 @@ namespace BookLibrary.Business.Entities
 
         public int Id { get; set; }
         public string Type { get; set; }
+        public long RowVersion { get; set; }
 
         public virtual ICollection<Borrower> Borrowers { get; set; }
 
@@ -21,7 +22,7 @@ namespace BookLibrary.Business.Entities
             set => Id = value;
         }
 
-        public string Version { get; set; }
-        public string ETag { get; }
+        public string Version => RowVersion.ToString();
+        public string ETag => Type + Version;
     }
 }

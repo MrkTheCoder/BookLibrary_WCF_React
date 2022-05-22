@@ -16,6 +16,7 @@ namespace BookLibrary.Business.Entities
         public string Password { get; set; }
         public string AvatarLink { get; set; }
         public DateTime RegistrationDate { get; set; }
+        public long RowVersion { get; set; }
 
         public virtual Gender Gender { get; set; }
 
@@ -25,7 +26,7 @@ namespace BookLibrary.Business.Entities
             set => Id = value;
         }
 
-        public string Version { get; }
-        public string ETag { get; }
+        public string Version => RowVersion.ToString();
+        public string ETag => Email + Version;
     }
 }

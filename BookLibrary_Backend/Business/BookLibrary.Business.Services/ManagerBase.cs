@@ -138,7 +138,7 @@ namespace BookLibrary.Business.Services
             {
                 ctx.IncomingRequest.CheckConditionalRetrieve(ETag);
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
                 // ignored
             }

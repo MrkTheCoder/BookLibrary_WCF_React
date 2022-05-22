@@ -8,7 +8,7 @@ namespace BookLibrary.DataAccess.SQLite
 {
     public partial class BookLibraryDbContext : DbContext
     {
-        public const string DbVer = "v0.6.13";
+        public const string DbVer = "v0.6.16";
         private const string DatabaseFilename = "LocalDb.sqlite";
         private static string _databasePath = null;
 

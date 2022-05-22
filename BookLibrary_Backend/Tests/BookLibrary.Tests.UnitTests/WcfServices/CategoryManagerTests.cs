@@ -50,6 +50,8 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.IsType<CategoryManager>(categoryManager);
         }
 
+        #region GetCategoriesAsync - Basic Tests
+
         [Fact]
         [Trait(nameof(CategoryManagerTests), nameof(CategoryManager.GetCategoriesAsync))]
         public async Task GetCategories_WithoutParameters_ShouldReturnAllCategories()
@@ -187,6 +189,69 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal(expectedItemsPP, categoryManager.CurrentItemsPerPage);
         }
 
+        #endregion
+
+
+        // OperationContext tests
+        // A Good way to moq WebOperationContext: https://weblogs.asp.net/cibrax/unit-tests-for-wcf
+        #region GetCategoriesAsync - Etag Tests
+
+        [Fact]
+        [Trait("CategoryManagerEtagTests", nameof(CategoryManager.GetCategoriesAsync))]
+        public async Task GetCategories_ShouldHaveCtx()
+        {
+            var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
+
+            await categoryManager.GetCategoriesAsync(0, 0);
+
+            Assert.NotNull(categoryManager.Ctx);
+        }
+
+        [Fact]
+        [Trait("CategoryManagerEtagTests", nameof(CategoryManager.GetCategoriesAsync))]
+        public async Task GetCategories_ShouldHaveEtag()
+        {
+            var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
+
+            await categoryManager.GetCategoriesAsync(0, 0);
+
+            Assert.NotNull(categoryManager.Ctx.OutgoingResponse.ETag);
+            Assert.True(!string.IsNullOrEmpty(categoryManager.Ctx.OutgoingResponse.ETag));
+        }
+
+        [Fact]
+        [Trait("CategoryManagerEtagTests", nameof(CategoryManager.GetCategoriesAsync))]
+        public async Task GetCategoriesTwice_ShouldHaveSameEtag()
+        {
+            var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
+
+            await categoryManager.GetCategoriesAsync(0, 0);
+            var etag1 = categoryManager.Ctx.OutgoingResponse.ETag;
+
+            await categoryManager.GetCategoriesAsync(0, 0);
+            var etag2 = categoryManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.Equal(etag1, etag2);
+        }
+
+        [Fact]
+        [Trait("CategoryManagerEtagTests", nameof(CategoryManager.GetCategoriesAsync))]
+        public async Task GetCategories_TwoPages_ShouldHaveDifferentEtag()
+        {
+            var categoryManager = new CategoryManager(_moqRepositoryFactory.Object);
+
+            await categoryManager.GetCategoriesAsync(1, 0);
+            var etag1 = categoryManager.Ctx.OutgoingResponse.ETag;
+
+            await categoryManager.GetCategoriesAsync(2, 0);
+            var etag2 = categoryManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.NotEqual(etag1, etag2);
+        }
+
+        #endregion
+
+        #region Helpers
         public static IEnumerable<object[]> DifferentArguments()
         {
             yield return new object[] { 0, 0, 21, 1, 21 };
@@ -222,6 +287,7 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             }
 
             return cats;
-        }
+        } 
+        #endregion
     }
 }

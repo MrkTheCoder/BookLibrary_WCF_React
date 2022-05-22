@@ -1,5 +1,4 @@
-﻿using BookLibrary.Business.Entities.Extensions;
-using Core.Common.Interfaces.Entities;
+﻿using Core.Common.Interfaces.Entities;
 
 namespace BookLibrary.Business.Entities
 {
@@ -23,6 +22,6 @@ namespace BookLibrary.Business.Entities
         }
 
         public string Version => RowVersion.ToString();
-        public string ETag => Isbn + RowVersion.ToString();
+        public string ETag => Isbn + Version;
     }
 }

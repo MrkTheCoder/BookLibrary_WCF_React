@@ -9,10 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
-using System.ServiceModel.Web;
-using System.Text;
 using System.Threading.Tasks;
-using Core.Common.Interfaces.Entities;
 
 namespace BookLibrary.Business.Services.Managers
 {
@@ -53,7 +50,7 @@ namespace BookLibrary.Business.Services.Managers
             InitializePaging(totalItems, page, item);
 
             var books = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
-            
+
             SetHeaders(books);
 
             return MapBooksToLibraryBooks(books);
@@ -77,7 +74,7 @@ namespace BookLibrary.Business.Services.Managers
             if (book == null)
                 throw new NotFoundException($"Book with this ISBN {isbn} did not exits!");
 
-            SetHeaders(new []{book}, returnList:false);
+            SetHeaders(new[] { book }, returnList: false);
 
             return MapBookToLibraryBook(book, isThumbnail: false);
         }

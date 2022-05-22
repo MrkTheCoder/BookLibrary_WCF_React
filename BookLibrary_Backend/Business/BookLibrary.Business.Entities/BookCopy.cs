@@ -6,6 +6,7 @@ namespace BookLibrary.Business.Entities
     {
         public int BookId { get; set; }
         public int TotalCopy { get; set; }
+        public long RowVersion { get; set; }
 
         public virtual Book Book { get; set; }
 
@@ -15,7 +16,7 @@ namespace BookLibrary.Business.Entities
             set => BookId = value;
         }
 
-        public string Version { get; }
-        public string ETag { get; }
+        public string Version => RowVersion.ToString();
+        public string ETag => EntityId.ToString() + Version;
     }
 }

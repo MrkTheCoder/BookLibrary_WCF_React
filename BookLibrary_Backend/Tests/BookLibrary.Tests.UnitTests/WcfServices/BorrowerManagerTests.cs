@@ -252,6 +252,122 @@ namespace BookLibrary.Tests.UnitTests.WcfServices
             Assert.Equal($"Email does not exists!", exception.Message);
         }
 
+
+
+        // OperationContext tests
+        // A Good way to moq WebOperationContext: https://weblogs.asp.net/cibrax/unit-tests-for-wcf
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowersAsync))]
+        public async Task GetBorrowers_ShouldHaveCtx()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowersAsync(0, 0);
+
+            Assert.NotNull(borrowerManager.Ctx);
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowersAsync))]
+        public async Task GetBorrowers_ShouldHaveEtag()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowersAsync(0, 0);
+
+            Assert.NotNull(borrowerManager.Ctx.OutgoingResponse.ETag);
+            Assert.True(!string.IsNullOrEmpty(borrowerManager.Ctx.OutgoingResponse.ETag));
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowersAsync))]
+        public async Task GetBorrowersTwice_ShouldHaveSameEtag()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowersAsync(0, 0);
+            var etag1 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            await borrowerManager.GetBorrowersAsync(0, 0);
+            var etag2 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.Equal(etag1, etag2);
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowersAsync))]
+        public async Task GetBorrowers_TwoPages_ShouldHaveDifferentEtag()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowersAsync(1, 0);
+            var etag1 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            await borrowerManager.GetBorrowersAsync(2, 0);
+            var etag2 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.NotEqual(etag1, etag2);
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_ShouldHaveCtx()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowerAsync("A@mail.local");
+
+            Assert.NotNull(borrowerManager.Ctx);
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_ShouldHaveEtg()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowerAsync("A@mail.local");
+
+            Assert.NotNull(borrowerManager.Ctx.OutgoingResponse.ETag);
+            Assert.True(!string.IsNullOrEmpty(borrowerManager.Ctx.OutgoingResponse.ETag));
+        }
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_Twice_ShouldHaveSameEtg()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowerAsync("A@mail.local");
+            var etag1 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            await borrowerManager.GetBorrowerAsync("A@mail.local");
+            var etag2 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.Equal(etag1, etag2);
+        }
+
+
+        [Fact]
+        [Trait("BorrowerManagerEtagTests", nameof(BorrowerManager.GetBorrowerAsync))]
+        public async Task GetBorrower_TwoBorrowers_ShouldHaveDifferentEtg()
+        {
+            var borrowerManager = new BorrowerManager(_moqRepositoryFactory.Object);
+
+            await borrowerManager.GetBorrowerAsync("A@mail.local");
+            var etag1 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            await borrowerManager.GetBorrowerAsync("B@mail.local");
+            var etag2 = borrowerManager.Ctx.OutgoingResponse.ETag;
+
+            Assert.NotEqual(etag1, etag2);
+        }
+
+
+
+
+
+
         [Theory]
         [InlineData("")]
         [InlineData("  ")]
