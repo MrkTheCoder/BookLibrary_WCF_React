@@ -36,6 +36,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
   const addFilterHandler = () => {
     ITEM && history(`?item=${ITEM}`);
     CATEGORY && history(`?category=${CATEGORY}`);
+
     dispatch(
       addFilters({
         ...tempFilter,

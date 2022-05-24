@@ -9,34 +9,29 @@ import {
   BORROWER_DETAILS_SUCCESS,
 } from "../constants/borrowersConstants";
 
-export const listBorrowers =
-  (page = 1, filters, headers) =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: BORROWER_LIST_REQUEST });
-      if (filters == null) {
-        filters = { item: 10 };
-      }
+export const listBorrowers = (allFilters) => async (dispatch) => {
+  try {
+    dispatch({ type: BORROWER_LIST_REQUEST });
 
-      const { data, headers } = await axios.get(
-        `http://localhost:51202/api/BorrowerManager/borrowers?page=${page}`,
-        { params: filters }
-      );
-      dispatch({
-        type: BORROWER_LIST_SUCCESS,
-        payload: data,
-        headers: headers,
-      });
-    } catch (error) {
-      dispatch({
-        type: BORROWER_LIST_FAIL,
-        payload:
-          error.response && error.response.data.Message
-            ? error.response.data.Message
-            : error.message,
-      });
-    }
-  };
+    const { data, headers } = await axios.get(
+      `http://localhost:51202/api/BorrowerManager/borrowers`,
+      { params: allFilters }
+    );
+    dispatch({
+      type: BORROWER_LIST_SUCCESS,
+      payload: data,
+      headers: headers,
+    });
+  } catch (error) {
+    dispatch({
+      type: BORROWER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.Message
+          ? error.response.data.Message
+          : error.message,
+    });
+  }
+};
 export const borrowerDetails = (email) => async (dispatch) => {
   try {
     dispatch({ type: BORROWER_DETAILS_REQUEST });

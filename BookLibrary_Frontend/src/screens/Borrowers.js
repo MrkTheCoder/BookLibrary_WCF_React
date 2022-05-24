@@ -40,13 +40,14 @@ function Borrowers() {
     }
     if (searchParams.get("page") && searchParams.get("item")) {
       dispatch(
-        listBorrowers(
-          Number(searchParams.get("page")),
+        listBorrowers({
+          page: Number(searchParams.get("page")),
 
-          filters,
-          headers
-        )
+          ...filters,
+        })
       );
+
+      return;
     } else {
       history(`?page=${1}&item=${filters ? filters.item : 10}`);
     }

@@ -10,39 +10,37 @@ import {
   BOOK_DETAILS_FAIL,
 } from "../constants/bookConstants";
 import etagHandler from "../functions/etagHandler";
-export const listBooks =
-  (page = 1, filters) =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: BOOK_LIST_REQUEST });
-      if (filters == null) {
-        filters = { item: 10 };
-      }
-
-      const { data, headers } = await axios.get(
-        `http://localhost:51202/api/BookManager/books?page=${page}`,
-
-        { params: filters }
-      );
-      // checking for etag
-      //console.log(headers, "Recived data");
-      //const newData = await etagHandler(headers, data);
-
-      dispatch({
-        type: BOOK_LIST_SUCCESS,
-        payload: data,
-        headers: headers,
-      });
-    } catch (error) {
-      dispatch({
-        type: BOOK_LIST_FAIL,
-        payload:
-          error.response && error.response.data.Message
-            ? error.response.data.Message
-            : error.message,
-      });
+export const listBooks = (allFilters) => async (dispatch) => {
+  try {
+    dispatch({ type: BOOK_LIST_REQUEST });
+    if (allFilters == null) {
+      allFilters = { item: 10 };
     }
-  };
+
+    const { data, headers } = await axios.get(
+      `http://localhost:51202/api/BookManager/books`,
+
+      { params: allFilters }
+    );
+    // checking for etag
+    //console.log(headers, "Recived data");
+    //const newData = await etagHandler(headers, data);
+
+    dispatch({
+      type: BOOK_LIST_SUCCESS,
+      payload: data,
+      headers: headers,
+    });
+  } catch (error) {
+    dispatch({
+      type: BOOK_LIST_FAIL,
+      payload:
+        error.response && error.response.data.Message
+          ? error.response.data.Message
+          : error.message,
+    });
+  }
+};
 
 export const bookDetailsAction = (Isbn) => async (dispatch) => {
   try {

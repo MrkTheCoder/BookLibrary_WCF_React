@@ -22,13 +22,7 @@ const reducer = combineReducers({
   borrower: borrowerDetailsReducer,
 });
 
-const initialState = {
-  filters: {
-    filters: {
-      item: 10,
-    },
-  },
-};
+const initialState = {};
 
 const middlewear = [thunk];
 

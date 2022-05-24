@@ -23,23 +23,27 @@ function HomeScreen() {
   const { success, filters } = filtersFromState;
 
   const history = useNavigate();
+  const itemsList = [1, 10, 20, 30, 40, 50];
 
   useEffect(() => {
     if (
       filters &&
       filters.item != searchParams.get("item") &&
-      searchParams.get("item") != null
+      searchParams.get("item") != null &&
+      itemsList.includes(searchParams.get("item"))
     ) {
       filters.item = searchParams.get("item");
     }
     if (searchParams.get("page") && searchParams.get("item")) {
       dispatch(
-        listBooks(
-          Number(searchParams.get("page")),
+        listBooks({
+          page: Number(searchParams.get("page")),
 
-          filters
-        )
+          ...filters,
+        })
       );
+
+      return;
     } else {
       history(`?page=${1}&item=${filters ? filters.item : 10}`);
     }
