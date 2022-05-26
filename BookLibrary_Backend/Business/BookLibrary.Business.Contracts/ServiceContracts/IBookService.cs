@@ -18,12 +18,13 @@ namespace BookLibrary.Business.Contracts.ServiceContracts
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
+        /// <param name="query">a string value represent query. Minimum length: 3 characters</param>
         /// <returns>a Json format of LibraryBookData array.</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}", 
+        [WebGet(UriTemplate = "books?page={page}&item={item}&category={category}&query={query}", 
             ResponseFormat = WebMessageFormat.Json, 
             RequestFormat=WebMessageFormat.Json)]
-        Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category);
+        Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category, string query);
 
         /// <summary>
         /// RESTful command: GET.

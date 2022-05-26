@@ -24,7 +24,7 @@ namespace BookLibrary.Tests.IntegrationTests.WcfServices
         {
             var bookManager = new BookManager();
 
-            var libraryBooks = await bookManager.GetBooksAsync(0,0, null);
+            var libraryBooks = await bookManager.GetBooksAsync(0,0, null, null);
             var libraryBook = libraryBooks.FirstOrDefault();
 
             Assert.NotEmpty(libraryBooks);

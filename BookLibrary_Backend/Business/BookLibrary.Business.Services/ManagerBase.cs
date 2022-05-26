@@ -24,7 +24,7 @@ namespace BookLibrary.Business.Services
     {
         private int DefaultPage => 1;
         // TODO: Remove 1 from '_acceptedItemsPerPage' at Release versions
-        private readonly int[] _acceptedItemsPerPage = new[] { 1, 10, 20, 30, 40, 50 };
+        private readonly int[] _acceptedItemsPerPage = new[] { 10, 20, 30, 40, 50 };
         private bool HasPagination { get; set; }
         
         protected IRepositoryFactory RepositoryFactory { get; set; }
@@ -32,6 +32,8 @@ namespace BookLibrary.Business.Services
 
         // Use Ctx in Unit Tests
         public WebOperationContext Ctx => WebOperationContext.Current;
+
+        public int MinQueryLength => 3;
 
         public int CurrentItemsPerPage { get; private set; }
         public int CurrentPage { get; private set; }

@@ -34,7 +34,7 @@ namespace BookLibrary.Tests.IntegrationTests.Hosts
             
             var proxy = channel.CreateChannel();
 
-            var books = proxy.GetBooksAsync(0,0, null);
+            var books = proxy.GetBooksAsync(0,0, null, null);
 
             Assert.NotNull(books);
 

@@ -46,7 +46,7 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                 .FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<Book>> GetFilteredBooksAsync(int page, int item, string category)
+        public async Task<IEnumerable<Book>> GetFilteredBooksAsync(int page, int item, string category, string query)
         {
             using (var context = new BookLibraryDbContext())
             {
@@ -54,8 +54,10 @@ namespace BookLibrary.DataAccess.SQLite.Repositories
                     .Books
                     .Include(i => i.BookCategory)
                     .Include(i => i.BookCopy)
-                    .Where(w => string.IsNullOrEmpty(category) ||
-                                w.BookCategory.Name.ToLower() == category.ToLower())
+                    .Where(w => (string.IsNullOrEmpty(category) ||
+                                w.BookCategory.Name.ToLower() == category.ToLower()) &&
+                                (string.IsNullOrEmpty(query) ||
+                                 w.Title.ToLower().Contains(query)))
                     .OrderBy(o => o.Title)
                     .Skip(item * (page - 1))
                     .Take(item)

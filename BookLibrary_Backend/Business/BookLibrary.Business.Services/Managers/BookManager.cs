@@ -35,21 +35,34 @@ namespace BookLibrary.Business.Services.Managers
         /// <param name="page">an integer value represent the page number between: 1 to n.</param>
         /// <param name="item">an integer value represent items per page. Valid values: 10, 20, 30, 40, 50. (default: 10)</param>
         /// <param name="category">a string value represent book categories.</param>
+        /// <param name="query">a string value represent query. Minimum length: 3 characters</param>
         /// // <returns>Array of LibraryBookData type in page n and x items per page.</returns>
-        public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category)
+        public async Task<LibraryBookData[]> GetBooksAsync(int page, int item, string category, string query)
         {
             if (page < 0 || item < 0)
                 throw new ArgumentException("Page & Item arguments must be zero or a positive number");
+            if (!string.IsNullOrEmpty(query) && query.Trim().Length < MinQueryLength)
+                throw new ArgumentException($"Query string must be at least {MinQueryLength} characters or more.");
+
+            var search = !string.IsNullOrEmpty(query)
+                ? query.ToLower().Trim()
+                : query;
 
             var bookRepository = RepositoryFactory.GetEntityRepository<IBookRepository>();
 
-            var totalItems = string.IsNullOrEmpty(category)
-                ? await bookRepository.GetCountAsync()
-                : await bookRepository.GetCountAsync(b => b.BookCategory.Name == category);
+            var totalItems = await bookRepository
+                .GetCountAsync(b => 
+                    (string.IsNullOrEmpty(category) || 
+                    b.BookCategory.Name == category) &&
+                    (string.IsNullOrEmpty(search) ||
+                     b.Title.ToLower().Contains(search)));
+
+            if (!string.IsNullOrEmpty(search) && totalItems == 0)
+                throw new NotFoundException("No search result!");
 
             InitializePaging(totalItems, page, item);
 
-            var books = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category);
+            var books = await bookRepository.GetFilteredBooksAsync(CurrentPage, CurrentItemsPerPage, category, search);
 
             SetHeaders(books);
 

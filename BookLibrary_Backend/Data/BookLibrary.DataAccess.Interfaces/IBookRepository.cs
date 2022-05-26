@@ -7,6 +7,6 @@ namespace BookLibrary.DataAccess.Interfaces
 {
     public interface IBookRepository : IRepositoryBase<Book>
     {
-        Task<IEnumerable<Book>> GetFilteredBooksAsync(int page, int item, string category);
+        Task<IEnumerable<Book>> GetFilteredBooksAsync(int page, int item, string category, string query);
     }
 }
