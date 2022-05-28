@@ -51,13 +51,16 @@ function HomeScreen() {
 
   return (
     <div>
+      <Navigation Showcategories showItems />
+
       {loading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+        <>
+          <Message variant="danger">{error}</Message>
+        </>
       ) : headers ? (
         <div className="homeScreenBody">
-          <Navigation Showcategories showItems />
           <div className="cardRows">
             <Row data-testid="cardRow" className="mainScreen">
               {books.map((book) => (

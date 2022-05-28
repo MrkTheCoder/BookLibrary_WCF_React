@@ -28,6 +28,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const itemsList = [1, 10, 20, 30, 40, 50];
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     categories.length == 0 && dispatch(categoryList());
@@ -45,6 +46,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
   };
   const clearFiltersHandler = () => {
     dispatch({ type: RESET_FILTERS });
+    setSearchQuery("");
     setCATEGORY();
     history(redirect ? redirect : "/");
   };
@@ -72,17 +74,41 @@ function Navigation({ Showcategories, showItems, redirect }) {
       tempFilter[key] = value;
     }
   };
+
+  const formHandler = (e) => {
+    //console.log(e.target[0].value);
+    const searchQ = e.target[0].value;
+    tempFilter["query"] = searchQ;
+    dispatch(
+      addFilters({
+        ...tempFilter,
+      })
+    );
+  };
+
   return (
-    <div>
-      <Nav variant="pills" className="bg-light navigation">
+    <div className="navigationBody">
+      <form onSubmit={formHandler} className="navigationSearch">
+        <input
+          placeholder="Search..."
+          className="navigationSearchInput"
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        ></input>
+        <Button id="navigationSearchButton" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </Button>
+      </form>
+      <div className="navigation">
         <div className="navigationItems">
           {categoryError ? (
             <div></div>
           ) : Showcategories ? (
-            <Nav.Item>
+            <Nav.Item id="nav-item-navigation">
               <NavDropdown
-                title={CATEGORY ? `Category:${CATEGORY}` : "Category:All"}
-                id="nav-dropdown"
+                title={CATEGORY ? `${CATEGORY}` : "Category:All"}
+                id="nav-dropdown-navigation"
                 data-testid="category_dropdown_button"
               >
                 <NavDropdown.Item>
@@ -111,8 +137,11 @@ function Navigation({ Showcategories, showItems, redirect }) {
             <div></div>
           )}
           {showItems && (
-            <Nav.Item>
-              <NavDropdown title={`Items:${ITEM}`}>
+            <Nav.Item id="nav-item-navigation">
+              <NavDropdown
+                id="nav-dropdown-navigation"
+                title={ITEM ? `Item:${ITEM}` : "Item:10"}
+              >
                 {itemsList.map((item) => (
                   <NavDropdown.Item
                     key={item}
@@ -125,23 +154,23 @@ function Navigation({ Showcategories, showItems, redirect }) {
             </Nav.Item>
           )}
         </div>
-        <div>
+        <div className="navigationButtons">
           <Button
-            className="navigationSubmit noDecoration "
+            className="navigationSubmit btn-sm noDecoration "
             type="submit"
             onClick={(e) => addFilterHandler()}
           >
-            <div className="noDecoration">Apply filters</div>
+            <div className="noDecoration">Apply</div>
           </Button>
           <Button
-            className="navigationSubmit noDecoration "
+            className="navigationSubmit btn-sm noDecoration "
             type="submit"
             onClick={(e) => clearFiltersHandler()}
           >
-            <div className="noDecoration">Reset filters</div>
+            <div className="noDecoration">Reset</div>
           </Button>
         </div>
-      </Nav>
+      </div>
     </div>
   );
 }

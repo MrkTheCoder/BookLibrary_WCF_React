@@ -3,7 +3,7 @@ import { Alert, Col } from "react-bootstrap";
 
 function Message({ variant, children }) {
   return (
-    <Alert variant={variant}>
+    <Alert style={{ margin: "10px 0" }} variant={variant}>
       <Col md={11}>{children}</Col>
       <Col md={1}></Col>
     </Alert>
