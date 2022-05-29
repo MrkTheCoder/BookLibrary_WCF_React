@@ -28,30 +28,28 @@ function Borrowers() {
   }
 
   useEffect(() => {
-    if (filters) {
-      filters.item = 10;
-    }
-    if (
-      filters &&
-      filters.item != searchParams.get("item") &&
-      searchParams.get("item") != null
-    ) {
-      filters.item = searchParams.get("item");
-    }
-    if (searchParams.get("page") && searchParams.get("item")) {
+    const params = Object.fromEntries([...searchParams]);
+    console.log("pre api call params", params);
+    const page = searchParams.get("page") ? searchParams.get("page") : 1;
+    const item = searchParams.get("item") ? searchParams.get("item") : 10;
+
+    const allParams = {
+      page: page,
+      item: item,
+      ...params,
+    };
+    console.log("all params", allParams);
+    setSearchParams({
+      ...allParams,
+    });
+    if (allParams !== params) {
       dispatch(
         listBorrowers({
-          page: Number(searchParams.get("page")),
-
-          ...filters,
+          ...allParams,
         })
       );
-
-      return;
-    } else {
-      history(`?page=${1}&item=${filters ? filters.item : 10}`);
     }
-  }, [dispatch, searchParams, filters]);
+  }, [dispatch, searchParams]);
   return (
     <div>
       {loading ? (

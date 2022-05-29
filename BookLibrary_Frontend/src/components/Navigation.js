@@ -28,15 +28,28 @@ function Navigation({ Showcategories, showItems, redirect }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const itemsList = [1, 10, 20, 30, 40, 50];
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") ? searchParams.get("query") : ""
+  );
 
   useEffect(() => {
-    categories.length == 0 && dispatch(categoryList());
-  }, [dispatch, CATEGORY]);
+    categories.length === 0 && dispatch(categoryList());
+    if (searchParams.get("query")) {
+      setSearchQuery(searchParams.get("query"));
+    }
+    if (searchParams.get("item")) {
+      setITEM(searchParams.get("item"));
+    }
+    if (searchParams.get("category")) {
+      setCATEGORY(searchParams.get("category"));
+    }
+  }, [dispatch, CATEGORY, categories.length, searchParams]);
   const history = useNavigate();
   const addFilterHandler = () => {
-    ITEM && history(`?item=${ITEM}`);
-    CATEGORY && history(`?category=${CATEGORY}`);
+    setSearchParams({
+      ...searchParams,
+      ...tempFilter,
+    });
 
     dispatch(
       addFilters({
@@ -79,6 +92,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
     //console.log(e.target[0].value);
     const searchQ = e.target[0].value;
     tempFilter["query"] = searchQ;
+    setSearchParams({ ...tempFilter });
     dispatch(
       addFilters({
         ...tempFilter,
