@@ -51,7 +51,7 @@ function HomeScreen() {
 
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
-    console.log("pre api call params", params);
+
     const page = searchParams.get("page") ? searchParams.get("page") : 1;
     const item = searchParams.get("item") ? searchParams.get("item") : 10;
 
@@ -60,7 +60,7 @@ function HomeScreen() {
       item: item,
       ...params,
     };
-    console.log("all params", allParams);
+
     setSearchParams({
       ...allParams,
     });

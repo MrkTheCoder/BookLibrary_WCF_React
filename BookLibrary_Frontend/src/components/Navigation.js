@@ -33,7 +33,9 @@ function Navigation({ Showcategories, showItems, redirect }) {
   );
 
   useEffect(() => {
-    categories.length === 0 && dispatch(categoryList());
+    if (Showcategories && categories.length === 0) {
+      dispatch(categoryList());
+    }
     if (searchParams.get("query")) {
       setSearchQuery(searchParams.get("query"));
     }
@@ -43,7 +45,7 @@ function Navigation({ Showcategories, showItems, redirect }) {
     if (searchParams.get("category")) {
       setCATEGORY(searchParams.get("category"));
     }
-  }, [dispatch, CATEGORY, categories.length, searchParams]);
+  }, [searchParams]);
   const history = useNavigate();
   const addFilterHandler = () => {
     setSearchParams({
@@ -121,7 +123,13 @@ function Navigation({ Showcategories, showItems, redirect }) {
           ) : Showcategories ? (
             <Nav.Item id="nav-item-navigation">
               <NavDropdown
-                title={CATEGORY ? `${CATEGORY}` : "Category:All"}
+                title={
+                  tempFilter.category
+                    ? `${tempFilter.category}`
+                    : CATEGORY
+                    ? CATEGORY
+                    : "Category:All"
+                }
                 id="nav-dropdown-navigation"
                 data-testid="category_dropdown_button"
               >
